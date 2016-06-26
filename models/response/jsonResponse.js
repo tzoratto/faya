@@ -10,9 +10,12 @@ jsonResponse.prototype.makeSuccess = function(data) {
     return this;
 };
 
-jsonResponse.prototype.makeFailure = function(data) {
+jsonResponse.prototype.makeFailure = function(data, message) {
     this.status = 'fail';
     this.data = data || null;
+    if (message && !this.data) {
+        this.data = {'message': message};
+    }
     return this;
 };
 

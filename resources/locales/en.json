@@ -1,8 +1,23 @@
 {
-	"app": {
-		"databaseConnected": "app.databaseConnected",
-		"serverStarted": "app.serverStarted",
-		"databaseError": "app.databaseError",
-		"serverError": "app.serverError"
-	}
+    "app": {
+        "databaseConnected": "Database successfully connected",
+        "serverStarted": "The server is up and running",
+        "databaseError": "Cannot connect to database",
+        "serverError": "Cannot start the server"
+    },
+    "account": {
+        "validationLink": "Please confirm your registration by clicking on the validation link %s",
+        "validationMailSubject": "Welcome to Faya",
+        "validationInvalid": "The validation link is incorrect",
+        "unlinkTwitterImpossible": "Your Twitter account is the only one linked",
+        "twitterAlreadyLinked": "This Twitter account is already linked",
+        "unlinkFacebookImpossible": "Your Facebook account is the only one linked",
+        "unlinkGoogleImpossible": "Your Google account is the only one linked",
+        "unlinkLocalImpossible": "Your Faya account is the only one linked",
+        "facebookAlreadyLinked": "This Facebook account is already linked",
+        "googleAlreadyLinked": "This Google account is already linked",
+        "noValidUserFound": "No valid user found",
+        "badPassword": "Bad password",
+        "alreadyExisting": "This account already exists"
+    }
 }

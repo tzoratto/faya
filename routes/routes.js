@@ -1,11 +1,13 @@
 'use strict';
 
 const JsonResponse = require('../models/response/jsonResponse');
+const logger = require('winston');
 
-module.exports = function (app) {
-    app.get('/test', function (req, res, next) {
-        res.status(200).json((new JsonResponse()).makeSuccess('tada'));
-    });
+module.exports = function (app, passport) {
+    const authRoutes = require('./auth')(passport);
+
+    app.use('/auth', authRoutes);
+    
 
     app.use(function (req, res, next) {
         var err = new Error('Not Found');
@@ -16,10 +18,11 @@ module.exports = function (app) {
     app.use(function (err, req, res, next) {
         var errorCode = err.status || 500;
         res.status(errorCode);
+        logger.error(null, err);
         if (app.get('env') === 'development') {
-            res.json(new JsonResponse().makeError(err.message, err));
+            res.json((new JsonResponse()).makeError(err.message, err));
         } else {
-            res.json(new JsonResponse().makeError(err.message));
+            res.json((new JsonResponse()).makeError(err.message));
         }
     });
 };

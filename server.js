@@ -6,22 +6,18 @@ const mongoose = require("mongoose");
 const dbConfig = require("./config/database.js");
 const appConfig = require('./config/app');
 const i18n = require("i18n");
+const passport = require('passport');
 
 const app = express();
 
 module.exports = app;
 
-i18n.configure({
-    locales: ['en', 'fr'],
-    directory: __dirname + '/resources/locales',
-    objectNotation: true
-});
-
 var mongoDb = connectToDB();
 
 require('./config/logs')(app);
-require('./config/express')(app);
-require('./routes/routes')(app);
+require('./config/passport')(passport);
+require('./config/express')(app, passport, mongoDb);
+require('./routes/routes')(app, passport);
 
 mongoDb
     .on('error', function(err) {
