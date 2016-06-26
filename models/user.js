@@ -28,7 +28,8 @@ var userSchema = mongoose.Schema({
         email: String,
         name: String
     },
-    lastAccess: Date
+    lastAccess: Date,
+    createdAt: Date
 });
 
 userSchema.methods.generateHash = function (password) {
@@ -38,5 +39,15 @@ userSchema.methods.generateHash = function (password) {
 userSchema.methods.validPassword = function (password) {
     return bcrypt.compareSync(password, this.local.password);
 };
+
+userSchema.pre('validate', function(next) {
+    if (this.isNew) {
+        var date = new Date();
+        this.createdAt = date;
+        this.lastAccess = date;
+    }
+    next();
+});
+
 
 module.exports = mongoose.model('User', userSchema);
