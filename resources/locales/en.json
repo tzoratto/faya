@@ -1,0 +1,8 @@
+{
+	"app": {
+		"databaseConnected": "app.databaseConnected",
+		"serverStarted": "app.serverStarted",
+		"databaseError": "app.databaseError",
+		"serverError": "app.serverError"
+	}
+}
