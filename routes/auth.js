@@ -5,6 +5,9 @@ const express = require('express');
 const router = express.Router();
 
 module.exports = function (passport) {
+    const authUtils = require('../utils/authentication')(passport);
+    const isLoggedIn = authUtils.isLoggedIn;
+    const isLoggedOff = authUtils.isLoggedOff;
     const controllers = require('../controllers/auth')(passport);
 
     router.post('/login', isLoggedOff, controllers.login);
@@ -25,21 +28,6 @@ module.exports = function (passport) {
     router.get('/profile', isLoggedIn, function (req, res) {
         res.status(200).json((new JsonResponse()).makeSuccess());
     });
-
-    function isLoggedIn(req, res, next) {
-        if (req.isAuthenticated()) {
-            return next();
-        }
-        res.status(403).json((new JsonResponse()).makeFailure());
-    }
-
-    function isLoggedOff(req, res, next) {
-        if (req.isAuthenticated()) {
-            res.status(403).json((new JsonResponse()).makeFailure());
-        } else {
-            return next();
-        }
-    }
 
     return router;
 };
