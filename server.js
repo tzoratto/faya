@@ -12,6 +12,7 @@ const app = express();
 
 module.exports = app;
 
+mongoose.Promise = global.Promise;
 var mongoDb = connectToDB();
 
 require('./config/logs')(app);
