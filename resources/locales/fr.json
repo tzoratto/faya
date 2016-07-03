@@ -18,6 +18,7 @@
         "googleAlreadyLinked": "Ce compte Google est déjà lié",
         "noValidUserFound": "Aucun utilisateur valide trouvé",
         "badPassword": "Mauvais mot de passe",
-        "alreadyExisting": "Ce compte existe déjà"
+        "alreadyExisting": "Ce compte existe déjà",
+        "apiKeyNotFound": "Cette clé API n'existe pas"
 	}
 }

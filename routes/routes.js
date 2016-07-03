@@ -4,9 +4,14 @@ const JsonResponse = require('../models/response/jsonResponse');
 const logger = require('winston');
 
 module.exports = function (app, passport) {
+    const authUtils = require('../utils/authentication')(passport);
+    const isLoggedIn = authUtils.isLoggedIn;
+
     const authRoutes = require('./auth')(passport);
+    const apiKeyRoutes = require('./apiKey')(passport);
 
     app.use('/auth', authRoutes);
+    app.use('/api-key', isLoggedIn, apiKeyRoutes);
     
 
     app.use(function (req, res, next) {

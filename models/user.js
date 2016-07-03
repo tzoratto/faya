@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
+const uuid = require('uuid');
 
 var userSchema = mongoose.Schema({
 
@@ -29,7 +30,11 @@ var userSchema = mongoose.Schema({
         name: String
     },
     lastAccess: Date,
-    createdAt: Date
+    createdAt: Date,
+    apiKeyPairs: [{
+        keyId: String,
+        keySecret: String
+    }]
 });
 
 userSchema.methods.generateHash = function (password) {
@@ -38,6 +43,29 @@ userSchema.methods.generateHash = function (password) {
 
 userSchema.methods.validPassword = function (password) {
     return bcrypt.compareSync(password, this.local.password);
+};
+
+userSchema.methods.createApiKeyPair = function (callback) {
+    var keyPair = this.apiKeyPairs.create({
+        keyId: uuid.v4(),
+        keySecret: uuid.v4()
+    });
+    this.apiKeyPairs.push(keyPair);
+    this.save(function (err) {
+        callback(err, keyPair);
+    });
+};
+
+userSchema.methods.deleteApiKeyPair = function (id, callback) {
+    var keyPair = this.apiKeyPairs.id(id);
+    if (keyPair) {
+        keyPair.remove();
+        this.save(callback);
+    } else {
+        var err = new Error();
+        err.status = 404;
+        callback(err);
+    }
 };
 
 userSchema.pre('validate', function(next) {
