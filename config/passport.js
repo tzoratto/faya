@@ -6,6 +6,7 @@ const configAuth = require('./auth');
 
 const localLogin = require('./passport/localLogin');
 const localSignup = require('./passport/localSignup');
+const basic = require('./passport/basic');
 
 module.exports = function (passport) {
 
@@ -28,6 +29,7 @@ module.exports = function (passport) {
 
     passport.use('local-login', localLogin);
     passport.use('local-signup', localSignup);
+    passport.use(basic);
 
     if (configAuth.facebookAuth.clientID &&
         configAuth.facebookAuth.clientSecret) {

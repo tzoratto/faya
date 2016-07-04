@@ -20,5 +20,14 @@ module.exports = function(passport) {
         }
     };
     
+    exp.isLoggedInForApi = function (req, res, next) {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        else {
+            return passport.authenticate('basic', {session: false})(req, res, next);
+        }
+    };
+    
     return exp;
 };
