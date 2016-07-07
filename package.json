@@ -4,7 +4,9 @@
   "author": "Thomas Zoratto <thomas.zoratto@gmail.com>",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --reporter mocha-junit-reporter",
+    "coverage": "NODE_ENV=test istanbul cover _mocha"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -24,5 +26,12 @@
     "passport-twitter": "^1.0.4",
     "uuid": "^2.0.2",
     "winston": "^2.2.0"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "istanbul": "^0.4.4",
+    "mocha": "^2.5.3",
+    "mocha-junit-reporter": "^1.11.1",
+    "supertest": "^1.2.0"
   }
 }
