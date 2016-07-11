@@ -3,7 +3,8 @@
 		"databaseConnected": "Base de données connectée",
 		"serverStarted": "Le serveur est démarré",
 		"databaseError": "Impossible de se connecter à la base de données",
-		"serverError": "Impossible de démarrer le serveur"
+		"serverError": "Impossible de démarrer le serveur",
+		"serverShutdown": "%s reçu, arrêt du serveur"
 	},
 	"account": {
 		"validationLink": "Veuillez confirmer votre inscription en cliquant sur le lien %s",

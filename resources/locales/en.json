@@ -3,7 +3,8 @@
 		"databaseConnected": "Database successfully connected",
 		"serverStarted": "The server is up and running",
 		"databaseError": "Cannot connect to database",
-		"serverError": "Cannot start the server"
+		"serverError": "Cannot start the server",
+		"serverShutdown": "Caught %s, shutting down"
 	},
 	"account": {
 		"validationLink": "Please confirm your registration by clicking on the validation link %s",

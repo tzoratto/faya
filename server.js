@@ -43,3 +43,13 @@ function startServer() {
         logger.info(i18n.__('app.serverStarted', appConfig.port));
     });
 }
+
+exitOnSignal('SIGINT');
+exitOnSignal('SIGTERM');
+
+function exitOnSignal(signal) {
+    process.on(signal, function () {
+        logger.warn(i18n.__('app.serverShutdown', signal));
+        process.exit(1);
+    });
+}
