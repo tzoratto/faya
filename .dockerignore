@@ -1,0 +1,7 @@
+Jenkinsfile
+test-results.xml
+node_modules/
+coverage/
+.git/
+.gitignore
+.idea/
