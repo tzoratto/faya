@@ -19,5 +19,7 @@ module.exports = function(app) {
     logger.add(logger.transports.Console, {'timestamp': true});
     logger.level = process.env.LOG_LEVEL || 'info';
 
-    if (app.get('env') !== 'test') app.use(morgan('combined', log));  
+    if (app.get('env') !== 'test') {
+        app.use(morgan('combined', log));
+    }
 };

@@ -4,7 +4,7 @@ const controllers = require('../controllers/apiKey');
 const express = require('express');
 const router = express.Router();
 
-module.exports = function (passport) {
+module.exports = function () {
 
     router.get('/', controllers.list);
     router.post('/', controllers.create);

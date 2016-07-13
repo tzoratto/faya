@@ -31,7 +31,7 @@ module.exports = function(app, passport, mongoDb) {
         })
     };
 
-    if (app.get('env') === 'production' && process.env.HTTPS_ENABLED == 'true') {
+    if (app.get('env') === 'production' && process.env.HTTPS_ENABLED === 'true') {
         app.set('trust proxy', 1);
         sessionConfig.cookie.secure = true;
     }

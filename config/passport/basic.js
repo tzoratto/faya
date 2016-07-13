@@ -16,7 +16,7 @@ module.exports = new BasicStrategy(
                 return done(null, false);
             }
             user.lastAccess = new Date();
-            user.save(function (err) {
+            user.save(function () {
                 return done(null, user);
             });
         });

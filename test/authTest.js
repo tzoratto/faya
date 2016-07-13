@@ -25,7 +25,7 @@ describe('Simple authentication tests', function () {
             .post('/auth/login')
             .send({email: 'notarealemail', password: 'notthegoodone'})
             .expect(401)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });
@@ -35,7 +35,7 @@ describe('Simple authentication tests', function () {
             .post('/auth/login')
             .send({email: 'test@test.com', password: 'notthegoodone'})
             .expect(401)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });
@@ -44,7 +44,7 @@ describe('Simple authentication tests', function () {
         server
             .get('/auth/profile')
             .expect(403)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });
@@ -54,7 +54,7 @@ describe('Simple authentication tests', function () {
             .post('/auth/login')
             .send({email: 'test@test.com', password: 'mypassword'})
             .expect(200)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });
@@ -64,7 +64,7 @@ describe('Simple authentication tests', function () {
             .post('/auth/login')
             .send({email: 'notarealemail', password: 'notthegoodone'})
             .expect(403)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });
@@ -73,7 +73,7 @@ describe('Simple authentication tests', function () {
         server
             .get('/auth/profile')
             .expect(200)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });
@@ -86,7 +86,7 @@ describe('Simple authentication tests', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length == 0, 'no data must be returned');
+                assert(res.body.data.length === 0, 'no data must be returned');
                 done();
             });
     });
@@ -117,7 +117,7 @@ describe('Simple authentication tests', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length == 1, '1 api key pair must be returned');
+                assert(res.body.data.length === 1, '1 api key pair must be returned');
                 done();
             });
     });
@@ -141,7 +141,7 @@ describe('Simple authentication tests', function () {
         server
             .get('/api-key/' + 132)
             .expect(404)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });
@@ -150,7 +150,7 @@ describe('Simple authentication tests', function () {
         server
             .delete('/api-key/' + keyPairId)
             .expect(200)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });
@@ -159,7 +159,7 @@ describe('Simple authentication tests', function () {
         server
             .delete('/api-key/' + 132)
             .expect(404)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });
@@ -168,7 +168,7 @@ describe('Simple authentication tests', function () {
         server
             .get('/auth/logout')
             .expect(200)
-            .end(function (err, res) {
+            .end(function (err) {
                 done(err);
             });
     });

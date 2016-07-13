@@ -21,7 +21,7 @@ exports.delete = function (req, res, next) {
     var user = req.user;
     user.deleteApiKeyPair(req.params.id, function (err) {
         if (err) {
-            if (err.status != 404) {
+            if (err.status !== 404) {
                 return next(err);
             } else {
                 res.status(404).json((new JsonResponse()).makeFailure(null, res.__('account.apiKeyNotFound')));

@@ -24,36 +24,23 @@ module.exports = new GoogleStrategy({
                         return done(null, null, {message: req.__('account.googleAlreadyLinked')})
                     }
                     user = req.user;
-
-                    user.google.id = profile.id;
-                    user.google.token = token;
-                    user.google.name = profile.displayName;
-                    user.google.email = profile.emails[0].value;
-
-                    user.save(function (err) {
-                        if (err) {
-                            return done(err);
-                        }
-                        return done(null, user);
-                    });
                 } else {
                     if (user) {
                         return done(null, user);
-                    } else {
-                        var newUser = new User();
-                        newUser.google.id = profile.id;
-                        newUser.google.token = token;
-                        newUser.google.name = profile.displayName;
-                        newUser.google.email = profile.emails[0].value;
-
-                        newUser.save(function (err) {
-                            if (err) {
-                                return done(err);
-                            }
-                            return done(null, newUser);
-                        });
                     }
+                    user = new User();
                 }
+                user.google.id = profile.id;
+                user.google.token = token;
+                user.google.name = profile.displayName;
+                user.google.email = profile.emails[0].value;
+
+                user.save(function (err) {
+                    if (err) {
+                        return done(err);
+                    }
+                    return done(null, user);
+                });
             });
         });
     }

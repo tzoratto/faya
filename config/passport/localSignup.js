@@ -27,34 +27,21 @@ module.exports = new LocalStrategy({
                 } else {
                     if (req.user) {
                         user = req.user;
-                        user.local.email = email;
-                        user.local.password = user.generateHash(password);
-                        user.local.token = uuid.v4();
-                        user.local.valid = false;
-                        user.local.date = Date.now();
-
-                        user.save(function (err) {
-                            if (err) {
-                                return done(err);
-                            }
-                            return done(null, user);
-                        });
                     } else {
-                        var newUser = new User();
-
-                        newUser.local.email = email;
-                        newUser.local.password = newUser.generateHash(password);
-                        newUser.local.token = uuid.v4();
-                        newUser.local.valid = false;
-                        newUser.local.date = Date.now();
-
-                        newUser.save(function (err) {
-                            if (err) {
-                                return done(err);
-                            }
-                            return done(null, newUser);
-                        });
+                        user = new User();
                     }
+                    user.local.email = email;
+                    user.local.password = user.generateHash(password);
+                    user.local.token = uuid.v4();
+                    user.local.valid = false;
+                    user.local.date = Date.now();
+
+                    user.save(function (err) {
+                        if (err) {
+                            return done(err);
+                        }
+                        return done(null, user);
+                    });
                 }
             });
         });

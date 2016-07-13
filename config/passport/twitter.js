@@ -24,36 +24,23 @@ module.exports = new TwitterStrategy({
                         return done(null, null, {message: req.__('account.twitterAlreadyLinked')})
                     }
                     user = req.user;
-
-                    user.twitter.id = profile.id;
-                    user.twitter.token = token;
-                    user.twitter.username = profile.username;
-                    user.twitter.displayName = profile.displayName;
-
-                    user.save(function (err) {
-                        if (err) {
-                            return done(err);
-                        }
-                        return done(null, user);
-                    });
                 } else {
                     if (user) {
                         return done(null, user);
-                    } else {
-                        var newUser = new User();
-                        newUser.twitter.id = profile.id;
-                        newUser.twitter.token = token;
-                        newUser.twitter.username = profile.username;
-                        newUser.twitter.displayName = profile.displayName;
-
-                        newUser.save(function (err) {
-                            if (err) {
-                                return done(err);
-                            }
-                            return done(null, newUser);
-                        });
                     }
+                    user = new User();
                 }
+                user.twitter.id = profile.id;
+                user.twitter.token = token;
+                user.twitter.username = profile.username;
+                user.twitter.displayName = profile.displayName;
+
+                user.save(function (err) {
+                    if (err) {
+                        return done(err);
+                    }
+                    return done(null, user);
+                });
             });
         });
     }

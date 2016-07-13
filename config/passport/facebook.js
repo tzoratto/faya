@@ -24,36 +24,24 @@ module.exports = new FacebookStrategy({
                         return done(null, null, {message: req.__('account.facebookAlreadyLinked')})
                     }
                     user = req.user;
-                    user.facebook.id = profile.id;
-                    user.facebook.token = token;
-                    user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                    user.facebook.email = profile.emails[0].value;
-
-                    user.save(function (err) {
-                        if (err) {
-                            return done(err);
-                        }
-                        return done(null, user);
-                    });
                 } else {
                     if (user) {
                         return done(null, user);
-                    } else {
-                        var newUser = new User();
-
-                        newUser.facebook.id = profile.id;
-                        newUser.facebook.token = token;
-                        newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                        newUser.facebook.email = profile.emails[0].value;
-
-                        newUser.save(function (err) {
-                            if (err) {
-                                return done(err);
-                            }
-                            return done(null, newUser);
-                        });
                     }
+                    user = new User();
                 }
+
+                user.facebook.id = profile.id;
+                user.facebook.token = token;
+                user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
+                user.facebook.email = profile.emails[0].value;
+
+                user.save(function (err) {
+                    if (err) {
+                        return done(err);
+                    }
+                    return done(null, user);
+                });
             });
         });
     }
