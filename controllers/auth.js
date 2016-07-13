@@ -98,8 +98,8 @@ var unlinkLocal = function (req, res, next) {
     }
 };
 
-var facebookCallback = function (req, res, next) {
-    passport.authenticate('facebook', function (err, user, info) {
+var authenticationCallback = function(req, res, next) {
+    return function (err, user, info) {
         if (err) {
             return next(err);
         }
@@ -113,7 +113,11 @@ var facebookCallback = function (req, res, next) {
         } else {
             res.status(500).json((new JsonResponse()).makeFailure(null, info.message));
         }
-    })(req, res, next);
+    };
+};
+
+var facebookCallback = function (req, res, next) {
+    passport.authenticate('facebook', authenticationCallback(req, res, next))(req, res, next);
 };
 
 var unlinkFacebook = function (req, res, next) {
@@ -132,21 +136,7 @@ var unlinkFacebook = function (req, res, next) {
 };
 
 var twitterCallback = function (req, res, next) {
-    passport.authenticate('twitter', function (err, user, info) {
-        if (err) {
-            return next(err);
-        }
-        if (user) {
-            req.logIn(user, function (err) {
-                if (err) {
-                    return next(err);
-                }
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            });
-        } else {
-            res.status(500).json((new JsonResponse()).makeFailure(null, info.message));
-        }
-    })(req, res, next);
+    passport.authenticate('twitter', authenticationCallback(req, res, next))(req, res, next);
 };
 
 var unlinkTwitter = function (req, res, next) {
@@ -165,21 +155,7 @@ var unlinkTwitter = function (req, res, next) {
 };
 
 var googleCallback = function (req, res, next) {
-    passport.authenticate('google', function (err, user, info) {
-        if (err) {
-            return next(err);
-        }
-        if (user) {
-            req.logIn(user, function (err) {
-                if (err) {
-                    return next(err);
-                }
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            });
-        } else {
-            res.status(500).json((new JsonResponse()).makeFailure(null, info.message));
-        }
-    })(req, res, next);
+    passport.authenticate('google', authenticationCallback(req, res, next))(req, res, next);
 };
 
 var unlinkGoogle = function (req, res, next) {
