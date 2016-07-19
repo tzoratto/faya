@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @file Configures PassportJS.
+ */
+
 var User = require('../models/user');
 
 const configAuth = require('./auth');

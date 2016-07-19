@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @file Configures logger.
+ */
+
 const morgan = require('morgan');
 const logger = require('winston');
 

@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @file Entrypoint of the application.
+ */
+
 const express = require('express');
 const logger = require('winston');
 const mongoose = require("mongoose");
@@ -30,10 +34,19 @@ mongoDb
         startServer();
     });
 
+/**
+ * Opens a connection to MongoDB.
+ *
+ * @return MongoDB connection.
+ */
 function connectToDB() {
     return mongoose.connect(dbConfig.db).connection;
 }
 
+
+/**
+ * Starts the web server.
+ */
 function startServer() {
     app.listen(appConfig.port)
     .on('error', function(err) {
@@ -47,6 +60,11 @@ function startServer() {
 exitOnSignal('SIGINT');
 exitOnSignal('SIGTERM');
 
+/**
+ * Add a signal listener to exit gently.
+ *
+ * @param signal - The signal to listen for.
+ */
 function exitOnSignal(signal) {
     process.on(signal, function () {
         logger.warn(i18n.__('app.serverShutdown', signal));

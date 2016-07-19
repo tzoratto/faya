@@ -1,9 +1,16 @@
 'use strict';
 
+/**
+ * @file Contains a Passport authentication strategy.
+ */
+
 const FacebookStrategy = require('passport-facebook').Strategy;
 const configAuth = require('../auth');
 var User = require('../../models/user');
 
+/**
+ * Exports a Facebook strategy used to authenticate through Facebook.
+ */
 module.exports = new FacebookStrategy({
         clientID: configAuth.facebookAuth.clientID,
         clientSecret: configAuth.facebookAuth.clientSecret,
@@ -20,11 +27,13 @@ module.exports = new FacebookStrategy({
                 }
 
                 if (req.user) {
+                    //If the user is already logged in, that means we try to link its account with a Facebook account.
                     if (user) {
                         return done(null, null, {message: req.__('account.facebookAlreadyLinked')})
                     }
                     user = req.user;
                 } else {
+                    //Otherwise, we have to create a new account.
                     if (user) {
                         return done(null, user);
                     }

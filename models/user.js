@@ -1,7 +1,14 @@
+/**
+ * @file Defines the user model.
+ */
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const uuid = require('uuid');
 
+/**
+ * User Mongoose schema.
+ */
 var userSchema = mongoose.Schema({
 
     local: {
@@ -37,14 +44,31 @@ var userSchema = mongoose.Schema({
     }]
 });
 
+/**
+ * Generates password hash.
+ *
+ * @param password
+ * @return {String} hashed password.
+ */
 userSchema.methods.generateHash = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
+/**
+ * Compares a password against the user's password.
+ *
+ * @param password
+ * @return {Boolean}
+ */
 userSchema.methods.validPassword = function (password) {
     return bcrypt.compareSync(password, this.local.password);
 };
 
+/**
+ * Creates a new API key pair.
+ *
+ * @param callback
+ */
 userSchema.methods.createApiKeyPair = function (callback) {
     var keyPair = this.apiKeyPairs.create({
         keyId: uuid.v4(),
@@ -56,6 +80,12 @@ userSchema.methods.createApiKeyPair = function (callback) {
     });
 };
 
+/**
+ * Deletes an API key pair.
+ *
+ * @param id
+ * @param callback
+ */
 userSchema.methods.deleteApiKeyPair = function (id, callback) {
     var keyPair = this.apiKeyPairs.id(id);
     if (keyPair) {
@@ -68,6 +98,9 @@ userSchema.methods.deleteApiKeyPair = function (id, callback) {
     }
 };
 
+/**
+ * Before validation of a User instance, populate some fields.
+ */
 userSchema.pre('validate', function(next) {
     if (this.isNew) {
         var date = new Date();

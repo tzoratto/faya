@@ -1,9 +1,16 @@
 'use strict';
 
+/**
+ * @file Contains a Passport authentication strategy.
+ */
+
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const configAuth = require('../auth');
 var User = require('../../models/user');
 
+/**
+ * Exports a Google strategy used to authenticate through Google.
+ */
 module.exports = new GoogleStrategy({
 
         clientID: configAuth.googleAuth.clientID,
@@ -20,11 +27,13 @@ module.exports = new GoogleStrategy({
                 }
 
                 if (req.user) {
+                    //If the user is already logged in, that means we try to link its account with a Google account.
                     if (user) {
                         return done(null, null, {message: req.__('account.googleAlreadyLinked')})
                     }
                     user = req.user;
                 } else {
+                    //Otherwise, we have to create a new account.
                     if (user) {
                         return done(null, user);
                     }

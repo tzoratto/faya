@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @file Configures Express framework.
+ */
+
 const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
@@ -26,6 +30,7 @@ module.exports = function(app, passport, mongoDb) {
         },
         resave: false,
         saveUninitialized: true,
+        //Persists sessions in MongoDB.
         store: new MongoStore({
             mongooseConnection: mongoDb
         })

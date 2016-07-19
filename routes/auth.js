@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @file Defines routes related to authentication.
+ */
+
 const JsonResponse = require('../models/response/jsonResponse');
 const express = require('express');
 const router = express.Router();

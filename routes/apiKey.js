@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @file Defines routes related to API key.
+ */
+
 const controllers = require('../controllers/apiKey');
 const express = require('express');
 const router = express.Router();

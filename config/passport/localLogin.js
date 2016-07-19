@@ -1,8 +1,15 @@
 'use strict';
 
+/**
+ * @file Contains a Passport authentication strategy.
+ */
+
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../../models/user');
 
+/**
+ * Exports a local strategy used to authenticate with a Faya account.
+ */
 module.exports = new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password',

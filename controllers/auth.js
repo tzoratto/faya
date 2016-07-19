@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @file Controller related to authentication.
+ */
+
 const JsonResponse = require('../models/response/jsonResponse');
 const appConfig = require('../config/app');
 const User = require('../models/user');
@@ -7,6 +11,13 @@ const sendMail = require('../utils/sendMail');
 
 var passport;
 
+/**
+ * Login with a Faya account.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var login = function (req, res, next) {
     passport.authenticate('local-login', function (err, user, info) {
         if (err) {
@@ -26,11 +37,24 @@ var login = function (req, res, next) {
     })(req, res, next);
 };
 
+/**
+ * Logout.
+ *
+ * @param req
+ * @param res
+ */
 var logout = function (req, res) {
     req.logout();
     res.status(200).json((new JsonResponse()).makeSuccess());
 };
 
+/**
+ * Creates a new Faya account.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var signup = function (req, res, next) {
     passport.authenticate('local-signup', function (err, user, info) {
         if (err) {
@@ -52,6 +76,13 @@ var signup = function (req, res, next) {
     })(req, res, next);
 };
 
+/**
+ * Validates a Faya account.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var signupValidation = function (req, res, next) {
     var email = req.query.email;
     var token = req.query.token;
@@ -83,6 +114,13 @@ var signupValidation = function (req, res, next) {
     });
 };
 
+/**
+ * Unlink the Faya account from the user's account.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var unlinkLocal = function (req, res, next) {
     var user = req.user;
     if (!user.facebook.id && !user.twitter.id && !user.google.id) {
@@ -98,6 +136,14 @@ var unlinkLocal = function (req, res, next) {
     }
 };
 
+/**
+ * Generic authentication callback.
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @return {Function} The actual callback.
+ */
 var authenticationCallback = function(req, res, next) {
     return function (err, user, info) {
         if (err) {
@@ -116,10 +162,24 @@ var authenticationCallback = function(req, res, next) {
     };
 };
 
+/**
+ * Facebook authentication callback.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var facebookCallback = function (req, res, next) {
     passport.authenticate('facebook', authenticationCallback(req, res, next))(req, res, next);
 };
 
+/**
+ * Unlink the Facebook account from the user's account.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var unlinkFacebook = function (req, res, next) {
     var user = req.user;
     if (!user.local.email && !user.twitter.id && !user.google.id) {
@@ -135,10 +195,24 @@ var unlinkFacebook = function (req, res, next) {
     }
 };
 
+/**
+ * Twitter authentication callback.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var twitterCallback = function (req, res, next) {
     passport.authenticate('twitter', authenticationCallback(req, res, next))(req, res, next);
 };
 
+/**
+ * Unlink the Twitter account from the user's account.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var unlinkTwitter = function (req, res, next) {
     var user = req.user;
     if (!user.local.email && !user.facebook.id && !user.google.id) {
@@ -154,10 +228,24 @@ var unlinkTwitter = function (req, res, next) {
     }
 };
 
+/**
+ * Google authentication callback.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var googleCallback = function (req, res, next) {
     passport.authenticate('google', authenticationCallback(req, res, next))(req, res, next);
 };
 
+/**
+ * Unlink the Google account from the user's account.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 var unlinkGoogle = function (req, res, next) {
     var user = req.user;
     if (!user.local.email && !user.twitter.id && !user.facebook.id) {
