@@ -84,3 +84,10 @@ Some environment variables are available to configure Faya :
 |null
 |Fill this along with GOOGLE_CLIENT_ID to enable GOOGLE authentication
 |===
+
+
+== References
+
+* JSend https://labs.omniti.com/labs/jsend
+* https://github.com/madhums/node-express-mongoose-demo
+* https://scotch.io/tutorials/easy-node-authentication-setup-and-local
