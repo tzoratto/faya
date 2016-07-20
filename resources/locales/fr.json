@@ -21,5 +21,8 @@
         "badPassword": "Mauvais mot de passe",
         "alreadyExisting": "Ce compte existe déjà",
         "apiKeyNotFound": "Cette clé API n'existe pas"
+	},
+	"namespace": {
+		"notFound": "Ce namespace n'existe pas"
 	}
 }

@@ -5,6 +5,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const uuid = require('uuid');
+const namespaceSchema = require('./namespace');
 
 /**
  * User Mongoose schema.
@@ -41,7 +42,8 @@ var userSchema = mongoose.Schema({
     apiKeyPairs: [{
         keyId: String,
         keySecret: String
-    }]
+    }],
+    namespaces: [namespaceSchema]
 });
 
 /**
@@ -90,6 +92,42 @@ userSchema.methods.deleteApiKeyPair = function (id, callback) {
     var keyPair = this.apiKeyPairs.id(id);
     if (keyPair) {
         keyPair.remove();
+        this.save(callback);
+    } else {
+        var err = new Error();
+        err.status = 404;
+        callback(err);
+    }
+};
+
+/**
+ * Creates a new namespace.
+ *
+ * @param name
+ * @param description
+ * @param callback
+ */
+userSchema.methods.createNamespace = function (name, description, callback) {
+    var namespace = this.namespaces.create({
+        name: name,
+        description: description
+    });
+    this.namespaces.push(namespace);
+    this.save(function (err) {
+        callback(err, namespace);
+    });
+};
+
+/**
+ * Deletes a namespace.
+ *
+ * @param id
+ * @param callback
+ */
+userSchema.methods.deleteNamespace = function (id, callback) {
+    var namespace = this.namespaces.id(id);
+    if (namespace) {
+        namespace.remove();
         this.save(callback);
     } else {
         var err = new Error();

@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha --reporter mocha-junit-reporter",
-    "coverage": "NODE_ENV=test istanbul cover _mocha",
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --recursive --reporter mocha-junit-reporter",
+    "coverage": "NODE_ENV=test istanbul cover _mocha -- --recursive",
     "version": "replace '(sonar.projectVersion=).*'  '$1'$npm_package_version sonar-project.properties && git add sonar-project.properties"
   },
   "dependencies": {
