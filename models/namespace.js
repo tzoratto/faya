@@ -5,6 +5,7 @@
  */
 
 const mongoose = require('mongoose');
+const tokenSchema = require('./token');
 
 /**
  * Namespace Mongoose schema.
@@ -14,7 +15,44 @@ var namespaceSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    description: String
+    description: String,
+    tokens: [tokenSchema]
 });
+
+/**
+ * Creates a new token.
+ *
+ * @param description
+ * @param active
+ * @param callback
+ */
+namespaceSchema.methods.createToken = function (description, active, callback) {
+    var token = this.tokens.create({
+        description: description,
+        active: active
+    });
+    this.tokens.push(token);
+    this.parent().save(function (err) {
+        callback(err, token);
+    });
+};
+
+/**
+ * Deletes a token.
+ *
+ * @param id
+ * @param callback
+ */
+namespaceSchema.methods.deleteToken = function (id, callback) {
+    var token = this.tokens.id(id);
+    if (token) {
+        token.remove();
+        this.parent().save(callback);
+    } else {
+        var err = new Error();
+        err.status = 404;
+        callback(err);
+    }
+};
 
 module.exports = namespaceSchema;

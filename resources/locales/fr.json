@@ -25,5 +25,8 @@
 	"namespace": {
 		"notFound": "Ce namespace n'existe pas"
 	},
-	"notFound": "Page introuvable"
+	"notFound": "Page introuvable",
+	"token": {
+		"notFound": "Ce token n'existe pas"
+	}
 }

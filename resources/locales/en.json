@@ -25,5 +25,8 @@
 	"namespace": {
 		"notFound": "Namespace not found"
 	},
-	"notFound": "Not found"
+	"notFound": "Not found",
+	"token": {
+		"notFound": "Token not found"
+	}
 }
