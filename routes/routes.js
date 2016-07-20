@@ -7,6 +7,7 @@
 const JsonResponse = require('../models/response/jsonResponse');
 const logger = require('winston');
 const apiRoutes = require('./api/api');
+const apiKeyRoutes = require('./apiKey');
 
 module.exports = function (app, passport) {
     const authUtils = require('../utils/authentication')(passport);
@@ -14,7 +15,6 @@ module.exports = function (app, passport) {
     const isLoggedInForApi = authUtils.isLoggedInForApi;
 
     const authRoutes = require('./auth')(passport);
-    const apiKeyRoutes = require('./apiKey')(passport);
 
     app.use('/auth', authRoutes);
     app.use('/api-key', isLoggedIn, apiKeyRoutes);
