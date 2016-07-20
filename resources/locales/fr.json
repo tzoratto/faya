@@ -9,20 +9,21 @@
 	"account": {
 		"validationLink": "Veuillez confirmer votre inscription en cliquant sur le lien %s",
 		"validationMailSubject": "Bienvenue sur Faya",
-        "validationInvalid": "Le lien de validation est incorrect",
+		"validationInvalid": "Le lien de validation est incorrect",
 		"unlinkTwitterImpossible": "Votre compte Twitter est le seul compte lié",
 		"twitterAlreadyLinked": "Ce compte Twitter est déjà lié",
 		"unlinkFacebookImpossible": "Votre compte Facebook est le seul compte lié",
 		"unlinkGoogleImpossible": "Votre compte Google est le seul compte lié",
-        "unlinkLocalImpossible": "Votre compte Faya est le seul compte lié",
+		"unlinkLocalImpossible": "Votre compte Faya est le seul compte lié",
 		"facebookAlreadyLinked": "Ce compte Facebook est déjà lié",
-        "googleAlreadyLinked": "Ce compte Google est déjà lié",
-        "noValidUserFound": "Aucun utilisateur valide trouvé",
-        "badPassword": "Mauvais mot de passe",
-        "alreadyExisting": "Ce compte existe déjà",
-        "apiKeyNotFound": "Cette clé API n'existe pas"
+		"googleAlreadyLinked": "Ce compte Google est déjà lié",
+		"noValidUserFound": "Aucun utilisateur valide trouvé",
+		"badPassword": "Mauvais mot de passe",
+		"alreadyExisting": "Ce compte existe déjà",
+		"apiKeyNotFound": "Cette clé API n'existe pas"
 	},
 	"namespace": {
 		"notFound": "Ce namespace n'existe pas"
-	}
+	},
+	"notFound": "Page introuvable"
 }

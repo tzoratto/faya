@@ -24,7 +24,7 @@ module.exports = function (app, passport) {
      * Last middleware. Called only if all other middlewares didn't handle the request.
      */
     app.use(function (req, res, next) {
-        var err = new Error('Not Found');
+        var err = new Error(res.__('notFound'));
         err.status = 404;
         next(err);
     });
