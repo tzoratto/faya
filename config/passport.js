@@ -19,15 +19,8 @@ module.exports = function (passport) {
     });
 
     passport.deserializeUser(function (id, done) {
-        User.findById(id, function (err, user) {
-            if (user) {
-                user.lastAccess = new Date();
-                user.save(function(err) {
-                    done(err, user);
-                });
-            } else {
-                done(err, user);
-            }
+        User.findByIdAndUpdate(id, {$set: {lastAccess: new Date()}}, function (err, user) {
+            done(err, user);
         });
     });
 
