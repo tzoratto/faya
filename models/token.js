@@ -18,6 +18,8 @@ var tokenSchema = mongoose.Schema({
     description: String,
     count: {type: Number, default: 0},
     active: {type: Boolean, default: true}
+}, {
+    timestamps: {}
 });
 
 /**
