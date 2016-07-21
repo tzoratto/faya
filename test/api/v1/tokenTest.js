@@ -50,6 +50,62 @@ describe('Test token-related operations', function () {
             });
     });
 
+    it('should return matching tokens when searching', function (done) {
+        server
+            .get('/api/v1/namespace/' + namespaceId + '/token?q=desc')
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.length === 1, 'there is one token matching the search');
+                done();
+            });
+    });
+
+    it('should return matching tokens when searching', function (done) {
+        server
+            .get('/api/v1/namespace/' + namespaceId + '/token?q=yay')
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.length === 0, 'there is no token matching the search');
+                done();
+            });
+    });
+
+    it('should return matching tokens when searching', function (done) {
+        server
+            .get('/api/v1/token?q=desc')
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.length === 1, 'there is one token matching the search');
+                done();
+            });
+    });
+
+    it('should return matching tokens when searching', function (done) {
+        server
+            .get('/api/v1/token?q=yay')
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.length === 0, 'there is no token matching the search');
+                done();
+            });
+    });
+
     it('should return the tokens', function (done) {
         server
             .get('/api/v1/namespace/' + namespaceId + '/token')

@@ -7,14 +7,30 @@
 const JsonResponse = require('../models/response/jsonResponse');
 
 /**
- * Lists all the namespace's token.
+ * Lists all the namespace's token matching an optional filter.
  *
  * @param req
  * @param res
  * @param next
  */
 exports.list = function (req, res, next) {
-    res.status(200).json((new JsonResponse()).makeSuccess(req.user.namespaces.id(req.params.namespaceId).tokens));
+    var query = req.query.q;
+    var namespaceId = req.params.namespaceId;
+    var results = [];
+    if (namespaceId) {
+        results = req.user.namespaces.id(namespaceId).tokens;
+    } else {
+        req.user.namespaces.forEach(function (elem) {
+            results = results.concat(elem.tokens);
+        });
+    }
+    if (query) {
+        var regex = new RegExp(query);
+        results = results.filter(function (elem) {
+            return regex.test(elem.value) || regex.test(elem.description);
+        });
+    }
+    res.status(200).json((new JsonResponse()).makeSuccess(results));
 };
 
 /**
