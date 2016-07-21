@@ -39,7 +39,7 @@ exports.create = function (req, res, next) {
         if (err) {
             var valErrors = validationErrors(err);
             if (valErrors) {
-                res.status(500).json((new JsonResponse()).makeFailure(valErrors));
+                res.status(400).json((new JsonResponse()).makeFailure(valErrors));
             } else {
                 return next(err);
             }
@@ -105,7 +105,7 @@ exports.update = function (req, res, next) {
             if (err) {
                 var valErrors = validationErrors(err);
                 if (valErrors) {
-                    res.status(500).json((new JsonResponse()).makeFailure(valErrors));
+                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
                 } else {
                     return next(err);
                 }

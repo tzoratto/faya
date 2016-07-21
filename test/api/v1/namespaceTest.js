@@ -58,12 +58,12 @@ describe('Test namespace-related operations', function () {
             });
     });
 
-    it('should return a 500 code when trying to create a namespace with a name already in use', function (done) {
+    it('should return a 400 code when trying to create a namespace with a name already in use', function (done) {
         server
             .post('/api/v1/namespace')
             .set(authorization)
             .send({name: 'mynamespace', description: 'a description'})
-            .expect(500)
+            .expect(400)
             .end(function (err, res) {
                 if (err) {
                     throw err;
@@ -73,11 +73,11 @@ describe('Test namespace-related operations', function () {
             });
     });
 
-    it('should return a 500 code when trying to create a namespace without name', function (done) {
+    it('should return a 400 code when trying to create a namespace without name', function (done) {
         server
             .post('/api/v1/namespace')
             .set(authorization)
-            .expect(500)
+            .expect(400)
             .end(function (err, res) {
                 if (err) {
                     throw err;
@@ -183,11 +183,11 @@ describe('Test namespace-related operations', function () {
             });
     });
 
-    it('should return a 500 code when trying to remove namespace\'s name', function (done) {
+    it('should return a 400 code when trying to remove namespace\'s name', function (done) {
         server
             .put('/api/v1/namespace/' + namespaceId)
             .set(authorization)
-            .expect(500)
+            .expect(400)
             .end(function (err, res) {
                 if (err) {
                     throw err;

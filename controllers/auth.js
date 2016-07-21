@@ -61,7 +61,7 @@ var signup = function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            res.status(500).json((new JsonResponse()).makeFailure(null, info.message));
+            res.status(400).json((new JsonResponse()).makeFailure(null, info.message));
         }
         else {
             var mailContent = res.__('account.validationLink', appConfig.url + '/auth/signup-validation?email=' + user.local.email + '&token=' + user.local.token);
@@ -109,7 +109,7 @@ var signupValidation = function (req, res, next) {
                 });
             });
         } else {
-            res.status(500).json((new JsonResponse()).makeFailure(null, res.__('account.validationInvalid')));
+            res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.validationInvalid')));
         }
     });
 };
@@ -124,7 +124,7 @@ var signupValidation = function (req, res, next) {
 var unlinkLocal = function (req, res, next) {
     var user = req.user;
     if (!user.facebook.id && !user.twitter.id && !user.google.id) {
-        res.status(500).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkLocalImpossible')));
+        res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkLocalImpossible')));
     } else {
         user.local = undefined;
         user.save(function (err) {
@@ -157,7 +157,7 @@ var authenticationCallback = function(req, res, next) {
                 res.status(200).json((new JsonResponse()).makeSuccess());
             });
         } else {
-            res.status(500).json((new JsonResponse()).makeFailure(null, info.message));
+            res.status(400).json((new JsonResponse()).makeFailure(null, info.message));
         }
     };
 };
@@ -183,7 +183,7 @@ var facebookCallback = function (req, res, next) {
 var unlinkFacebook = function (req, res, next) {
     var user = req.user;
     if (!user.local.email && !user.twitter.id && !user.google.id) {
-        res.status(500).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkFacebookImpossible')));
+        res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkFacebookImpossible')));
     } else {
         user.facebook = undefined;
         user.save(function (err) {
@@ -216,7 +216,7 @@ var twitterCallback = function (req, res, next) {
 var unlinkTwitter = function (req, res, next) {
     var user = req.user;
     if (!user.local.email && !user.facebook.id && !user.google.id) {
-        res.status(500).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkTwitterImpossible')));
+        res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkTwitterImpossible')));
     } else {
         user.twitter = undefined;
         user.save(function (err) {
@@ -249,7 +249,7 @@ var googleCallback = function (req, res, next) {
 var unlinkGoogle = function (req, res, next) {
     var user = req.user;
     if (!user.local.email && !user.twitter.id && !user.facebook.id) {
-        res.status(500).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkGoogleImpossible')));
+        res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkGoogleImpossible')));
     } else {
         user.google = undefined;
         user.save(function (err) {
