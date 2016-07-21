@@ -8,14 +8,22 @@ const validationErrors = require('../utils/validationErrors');
 const JsonResponse = require('../models/response/jsonResponse');
 
 /**
- * Lists all the user's namespaces.
+ * Lists all the user's namespaces matching an optional filter.
  *
  * @param req
  * @param res
  * @param next
  */
 exports.list = function (req, res, next) {
-    res.status(200).json((new JsonResponse()).makeSuccess(req.user.namespaces));
+    var query = req.query.q;
+    var results = req.user.namespaces;
+    if (query) {
+        var regex = new RegExp(query);
+        results = results.filter(function (elem) {
+            return regex.test(elem.name) || regex.test(elem.description);
+        });
+    }
+    res.status(200).json((new JsonResponse()).makeSuccess(results));
 };
 
 /**

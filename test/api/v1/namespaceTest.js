@@ -44,6 +44,20 @@ describe('Test namespace-related operations', function () {
             });
     });
 
+    it('should return matching namespaces when searching', function (done) {
+        server
+            .get('/api/v1/namespace?q=desc')
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.length === 1, 'there is one namespace matching the search');
+                done();
+            });
+    });
+
     it('should return a 500 code when trying to create a namespace with a name already in use', function (done) {
         server
             .post('/api/v1/namespace')
@@ -137,6 +151,34 @@ describe('Test namespace-related operations', function () {
                 assert(res.body.data.name === 'mynewname', 'the name must be returned');
                 assert(!res.body.data.description, 'the description must be empty now');
                 assert(res.body.data._id, 'the id of the namespace must be returned');
+                done();
+            });
+    });
+
+    it('should return matching namespaces when searching', function (done) {
+        server
+            .get('/api/v1/namespace?q=new')
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.length === 1, 'there is one namespace matching the search');
+                done();
+            });
+    });
+
+    it('should return matching namespaces when searching', function (done) {
+        server
+            .get('/api/v1/namespace?q=yay')
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.length === 0, 'there is no namespace matching the search');
                 done();
             });
     });
