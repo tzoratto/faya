@@ -55,4 +55,16 @@ namespaceSchema.methods.deleteToken = function (id, callback) {
     }
 };
 
+/**
+ * Ensures that namespaces's name is unique.
+ */
+namespaceSchema.path('name').validate(function (value, done) {
+    mongoose.models['User'].count({'namespaces.name': value, 'namespaces._id': {'$ne': this._id}}, function (err, count) {
+        if (err) {
+            return done(err);
+        }
+        done(!count);
+    });
+}, 'The name must be unique');
+
 module.exports = namespaceSchema;

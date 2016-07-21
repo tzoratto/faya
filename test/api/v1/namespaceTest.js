@@ -44,6 +44,21 @@ describe('Test namespace-related operations', function () {
             });
     });
 
+    it('should return a 500 code when trying to create a namespace with a name already in use', function (done) {
+        server
+            .post('/api/v1/namespace')
+            .set(authorization)
+            .send({name: 'mynamespace', description: 'a description'})
+            .expect(500)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'fail', 'the status must be fail');
+                done();
+            });
+    });
+
     it('should return a 500 code when trying to create a namespace without name', function (done) {
         server
             .post('/api/v1/namespace')
