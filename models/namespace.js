@@ -38,22 +38,6 @@ namespaceSchema.methods.createToken = function (description, active, callback) {
 };
 
 /**
- * Deletes a token.
- *
- * @param id
- * @param callback
- */
-namespaceSchema.methods.deleteToken = function (id, callback) {
-    Token.findOneAndRemove({'namespace': this._id, '_id': id}, function (err, token) {
-        if (!err && !token) {
-            err = new Error();
-            err.status = 404;
-        }
-        callback(err);
-    });
-};
-
-/**
  * Ensures that namespaces's name is unique.
  */
 namespaceSchema.path('name').validate(function (value, done) {
