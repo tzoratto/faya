@@ -9,6 +9,7 @@ const Namespace = require('../models/namespace');
 const Token = require('../models/token');
 const mongoose = require('mongoose');
 const validationErrors = require('../utils/validationErrors');
+const doesTokenBelongTo = require('../utils/doesTokenBelongTo');
 
 /**
  * Lists all the namespace's token matching an optional filter.
@@ -87,29 +88,13 @@ exports.create = function (req, res, next) {
  * @param next
  */
 exports.delete = function (req, res, next) {
-    if (!mongoose.Types.ObjectId.isValid(req.params.namespaceId)) {
-        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-        return;
-    }
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('token.notFound')));
-        return;
-    }
-
-    Namespace.findOne({'user': req.user._id, '_id': req.params.namespaceId}, function (err, namespace) {
-        if (err) {
-            return next(err);
-        }
-        if (namespace) {
-            namespace.deleteToken(req.params.id, function (err) {
-                if (err) {
-                    return next(err);
-                }
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            });
-        } else {
-            res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-        }
+    ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
+        token.remove(function (err) {
+            if (err) {
+                return next(err);
+            }
+            res.status(200).json((new JsonResponse()).makeSuccess());
+        });
     });
 };
 
@@ -121,33 +106,9 @@ exports.delete = function (req, res, next) {
  * @param next
  */
 exports.details = function (req, res, next) {
-    if (mongoose.Types.ObjectId.isValid(req.params.namespaceId)) {
-        if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-            Namespace.findOne({'user': req.user._id, '_id': req.params.namespaceId}, function (err, namespace) {
-                if (err) {
-                    return next(err);
-                }
-                if (!namespace) {
-                    res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-                    return;
-                }
-                Token.findOne({'namespace': namespace._id, '_id': req.params.id}, function (err, token) {
-                    if (err) {
-                        return next(err);
-                    }
-                    if (token) {
-                        res.status(200).json((new JsonResponse()).makeSuccess(token));
-                    } else {
-                        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('token.notFound')));
-                    }
-                });
-            });
-        } else {
-            res.status(404).json((new JsonResponse()).makeFailure(null, res.__('token.notFound')));
-        }
-    } else {
-        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-    }
+    ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
+        res.status(200).json((new JsonResponse()).makeSuccess(token));
+    });
 };
 
 /**
@@ -158,44 +119,47 @@ exports.details = function (req, res, next) {
  * @param next
  */
 exports.update = function (req, res, next) {
-    if (!mongoose.Types.ObjectId.isValid(req.params.namespaceId)) {
-        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-        return;
-    }
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('token.notFound')));
-        return;
-    }
-    Namespace.findOne({'user': req.user._id, '_id': req.params.namespaceId}, function (err, namespace) {
-        if (err) {
-            return next(err);
-        }
-        if (!namespace) {
-            res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-            return;
-        }
-        Token.findOne({'namespace': namespace._id, '_id': req.params.id}, function (err, token) {
+    ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
+        token.description = req.body.description;
+        token.active = req.body.active;
+        token.save(function (err) {
             if (err) {
-                return next(err);
-            }
-            if (!token) {
-                res.status(404).json((new JsonResponse()).makeFailure(null, res.__('token.notFound')));
-                return;
-            }
-            token.description = req.body.description;
-            token.active = req.body.active;
-            token.save(function (err) {
-                if (err) {
-                    var valErrors = validationErrors(err);
-                    if (valErrors) {
-                        res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                    } else {
-                        return next(err);
-                    }
+                var valErrors = validationErrors(err);
+                if (valErrors) {
+                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
                 } else {
-                    res.status(200).json((new JsonResponse()).makeSuccess(token));
+                    return next(err);
                 }
-            });
+            } else {
+                res.status(200).json((new JsonResponse()).makeSuccess(token));
+            }
         });
     });
 };
+
+/**
+ * Calls the callback if the user owns the token and thus can modify it.
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @param userId
+ * @param tokenId
+ * @param callback
+ */
+function ifUserOwnsTheToken(req, res, next, userId, tokenId, callback) {
+    doesTokenBelongTo(userId, tokenId, function (err, belongs, token, notFound) {
+        if (err) {
+            return next(err);
+        }
+        if (notFound) {
+            res.status(404).json((new JsonResponse()).makeFailure(null, res.__('token.notFound')));
+            return;
+        }
+        if (belongs) {
+            callback(token);
+        } else {
+            res.status(403).json((new JsonResponse()).makeFailure(res.__('token.unauthorized')));
+        }
+    });
+}

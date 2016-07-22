@@ -24,6 +24,19 @@ var tokenSchema = mongoose.Schema({
 });
 
 /**
+ * Checks if this token belongs to a given user.
+ *
+ * @param id
+ * @param callback
+ */
+tokenSchema.methods.belongsToUser = function (id, callback) {
+    var thisToken = this;
+    mongoose.models['Namespace'].findOne({'_id': this.namespace, 'user': id}, function (err, namespace) {
+        callback(err, namespace ? true : false, thisToken);
+    });
+};
+
+/**
  * Before validation of a Token instance, populate some fields.
  */
 tokenSchema.pre('validate', function (next) {

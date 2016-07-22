@@ -169,7 +169,7 @@ describe('Test token-related operations', function () {
 
     it('should return the details of the token', function (done) {
         server
-            .get('/api/v1/namespace/' + namespaceId + '/token/' + tokenId)
+            .get('/api/v1/token/' + tokenId)
             .set(authorization)
             .expect(200)
             .end(function (err, res) {
@@ -183,19 +183,9 @@ describe('Test token-related operations', function () {
             });
     });
 
-    it('should return a 404 code when trying to get the details of a token in a nonexistent namespace', function (done) {
-        server
-            .get('/api/v1/namespace/yay/token/' + tokenId)
-            .set(authorization)
-            .expect(404)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
     it('should return a 404 code when trying to get details of a nonexistent token', function (done) {
         server
-            .get('/api/v1/namespace/' + namespaceId + '/token/Idontexist')
+            .get('/api/v1/token/Idontexist')
             .set(authorization)
             .expect(404)
             .end(function (err) {
@@ -205,7 +195,7 @@ describe('Test token-related operations', function () {
 
     it('should return a 404 code when trying to update a nonexistent token', function (done) {
         server
-            .put('/api/v1/namespace/' + namespaceId + '/token/Idontexist')
+            .put('/api/v1/token/Idontexist')
             .send({description: 'my new description'})
             .set(authorization)
             .expect(404)
@@ -216,7 +206,7 @@ describe('Test token-related operations', function () {
 
     it('should return the modified token', function (done) {
         server
-            .put('/api/v1/namespace/' + namespaceId + '/token/' + tokenId)
+            .put('/api/v1/token/' + tokenId)
             .send({description: 'my new description'})
             .set(authorization)
             .expect(200)
@@ -231,30 +221,9 @@ describe('Test token-related operations', function () {
             });
     });
 
-    it('should return a 404 code when trying to update a token in a nonexistent namespace', function (done) {
-        server
-            .put('/api/v1/namespace/yay/token/' + tokenId)
-            .send({description: 'my new description'})
-            .set(authorization)
-            .expect(404)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
     it('should return a 404 code when trying to delete a nonexistent token', function (done) {
         server
-            .delete('/api/v1/namespace/' + namespaceId + '/token/Idontexist')
-            .set(authorization)
-            .expect(404)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 404 code when trying to delete a token in a nonexistent namespace', function (done) {
-        server
-            .delete('/api/v1/namespace/yay/token/' + tokenId)
+            .delete('/api/v1/token/Idontexist')
             .set(authorization)
             .expect(404)
             .end(function (err) {
@@ -264,7 +233,7 @@ describe('Test token-related operations', function () {
 
     it('should return a 200 code when deleting a token', function (done) {
         server
-            .delete('/api/v1/namespace/' + namespaceId + '/token/' + tokenId)
+            .delete('/api/v1/token/' + tokenId)
             .set(authorization)
             .expect(200)
             .end(function (err) {

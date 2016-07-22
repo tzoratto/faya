@@ -10,8 +10,5 @@ const router = express.Router({mergeParams: true});
 
 router.get('/', controllers.list);
 router.post('/', controllers.create);
-router.delete('/:id', controllers.delete);
-router.get('/:id', controllers.details);
-router.put('/:id', controllers.update);
 
 module.exports = router;
