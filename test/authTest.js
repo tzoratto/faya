@@ -2,11 +2,15 @@ const supertest = require('supertest');
 const app = require('../server');
 const server = supertest.agent(app);
 const User = require('../models/user');
+const Namespace = require('../models/namespace');
+const Token = require('../models/token');
 const assert = require('assert');
 
 describe('Simple authentication tests', function () {
 
     before(function (done) {
+        Namespace.remove({}).exec();
+        Token.remove({}).exec();
         User.remove({}, function (err) {
             if (err) {
                 throw err;

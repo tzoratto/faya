@@ -11,6 +11,7 @@ const uuid = require('uuid');
  * Token Mongoose schema.
  */
 var tokenSchema = mongoose.Schema({
+    namespace: {type: mongoose.Schema.Types.ObjectId, ref: 'Namespace'},
     value: {
         type: String,
         required: true
@@ -32,4 +33,4 @@ tokenSchema.pre('validate', function (next) {
     next();
 });
 
-module.exports = tokenSchema;
+module.exports = mongoose.model('Token', tokenSchema);

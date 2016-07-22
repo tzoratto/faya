@@ -5,7 +5,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const uuid = require('uuid');
-const namespaceSchema = require('./namespace');
+const Namespace = require('./namespace');
 
 /**
  * User Mongoose schema.
@@ -42,8 +42,7 @@ var userSchema = mongoose.Schema({
     apiKeyPairs: [{
         keyId: String,
         keySecret: String
-    }],
-    namespaces: [namespaceSchema]
+    }]
 });
 
 /**
@@ -108,12 +107,12 @@ userSchema.methods.deleteApiKeyPair = function (id, callback) {
  * @param callback
  */
 userSchema.methods.createNamespace = function (name, description, callback) {
-    var namespace = this.namespaces.create({
+    var namespace = new Namespace({
+        user: this._id,
         name: name,
         description: description
     });
-    this.namespaces.push(namespace);
-    this.save(function (err) {
+    namespace.save(function (err, namespace) {
         callback(err, namespace);
     });
 };
@@ -125,15 +124,17 @@ userSchema.methods.createNamespace = function (name, description, callback) {
  * @param callback
  */
 userSchema.methods.deleteNamespace = function (id, callback) {
-    var namespace = this.namespaces.id(id);
-    if (namespace) {
-        namespace.remove();
-        this.save(callback);
-    } else {
-        var err = new Error();
-        err.status = 404;
+    Namespace.findOneAndRemove({'user': this._id, '_id': id}, function (err, namespace) {
+        if (!err && !namespace) {
+            err = new Error();
+            err.status = 404;
+        }
+        if (namespace) {
+            //Necessary to trigger the Namespace pre-remove hook as findOneAndRemove doesn't trigger hooks
+            namespace.remove();
+        }
         callback(err);
-    }
+    });
 };
 
 /**
@@ -145,6 +146,14 @@ userSchema.pre('validate', function(next) {
         this.createdAt = date;
         this.lastAccess = date;
     }
+    next();
+});
+
+/**
+ * Deletes all user's namespaces when deleting user.
+ */
+userSchema.pre('remove', function (next) {
+    Namespace.remove({'user': this._id}).exec();
     next();
 });
 
