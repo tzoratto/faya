@@ -61,22 +61,10 @@ exports.create = function (req, res, next) {
  * @param next
  */
 exports.delete = function (req, res, next) {
-    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-        var user = req.user;
-        user.deleteNamespace(req.params.id, function (err) {
-            if (err) {
-                if (err.status !== 404) {
-                    return next(err);
-                } else {
-                    res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-                }
-            } else {
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            }
-        });
-    } else {
-        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-    }
+    ifUserOwnsTheNamespace(req, res, next, req.user._id, req.params.id, function (namespace) {
+        namespace.remove();
+        res.status(200).json((new JsonResponse()).makeSuccess());
+    });
 };
 
 /**
@@ -87,20 +75,9 @@ exports.delete = function (req, res, next) {
  * @param next
  */
 exports.details = function (req, res, next) {
-    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-        Namespace.findOne({'user': req.user._id, '_id': req.params.id}, function (err, namespace) {
-            if (err) {
-                return next(err);
-            }
-            if (namespace) {
-                res.status(200).json((new JsonResponse()).makeSuccess(namespace));
-            } else {
-                res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-            }
-        });
-    } else {
-        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-    }
+    ifUserOwnsTheNamespace(req, res, next, req.user._id, req.params.id, function (namespace) {
+        res.status(200).json((new JsonResponse()).makeSuccess(namespace));
+    });
 };
 
 /**
@@ -111,31 +88,47 @@ exports.details = function (req, res, next) {
  * @param next
  */
 exports.update = function (req, res, next) {
-    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-        Namespace.findOne({'user': req.user._id, '_id': req.params.id}, function (err, namespace) {
+    ifUserOwnsTheNamespace(req, res, next, req.user._id, req.params.id, function (namespace) {
+        namespace.name = req.body.name;
+        namespace.description = req.body.description;
+        namespace.save(function (err) {
+            if (err) {
+                var valErrors = validationErrors(err);
+                if (valErrors) {
+                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
+                } else {
+                    return next(err);
+                }
+            } else {
+                res.status(200).json((new JsonResponse()).makeSuccess(namespace));
+            }
+        });
+    });
+};
+
+/**
+ * Calls the callback if the user owns the namespace and thus can modify it.
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @param userId
+ * @param namespaceId
+ * @param callback
+ */
+function ifUserOwnsTheNamespace(req, res, next, userId, namespaceId, callback) {
+    if (mongoose.Types.ObjectId.isValid(namespaceId)) {
+        Namespace.findOne({'user': userId, '_id': namespaceId}, function (err, namespace) {
             if (err) {
                 return next(err);
             }
-            if (!namespace) {
+            if (namespace) {
+                callback(namespace);
+            } else {
                 res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
-                return;
             }
-            namespace.name = req.body.name;
-            namespace.description = req.body.description;
-            namespace.save(function (err) {
-                if (err) {
-                    var valErrors = validationErrors(err);
-                    if (valErrors) {
-                        res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                    } else {
-                        return next(err);
-                    }
-                } else {
-                    res.status(200).json((new JsonResponse()).makeSuccess(namespace));
-                }
-            });
         });
     } else {
         res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
     }
-};
+}

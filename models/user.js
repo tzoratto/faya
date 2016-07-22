@@ -118,26 +118,6 @@ userSchema.methods.createNamespace = function (name, description, callback) {
 };
 
 /**
- * Deletes a namespace.
- *
- * @param id
- * @param callback
- */
-userSchema.methods.deleteNamespace = function (id, callback) {
-    Namespace.findOneAndRemove({'user': this._id, '_id': id}, function (err, namespace) {
-        if (!err && !namespace) {
-            err = new Error();
-            err.status = 404;
-        }
-        if (namespace) {
-            //Necessary to trigger the Namespace pre-remove hook as findOneAndRemove doesn't trigger hooks
-            namespace.remove();
-        }
-        callback(err);
-    });
-};
-
-/**
  * Before validation of a User instance, populate some fields.
  */
 userSchema.pre('validate', function(next) {
