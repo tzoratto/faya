@@ -12,8 +12,15 @@ describe('Tests token check', function () {
     };
     var token1Value = dataSet.Token[0].value,
         token2Value = dataSet.Token[1].value,
-        token3Value = dataSet.Token[2].value;
-    var namespace1Name = dataSet.Namespace[0].name;
+        token3Value = dataSet.Token[2].value,
+        token4Value = dataSet.Token[3].value,
+        token5Value = dataSet.Token[4].value,
+        token6Value = dataSet.Token[5].value,
+        token7Value = dataSet.Token[6].value,
+        token8Value = dataSet.Token[7].value,
+        token9Value = dataSet.Token[8].value;
+    var namespace1Name = dataSet.Namespace[0].name,
+        namespace2Name = dataSet.Namespace[1].name;
 
     before(function (done) {
         insertDataSet(dataSet, done);
@@ -47,7 +54,7 @@ describe('Tests token check', function () {
             });
     });
 
-    it('should indicate that the token has been checked once', function (done) {
+    it('should indicate that the token has been validated once', function (done) {
         server
             .get('/api/v1/token?q=' + token1Value)
             .set(authorization)
@@ -61,7 +68,7 @@ describe('Tests token check', function () {
             });
     });
 
-    it('should confirm that the token is invalid against this namespace', function (done) {
+    it('should confirm that the token is invalid because it doesn\'t exist', function (done) {
         server
             .get('/api/v1/check?namespace=' + namespace1Name + '&token=yay')
             .set(authorization)
@@ -89,7 +96,7 @@ describe('Tests token check', function () {
             });
     });
 
-    it('should indicate that the token has been checked once', function (done) {
+    it('should indicate that the token hasn\'t been validated', function (done) {
         server
             .get('/api/v1/token?q=' + token3Value)
             .set(authorization)
@@ -98,12 +105,12 @@ describe('Tests token check', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data[0].count === 1, 'the counter must be at 1');
+                assert(res.body.data[0].count === 0, 'the counter must be at 0');
                 done();
             });
     });
 
-    it('should confirm that the token is invalid against this namespace', function (done) {
+    it('should confirm that the token is invalid because the active property is false', function (done) {
         server
             .get('/api/v1/check?namespace=' + namespace1Name + '&token=' + token2Value)
             .set(authorization)
@@ -117,4 +124,87 @@ describe('Tests token check', function () {
             });
     });
 
+    it('should confirm that the token is invalid because the startsAt property is in the future', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token4Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'fail', 'the token must be invalid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is invalid because the endsAt property is in the past', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token5Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'fail', 'the token must be invalid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is valid', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token6Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'success', 'the token must be valid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is invalid because the active property is false', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token7Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'fail', 'the token must be invalid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is valid', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token8Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'success', 'the token must be valid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is invalid because the endsAt property is in the past', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token9Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'fail', 'the token must be invalid');
+                done();
+            });
+    });
 });

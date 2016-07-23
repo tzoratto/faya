@@ -21,12 +21,27 @@ module.exports = function (userId, namespaceName, tokenValue, callback) {
         }
         Token.findOneAndUpdate({
             'namespace': namespace._id,
-            'value': tokenValue
+            'value': tokenValue,
+            'active': true,
+            '$and': [
+                {
+                    '$or': [
+                        {'startsAt': {'$exists': false}},
+                        {'startsAt': {'$lt': new Date()}}
+                    ]
+                },
+                {
+                    '$or': [
+                        {'endsAt': {'$exists': false}},
+                        {'endsAt': {'$gte': new Date()}}
+                    ]
+                }
+            ]
         }, {$inc: {'count': 1}}, function (err, token) {
             if (err) {
                 return callback(err);
             }
-            if (token && token.isValid()) {
+            if (token) {
                 return callback(null, true);
             } else {
                 return callback(null, false);

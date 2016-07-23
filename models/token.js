@@ -18,7 +18,9 @@ var tokenSchema = mongoose.Schema({
     },
     description: String,
     count: {type: Number, default: 0},
-    active: {type: Boolean, default: true}
+    active: {type: Boolean, default: true},
+    startsAt: Date,
+    endsAt: Date
 }, {
     timestamps: {}
 });
@@ -37,12 +39,15 @@ tokenSchema.methods.belongsToUser = function (id, callback) {
 };
 
 /**
- * Checks if this token is valid.
+ * Ensures that the token's startsAt property is not after the endsAt one.
  */
-tokenSchema.methods.isValid = function () {
-    return this.active;
-};
-
+tokenSchema.path('startsAt').validate(function (value, done) {
+    if (this.endsAt) {
+        done(value < this.endsAt);
+    } else {
+        done(true);
+    }
+}, 'The startsAt property must be before the endsAt one');
 
 /**
  * Before validation of a Token instance, populate some fields.
