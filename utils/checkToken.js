@@ -2,6 +2,7 @@
 
 const Namespace = require('../models/namespace');
 const Token = require('../models/token');
+const async = require('async');
 
 /**
  * Checks if a token is valid against a namespace and for a given user.
@@ -19,33 +20,108 @@ module.exports = function (userId, namespaceName, tokenValue, callback) {
         if (!namespace) {
             return callback(null, false);
         }
-        Token.findOneAndUpdate({
-            'namespace': namespace._id,
-            'value': tokenValue,
-            'active': true,
-            '$and': [
-                {
-                    '$or': [
-                        {'startsAt': {'$exists': false}},
-                        {'startsAt': {'$lt': new Date()}}
-                    ]
-                },
-                {
-                    '$or': [
-                        {'endsAt': {'$exists': false}},
-                        {'endsAt': {'$gte': new Date()}}
-                    ]
+        async.waterfall([
+            function (callback) {
+                //Checks if the token matches a valid token non pool-based.
+                checkTokensWithoutPool(namespace._id, tokenValue, callback);
+            },
+            function (found, callback) {
+                if (found) {
+                    //The token matches a valid token non pool-based.
+                    return callback(null, true);
                 }
-            ]
-        }, {$inc: {'count': 1}}, function (err, token) {
+                //The token doesn't match a valid token non pool-based so let's see
+                //if it matches a valid token pool-based.
+                checkTokensWithPool(namespace._id, tokenValue, callback);
+            }
+        ], function (err, found) {
             if (err) {
                 return callback(err);
             }
-            if (token) {
+            if (found) {
                 return callback(null, true);
-            } else {
-                return callback(null, false);
             }
+            return callback(null, false);
         });
     });
 };
+
+/**
+ * Checks tokens that aren't pool-based.
+ *
+ * @param namespaceId
+ * @param tokenValue
+ * @param callback
+ */
+function checkTokensWithoutPool(namespaceId, tokenValue, callback) {
+    Token.findOneAndUpdate({
+        'namespace': namespaceId,
+        'value': tokenValue,
+        'active': true,
+        '$and': [
+            {
+                '$or': [
+                    {'startsAt': {'$exists': false}},
+                    {'startsAt': {'$lt': new Date()}}
+                ]
+            },
+            {
+                '$or': [
+                    {'endsAt': {'$exists': false}},
+                    {'endsAt': {'$gt': new Date()}}
+                ]
+            }
+        ],
+        'pool': {'$exists': false}
+    }, {$inc: {'count': 1}}, function (err, token) {
+        if (err) {
+            return callback(err);
+        }
+        if (token) {
+            return callback(null, true);
+        } else {
+            callback(null, false);
+        }
+    });
+}
+
+/**
+ * Checks tokens that are pool-based.
+ *
+ * @param namespaceId
+ * @param tokenValue
+ * @param callback
+ */
+function checkTokensWithPool(namespaceId, tokenValue, callback) {
+    Token.findOneAndUpdate({
+        'namespace': namespaceId,
+        'value': tokenValue,
+        'active': true,
+        '$and': [
+            {
+                '$or': [
+                    {'startsAt': {'$exists': false}},
+                    {'startsAt': {'$lt': new Date()}}
+                ]
+            },
+            {
+                '$or': [
+                    {'endsAt': {'$exists': false}},
+                    {'endsAt': {'$gt': new Date()}}
+                ]
+            },
+            {
+                'pool': {'$gt': 0}
+            }
+        ]
+    }, {$inc: {'count': 1, 'pool': -1}}, function (err, token) {
+        if (err) {
+            return callback(err);
+        }
+        if (token) {
+            return callback(null, true);
+        } else {
+            return callback(null, false);
+        }
+    });
+}

@@ -21,7 +21,12 @@ describe('Tests token check', function () {
         token6Value = dataSet.Token[5].value,
         token7Value = dataSet.Token[6].value,
         token8Value = dataSet.Token[7].value,
-        token9Value = dataSet.Token[8].value;
+        token9Value = dataSet.Token[8].value,
+        token10Value = dataSet.Token[9].value,
+        token11Value = dataSet.Token[10].value,
+        token12Value = dataSet.Token[11].value,
+        token13Value = dataSet.Token[12].value,
+        token14Value = dataSet.Token[13].value;
     var namespace1Name = dataSet.Namespace[0].name,
         namespace2Name = dataSet.Namespace[1].name;
 
@@ -57,7 +62,21 @@ describe('Tests token check', function () {
             });
     });
 
-    it('should indicate that the token has been validated once', function (done) {
+    it('should confirm that the token is still valid', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace1Name + '&token=' + token1Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'success', 'the token must be valid');
+                done();
+            });
+    });
+
+    it('should indicate that the token has been validated twice', function (done) {
         server
             .get('/api/v1/token?q=' + token1Value)
             .set(authorization)
@@ -66,7 +85,7 @@ describe('Tests token check', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data[0].count === 1, 'the counter must be at 1');
+                assert(res.body.data[0].count === 2, 'the counter must be at 2');
                 done();
             });
     });
@@ -200,6 +219,90 @@ describe('Tests token check', function () {
     it('should confirm that the token is invalid because the endsAt property is in the past', function (done) {
         server
             .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token9Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'fail', 'the token must be invalid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is invalid because the pool is empty', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token10Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'fail', 'the token must be invalid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is valid', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token11Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'success', 'the token must be valid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is invalid because the active property is false', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token12Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'fail', 'the token must be invalid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is invalid because the pool is empty', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token13Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'fail', 'the token must be invalid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is valid', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token14Value)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.status === 'success', 'the token must be valid');
+                done();
+            });
+    });
+
+    it('should confirm that the token is invalid because the pool is now empty', function (done) {
+        server
+            .get('/api/v1/check?namespace=' + namespace2Name + '&token=' + token14Value)
             .set(authorization)
             .expect(200)
             .end(function (err, res) {

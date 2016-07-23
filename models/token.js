@@ -20,7 +20,8 @@ var tokenSchema = mongoose.Schema({
     count: {type: Number, default: 0},
     active: {type: Boolean, default: true},
     startsAt: Date,
-    endsAt: Date
+    endsAt: Date,
+    pool: Number
 }, {
     timestamps: {}
 });
@@ -48,6 +49,18 @@ tokenSchema.path('startsAt').validate(function (value, done) {
         done(true);
     }
 }, 'The startsAt property must be before the endsAt one');
+
+/**
+ * Ensures that the token's pool property is superior or equal to 0 if set.
+ */
+tokenSchema.path('startsAt').validate(function (value, done) {
+    if (this.pool) {
+        done(this.pool >= 0);
+    } else {
+        //here, pool is either undefined, null or 0 thus it's ok
+        done(true);
+    }
+}, 'The pool property must be superior or equal to 0');
 
 /**
  * Before validation of a Token instance, populate some fields.
