@@ -1,0 +1,16 @@
+{
+    "User": [
+        {
+            "_id": "000000000001",
+            "local": {
+                "email": "test@test.com",
+                "password": "$2a$08$bzqD7/EZ3uS8qgSdWY.ZGOZJ9dvx13HDUhP4TQ/hXR2pnxCqUCx5K",
+                "valid": true
+            }
+        }
+    ],
+    "Namespace": [
+    ],
+    "Token": [
+    ]
+}

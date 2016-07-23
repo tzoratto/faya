@@ -1,0 +1,22 @@
+{
+    "User": [
+        {
+            "_id": "000000000001",
+            "apiKeyPairs": [
+                {
+                    "keyId": "anId",
+                    "keySecret": "aSecret"
+                }
+            ]
+        }
+    ],
+    "Namespace": [
+        {
+            "_id": "000000000001",
+            "user": "000000000001",
+            "name": "mynamespace"
+        }
+    ],
+    "Token": [
+    ]
+}

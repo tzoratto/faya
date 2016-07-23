@@ -48,7 +48,7 @@ tokenSchema.methods.isValid = function () {
  * Before validation of a Token instance, populate some fields.
  */
 tokenSchema.pre('validate', function (next) {
-    if (this.isNew) {
+    if (this.isNew && !this.value) {
         this.value = uuid.v4();
     }
     next();

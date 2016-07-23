@@ -1,0 +1,46 @@
+{
+    "User": [
+        {
+            "_id": "000000000001",
+            "apiKeyPairs": [
+                {
+                    "keyId": "anId",
+                    "keySecret": "aSecret"
+                }
+            ]
+        }
+    ],
+    "Namespace": [
+        {
+            "_id": "000000000001",
+            "user": "000000000001",
+            "name": "my namespace"
+        },
+        {
+            "_id": "000000000002",
+            "user": "000000000001",
+            "name": "my second namespace"
+        }
+    ],
+    "Token": [
+        {
+            "_id": "000000000001",
+            "namespace": "000000000001",
+            "description": "my token",
+            "value": "4bfe81c9-342f-4642-a2a7-11770e249ce2"
+        },
+        {
+            "_id": "000000000002",
+            "namespace": "000000000002",
+            "description": "my second token",
+            "value": "aa7a5d1a-a9de-4617-8834-63255a17a650"
+        },
+        {
+            "_id": "000000000003",
+            "namespace": "000000000001",
+            "description": "my third token",
+            "value": "7ec1f4eb-6b21-4216-9bda-9791ad11def5",
+            "active": false
+        }
+    ]
+}

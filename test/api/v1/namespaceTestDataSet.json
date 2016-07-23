@@ -1,0 +1,17 @@
+{
+    "User": [
+        {
+            "_id": "000000000001",
+            "apiKeyPairs": [
+                {
+                    "keyId": "anId",
+                    "keySecret": "aSecret"
+                }
+            ]
+        }
+    ],
+    "Namespace": [
+    ],
+    "Token": [
+    ]
+}

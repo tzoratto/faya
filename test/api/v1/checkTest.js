@@ -1,119 +1,22 @@
 const supertest = require('supertest');
 const app = require('../../../server');
 const server = supertest.agent(app);
-const User = require('../../../models/user');
-const Namespace = require('../../../models/namespace');
-const Token = require('../../../models/token');
 const assert = require('assert');
-const async = require('async');
+const dataSet = require('./checkTestDataSet.json');
+const insertDataSet = require('../../insertDataSet');
 
 describe('Tests token check', function () {
 
-    var authorization;
-    var token1Value, token2Value, token3Value;
-    var namespace1Name = 'my namespace', namespace2Name = 'my second namespace';
+    var authorization = {
+        "Authorization": "Basic: " + new Buffer(dataSet.User[0].apiKeyPairs[0].keyId + ':' + dataSet.User[0].apiKeyPairs[0].keySecret).toString('base64')
+    };
+    var token1Value = dataSet.Token[0].value,
+        token2Value = dataSet.Token[1].value,
+        token3Value = dataSet.Token[2].value;
+    var namespace1Name = dataSet.Namespace[0].name;
 
-    //TODO This function is a mess. It needs a refactor.
     before(function (done) {
-        Namespace.remove({}).exec();
-        Token.remove({}).exec();
-        User.remove({}, function (err) {
-            if (err) {
-                throw err;
-            }
-            var newUser = new User();
-
-            var apiKey = {keyId: 'anId', keySecret: 'aSecret'};
-            newUser.apiKeyPairs.push(apiKey);
-            authorization = {
-                "Authorization": "Basic: " + new Buffer(apiKey.keyId + ':' + apiKey.keySecret).toString('base64')
-            };
-
-            newUser.save(function (err, user) {
-                if (err) {
-                    throw err;
-                }
-                if (user) {
-                    async.parallel([
-                            function (callback) {
-                                var namespace = new Namespace({
-                                    user: user._id,
-                                    name: namespace1Name
-                                });
-                                namespace.save(function (err, namespace) {
-                                    if (err) {
-                                        return callback(err);
-                                    }
-                                    if (namespace) {
-                                        async.parallel([
-                                                function (callback) {
-                                                    var token = new Token({
-                                                        namespace: namespace._id,
-                                                        description: 'my token'
-                                                    });
-                                                    token.save(function (err) {
-                                                        if (err) {
-                                                            return callback(err);
-                                                        }
-                                                        token1Value = token.value;
-                                                        return callback(null, token);
-                                                    })
-                                                },
-                                                function (callback) {
-                                                    var token = new Token({
-                                                        namespace: namespace._id,
-                                                        description: 'my third token',
-                                                        active: false
-                                                    });
-                                                    token.save(function (err) {
-                                                        if (err) {
-                                                            return callback(err);
-                                                        }
-                                                        token3Value = token.value;
-                                                        return callback(null, token);
-                                                    })
-                                                }
-                                            ],
-                                            function (err) {
-                                                callback(err);
-                                            });
-                                    }
-                                });
-                            },
-                            function (callback) {
-                                var namespace = new Namespace({
-                                    user: user._id,
-                                    name: namespace2Name
-                                });
-                                namespace.save(function (err, namespace) {
-                                    if (err) {
-                                        return callback(err);
-                                    }
-                                    if (namespace) {
-                                        var token = new Token({
-                                            namespace: namespace._id,
-                                            description: 'my second token'
-                                        });
-                                        token.save(function (err) {
-                                            if (err) {
-                                                return callback(err);
-                                            }
-                                            token2Value = token.value;
-                                            return callback(null, token);
-                                        })
-                                    }
-                                });
-                            }
-                        ],
-                        function (err) {
-                            if (err) {
-                                throw err;
-                            }
-                            done();
-                        });
-                }
-            });
-        });
+        insertDataSet(dataSet, done);
     });
 
     it('should indicate that the token has never been checked', function (done) {

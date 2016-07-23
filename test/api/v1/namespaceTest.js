@@ -1,31 +1,18 @@
 const supertest = require('supertest');
 const app = require('../../../server');
 const server = supertest.agent(app);
-const User = require('../../../models/user');
-const Namespace = require('../../../models/namespace');
-const Token = require('../../../models/token');
 const assert = require('assert');
+const dataSet = require('./namespaceTestDataSet.json');
+const insertDataSet = require('../../insertDataSet');
 
 describe('Test namespace-related operations', function () {
 
-    var authorization;
+    var authorization = {
+        "Authorization": "Basic: " + new Buffer(dataSet.User[0].apiKeyPairs[0].keyId + ':' + dataSet.User[0].apiKeyPairs[0].keySecret).toString('base64')
+    };
 
     before(function (done) {
-        Namespace.remove({}).exec();
-        Token.remove({}).exec();
-        User.remove({}, function (err) {
-            if (err) {
-                throw err;
-            }
-            var newUser = new User();
-
-            var apiKey = {keyId: 'anId', keySecret: 'aSecret'};
-            newUser.apiKeyPairs.push(apiKey);
-            authorization = {
-                "Authorization": "Basic: " + new Buffer(apiKey.keyId + ':' + apiKey.keySecret).toString('base64')
-            };
-            newUser.save(done);
-        });
+        insertDataSet(dataSet, done);
     });
 
     var namespaceId;

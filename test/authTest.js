@@ -1,27 +1,14 @@
 const supertest = require('supertest');
 const app = require('../server');
 const server = supertest.agent(app);
-const User = require('../models/user');
-const Namespace = require('../models/namespace');
-const Token = require('../models/token');
 const assert = require('assert');
+const dataSet = require('./authTestDataSet.json');
+const insertDataSet = require('./insertDataSet');
 
 describe('Simple authentication tests', function () {
 
     before(function (done) {
-        Namespace.remove({}).exec();
-        Token.remove({}).exec();
-        User.remove({}, function (err) {
-            if (err) {
-                throw err;
-            }
-            var newUser = new User();
-
-            newUser.local.email = 'test@test.com';
-            newUser.local.password = newUser.generateHash('mypassword');
-            newUser.local.valid = true;
-            newUser.save(done);
-        });
+        insertDataSet(dataSet, done);
     });
 
     it('should return a 401 code when trying to log in with bad credentials', function (done) {
