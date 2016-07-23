@@ -37,6 +37,14 @@ tokenSchema.methods.belongsToUser = function (id, callback) {
 };
 
 /**
+ * Checks if this token is valid.
+ */
+tokenSchema.methods.isValid = function () {
+    return this.active;
+};
+
+
+/**
  * Before validation of a Token instance, populate some fields.
  */
 tokenSchema.pre('validate', function (next) {
