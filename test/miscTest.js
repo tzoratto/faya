@@ -1,8 +1,8 @@
+const describe = require('mocha').describe;
+const it = require('mocha').it;
 const supertest = require('supertest');
 const app = require('../server');
 const server = supertest.agent(app);
-const User = require('../models/user');
-const assert = require('assert');
 
 describe('Various routes tests', function () {
 
