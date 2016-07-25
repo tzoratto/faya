@@ -42,7 +42,8 @@ var userSchema = mongoose.Schema({
     apiKeyPairs: [{
         keyId: String,
         keySecret: String
-    }]
+    }],
+    admin: {type: Boolean, default: false}
 });
 
 /**
@@ -127,6 +128,26 @@ userSchema.pre('validate', function(next) {
         this.lastAccess = date;
     }
     next();
+});
+
+/**
+ * If this is the first created user, make it admin.
+ */
+userSchema.pre('save', function (next) {
+    if (this.isNew) {
+        var thisUser = this;
+        mongoose.models['User'].count({}, function (err, count) {
+            if (err) {
+                throw err;
+            }
+            if (count === 0) {
+                thisUser.admin = true;
+            }
+            next();
+        });
+    } else {
+        next();
+    }
 });
 
 /**
