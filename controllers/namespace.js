@@ -4,7 +4,6 @@
  * @file Controllers related to namespaces.
  */
 
-const validationErrors = require('../utils/validationErrors');
 const JsonResponse = require('../models/response/jsonResponse');
 const Namespace = require('../models/namespace');
 const mongoose = require('mongoose');
@@ -41,12 +40,7 @@ exports.create = function (req, res, next) {
     var user = req.user;
     user.createNamespace(req.body.name, req.body.description, function (err, namespace) {
         if (err) {
-            var valErrors = validationErrors(err);
-            if (valErrors) {
-                res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-            } else {
-                return next(err);
-            }
+            return next(err);
         } else {
             res.status(200).json((new JsonResponse()).makeSuccess(namespace));
         }
@@ -93,12 +87,7 @@ exports.update = function (req, res, next) {
         namespace.description = req.body.description;
         namespace.save(function (err) {
             if (err) {
-                var valErrors = validationErrors(err);
-                if (valErrors) {
-                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                } else {
-                    return next(err);
-                }
+                return next(err);
             } else {
                 res.status(200).json((new JsonResponse()).makeSuccess(namespace));
             }

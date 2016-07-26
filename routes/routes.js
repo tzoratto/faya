@@ -8,6 +8,7 @@ const JsonResponse = require('../models/response/jsonResponse');
 const logger = require('winston');
 const apiRoutes = require('./api/api');
 const apiKeyRoutes = require('./apiKey');
+const validationErrors = require ('../utils/validationErrors');
 
 module.exports = function (app, passport) {
     const authUtils = require('../utils/authentication')(passport);
@@ -33,6 +34,13 @@ module.exports = function (app, passport) {
      * Error handling. Called when an error is raised by a middleware.
      */
     app.use(function (err, req, res, next) {
+        //Checks if this is a validation error.
+        var valErrors = validationErrors(err);
+        if (valErrors) {
+            res.status(400).json((new JsonResponse()).makeFailure(valErrors));
+            return;
+        }
+
         var errorCode = err.status || 500;
         res.status(errorCode);
         logger.error(null, err);

@@ -8,7 +8,6 @@ const JsonResponse = require('../models/response/jsonResponse');
 const Namespace = require('../models/namespace');
 const Token = require('../models/token');
 const mongoose = require('mongoose');
-const validationErrors = require('../utils/validationErrors');
 const doesTokenBelongTo = require('../utils/doesTokenBelongTo');
 
 /**
@@ -75,13 +74,7 @@ exports.create = function (req, res, next) {
                 req.body.pool,
                 function (err, token) {
                     if (err) {
-                        var valErrors = validationErrors(err);
-                        if (valErrors) {
-                            res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                            return;
-                        } else {
-                            return next(err);
-                        }
+                        return next(err);
                     }
                     res.status(200).json((new JsonResponse()).makeSuccess(token));
                 });
@@ -138,12 +131,7 @@ exports.update = function (req, res, next) {
         token.pool = req.body.pool;
         token.save(function (err) {
             if (err) {
-                var valErrors = validationErrors(err);
-                if (valErrors) {
-                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                } else {
-                    return next(err);
-                }
+                return next(err);
             } else {
                 res.status(200).json((new JsonResponse()).makeSuccess(token));
             }
@@ -163,12 +151,7 @@ exports.updateDescription = function (req, res, next) {
         token.description = req.body.description;
         token.save(function (err) {
             if (err) {
-                var valErrors = validationErrors(err);
-                if (valErrors) {
-                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                } else {
-                    return next(err);
-                }
+                return next(err);
             } else {
                 res.status(200).json((new JsonResponse()).makeSuccess());
             }
@@ -188,12 +171,7 @@ exports.updateStartsAt = function (req, res, next) {
         token.startsAt = req.body.startsAt;
         token.save(function (err) {
             if (err) {
-                var valErrors = validationErrors(err);
-                if (valErrors) {
-                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                } else {
-                    return next(err);
-                }
+                return next(err);
             } else {
                 res.status(200).json((new JsonResponse()).makeSuccess());
             }
@@ -213,12 +191,7 @@ exports.updateEndsAt = function (req, res, next) {
         token.endsAt = req.body.endsAt;
         token.save(function (err) {
             if (err) {
-                var valErrors = validationErrors(err);
-                if (valErrors) {
-                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                } else {
-                    return next(err);
-                }
+                return next(err);
             } else {
                 res.status(200).json((new JsonResponse()).makeSuccess());
             }
@@ -238,12 +211,7 @@ exports.updateActive = function (req, res, next) {
         token.active = req.body.active;
         token.save(function (err) {
             if (err) {
-                var valErrors = validationErrors(err);
-                if (valErrors) {
-                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                } else {
-                    return next(err);
-                }
+                return next(err);
             } else {
                 res.status(200).json((new JsonResponse()).makeSuccess());
             }
@@ -263,12 +231,7 @@ exports.updatePool = function (req, res, next) {
         token.pool = req.body.pool;
         token.save(function (err) {
             if (err) {
-                var valErrors = validationErrors(err);
-                if (valErrors) {
-                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-                } else {
-                    return next(err);
-                }
+                return next(err);
             } else {
                 res.status(200).json((new JsonResponse()).makeSuccess());
             }
