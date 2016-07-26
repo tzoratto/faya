@@ -26,11 +26,14 @@ var namespaceSchema = mongoose.Schema({
  * @param active
  * @param callback
  */
-namespaceSchema.methods.createToken = function (description, active, callback) {
+namespaceSchema.methods.createToken = function (description, active, startsAt, endsAt, pool, callback) {
     var token = new Token({
         namespace: this._id,
         active: active,
-        description: description
+        description: description,
+        startsAt: startsAt,
+        endsAt: endsAt,
+        pool: pool
     });
     token.save(function (err, token) {
         callback(err, token);

@@ -53,9 +53,9 @@ tokenSchema.path('startsAt').validate(function (value, done) {
 /**
  * Ensures that the token's pool property is superior or equal to 0 if set.
  */
-tokenSchema.path('startsAt').validate(function (value, done) {
-    if (this.pool) {
-        done(this.pool >= 0);
+tokenSchema.path('pool').validate(function (value, done) {
+    if (value) {
+        done(value >= 0);
     } else {
         //here, pool is either undefined, null or 0 thus it's ok
         done(true);

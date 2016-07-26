@@ -194,6 +194,166 @@ describe('Test token-related operations', function () {
             });
     });
 
+    it('should return the created token', function (done) {
+        var startsAt = new Date(Date.UTC(2010, 0, 1)),
+            endsAt = new Date(Date.UTC(2010, 1, 1));
+
+        server
+            .post('/api/v1/namespace/' + namespaceId + '/token')
+            .send({description: 'a description', startsAt: startsAt, endsAt: endsAt, active: false, pool: 10})
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.value, 'the token\'s value must be returned');
+                assert(res.body.data.description, 'the description must be returned');
+                assert(res.body.data.pool === 10, 'the new pool property must be returned');
+                assert(new Date(res.body.data.startsAt).getTime() === startsAt.getTime(), 'the new startsAt property must be returned');
+                assert(new Date(res.body.data.endsAt).getTime() === endsAt.getTime(), 'the new endsAt property must be returned');
+                assert(res.body.data._id, 'the id of the token must be returned');
+                done();
+            });
+    });
+
+    it('should return the modified token', function (done) {
+        var startsAt = new Date(Date.UTC(2010, 0, 1)),
+            endsAt = new Date(Date.UTC(2010, 1, 1));
+
+        server
+            .put('/api/v1/token/' + tokenId)
+            .send({startsAt: startsAt, endsAt: endsAt, active: false, pool: 10})
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.value, 'the token\'s value must be returned');
+                assert(!res.body.data.description, 'the description must be empty now');
+                assert(res.body.data.pool === 10, 'the new pool property must be returned');
+                assert(new Date(res.body.data.startsAt).getTime() === startsAt.getTime(), 'the new startsAt property must be returned');
+                assert(new Date(res.body.data.endsAt).getTime() === endsAt.getTime(), 'the new endsAt property must be returned');
+                assert(res.body.data._id, 'the id of the token must be returned');
+                done();
+            });
+    });
+
+    it('should return the modified token', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId)
+            .send({active: false})
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.value, 'the token\'s value must be returned');
+                assert(!res.body.data.pool, 'the pool property must be absent now');
+                assert(!res.body.data.startsAt, 'the startsAt property must be absent now');
+                assert(!res.body.data.endsAt, 'the endsAt property must be absent now');
+                assert(res.body.data._id, 'the id of the token must be returned');
+                done();
+            });
+    });
+
+    it('should return a 200 code when trying to update the description', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId + '/description')
+            .send({description: 'again a description'})
+            .set(authorization)
+            .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when trying to empty the description', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId + '/description')
+            .set(authorization)
+            .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when trying to update the active property', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId + '/activation')
+            .send({active: false})
+            .set(authorization)
+            .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when trying to update the startsAt property', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId + '/starting-date')
+            .send({startsAt: new Date()})
+            .set(authorization)
+            .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when trying to remove the startsAt property', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId + '/starting-date')
+            .set(authorization)
+            .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when trying to update the endsAt property', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId + '/ending-date')
+            .send({endsAt: new Date()})
+            .set(authorization)
+            .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when trying to remove the endsAt property', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId + '/ending-date')
+            .set(authorization)
+            .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when trying to update the pool', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId + '/pool')
+            .send({pool: 5})
+            .set(authorization)
+            .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when trying to remove the pool', function (done) {
+        server
+            .put('/api/v1/token/' + tokenId + '/pool')
+            .set(authorization)
+            .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
     it('should return a 404 code when trying to delete a nonexistent token', function (done) {
         server
             .delete('/api/v1/token/Idontexist')
@@ -213,4 +373,5 @@ describe('Test token-related operations', function () {
                 done(err);
             });
     });
+
 });

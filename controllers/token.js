@@ -68,12 +68,23 @@ exports.create = function (req, res, next) {
             if (err) {
                 return next(err);
             }
-            namespace.createToken(req.body.description, req.body.active, function (err, token) {
-                if (err) {
-                    return next(err);
-                }
-                res.status(200).json((new JsonResponse()).makeSuccess(token));
-            });
+            namespace.createToken(req.body.description,
+                req.body.active,
+                req.body.startsAt,
+                req.body.endsAt,
+                req.body.pool,
+                function (err, token) {
+                    if (err) {
+                        var valErrors = validationErrors(err);
+                        if (valErrors) {
+                            res.status(400).json((new JsonResponse()).makeFailure(valErrors));
+                            return;
+                        } else {
+                            return next(err);
+                        }
+                    }
+                    res.status(200).json((new JsonResponse()).makeSuccess(token));
+                });
         });
     } else {
         res.status(404).json((new JsonResponse()).makeSuccess(res.__('namespace.notFound')));
@@ -122,6 +133,9 @@ exports.update = function (req, res, next) {
     ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
         token.description = req.body.description;
         token.active = req.body.active;
+        token.startsAt = req.body.startsAt;
+        token.endsAt = req.body.endsAt;
+        token.pool = req.body.pool;
         token.save(function (err) {
             if (err) {
                 var valErrors = validationErrors(err);
@@ -132,6 +146,131 @@ exports.update = function (req, res, next) {
                 }
             } else {
                 res.status(200).json((new JsonResponse()).makeSuccess(token));
+            }
+        });
+    });
+};
+
+/**
+ * Updates the token's description.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.updateDescription = function (req, res, next) {
+    ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
+        token.description = req.body.description;
+        token.save(function (err) {
+            if (err) {
+                var valErrors = validationErrors(err);
+                if (valErrors) {
+                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
+                } else {
+                    return next(err);
+                }
+            } else {
+                res.status(200).json((new JsonResponse()).makeSuccess());
+            }
+        });
+    });
+};
+
+/**
+ * Updates the token's startsAt property.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.updateStartsAt = function (req, res, next) {
+    ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
+        token.startsAt = req.body.startsAt;
+        token.save(function (err) {
+            if (err) {
+                var valErrors = validationErrors(err);
+                if (valErrors) {
+                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
+                } else {
+                    return next(err);
+                }
+            } else {
+                res.status(200).json((new JsonResponse()).makeSuccess());
+            }
+        });
+    });
+};
+
+/**
+ * Updates the token's endsAt property.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.updateEndsAt = function (req, res, next) {
+    ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
+        token.endsAt = req.body.endsAt;
+        token.save(function (err) {
+            if (err) {
+                var valErrors = validationErrors(err);
+                if (valErrors) {
+                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
+                } else {
+                    return next(err);
+                }
+            } else {
+                res.status(200).json((new JsonResponse()).makeSuccess());
+            }
+        });
+    });
+};
+
+/**
+ * Updates the token's active property.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.updateActive = function (req, res, next) {
+    ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
+        token.active = req.body.active;
+        token.save(function (err) {
+            if (err) {
+                var valErrors = validationErrors(err);
+                if (valErrors) {
+                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
+                } else {
+                    return next(err);
+                }
+            } else {
+                res.status(200).json((new JsonResponse()).makeSuccess());
+            }
+        });
+    });
+};
+
+/**
+ * Updates the token's pool property.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.updatePool = function (req, res, next) {
+    ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
+        token.pool = req.body.pool;
+        token.save(function (err) {
+            if (err) {
+                var valErrors = validationErrors(err);
+                if (valErrors) {
+                    res.status(400).json((new JsonResponse()).makeFailure(valErrors));
+                } else {
+                    return next(err);
+                }
+            } else {
+                res.status(200).json((new JsonResponse()).makeSuccess());
             }
         });
     });
