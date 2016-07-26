@@ -148,14 +148,7 @@ exports.update = function (req, res, next) {
  */
 exports.updateDescription = function (req, res, next) {
     ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
-        token.description = req.body.description;
-        token.save(function (err) {
-            if (err) {
-                return next(err);
-            } else {
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            }
-        });
+        updateProperty(req, res, next, token, 'description', req.body.description);
     });
 };
 
@@ -168,14 +161,7 @@ exports.updateDescription = function (req, res, next) {
  */
 exports.updateStartsAt = function (req, res, next) {
     ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
-        token.startsAt = req.body.startsAt;
-        token.save(function (err) {
-            if (err) {
-                return next(err);
-            } else {
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            }
-        });
+        updateProperty(req, res, next, token, 'startsAt', req.body.startsAt);
     });
 };
 
@@ -188,14 +174,7 @@ exports.updateStartsAt = function (req, res, next) {
  */
 exports.updateEndsAt = function (req, res, next) {
     ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
-        token.endsAt = req.body.endsAt;
-        token.save(function (err) {
-            if (err) {
-                return next(err);
-            } else {
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            }
-        });
+        updateProperty(req, res, next, token, 'endsAt', req.body.endsAt);
     });
 };
 
@@ -208,14 +187,7 @@ exports.updateEndsAt = function (req, res, next) {
  */
 exports.updateActive = function (req, res, next) {
     ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
-        token.active = req.body.active;
-        token.save(function (err) {
-            if (err) {
-                return next(err);
-            } else {
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            }
-        });
+        updateProperty(req, res, next, token, 'active', req.body.active);
     });
 };
 
@@ -228,14 +200,7 @@ exports.updateActive = function (req, res, next) {
  */
 exports.updatePool = function (req, res, next) {
     ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
-        token.pool = req.body.pool;
-        token.save(function (err) {
-            if (err) {
-                return next(err);
-            } else {
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            }
-        });
+        updateProperty(req, res, next, token, 'pool', req.body.pool);
     });
 };
 
@@ -262,6 +227,27 @@ function ifUserOwnsTheToken(req, res, next, userId, tokenId, callback) {
             callback(token);
         } else {
             res.status(403).json((new JsonResponse()).makeFailure(res.__('token.unauthorized')));
+        }
+    });
+}
+
+/**
+ * Updates a single token's property.
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @param token
+ * @param propertyName
+ * @param value
+ */
+function updateProperty(req, res, next, token, propertyName, value) {
+    token[propertyName] = value;
+    token.save(function (err) {
+        if (err) {
+            return next(err);
+        } else {
+            res.status(200).json((new JsonResponse()).makeSuccess());
         }
     });
 }
