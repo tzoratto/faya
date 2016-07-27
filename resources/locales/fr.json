@@ -4,7 +4,9 @@
 		"serverStarted": "Le serveur est démarré",
 		"databaseError": "Impossible de se connecter à la base de données",
 		"serverError": "Impossible de démarrer le serveur",
-		"serverShutdown": "%s reçu, arrêt du serveur"
+		"serverShutdown": "%s reçu, arrêt du serveur",
+		"settingInsertError": "L'initialisation des paramètres a échoué. Erreur : %s",
+		"subscriptionDisabled": "Les inscriptions sont actuellement désactivées"
 	},
 	"account": {
 		"validationLink": "Veuillez confirmer votre inscription en cliquant sur le lien %s",
@@ -26,6 +28,9 @@
 		"notFound": "Ce namespace n'existe pas"
 	},
 	"notFound": "Page introuvable",
+	"setting": {
+		"notFound": "Paramètre introuvable"
+	},
 	"token": {
 		"notFound": "Ce token n'existe pas"
 	}

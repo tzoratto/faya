@@ -1,0 +1,32 @@
+{
+    "User": [
+        {
+            "_id": "000000000001",
+            "apiKeyPairs": [
+                {
+                    "keyId": "anId",
+                    "keySecret": "aSecret"
+                }
+            ],
+            "admin": true
+        },
+        {
+            "_id": "000000000002",
+            "apiKeyPairs": [
+                {
+                    "keyId": "anOtherId",
+                    "keySecret": "aOtherSecret"
+                }
+            ]
+        }
+    ],
+    "Namespace": [
+    ],
+    "Token": [
+    ],
+    "Setting": [
+        {
+            "subscriptionEnabled": true
+        }
+    ]
+}

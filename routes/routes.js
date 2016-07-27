@@ -9,6 +9,7 @@ const logger = require('winston');
 const apiRoutes = require('./api/api');
 const apiKeyRoutes = require('./apiKey');
 const validationErrors = require ('../utils/validationErrors');
+const settingRoutes = require('./setting');
 
 module.exports = function (app, passport) {
     const authUtils = require('../utils/authentication')(passport);
@@ -20,6 +21,7 @@ module.exports = function (app, passport) {
     app.use('/auth', authRoutes);
     app.use('/api-key', isLoggedIn, apiKeyRoutes);
     app.use('/api', isLoggedInForApi, apiRoutes);
+    app.use('/setting', settingRoutes);
 
     /**
      * Last middleware. Called only if all other middlewares didn't handle the request.

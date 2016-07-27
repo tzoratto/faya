@@ -4,7 +4,9 @@
 		"serverStarted": "The server is up and running",
 		"databaseError": "Cannot connect to database",
 		"serverError": "Cannot start the server",
-		"serverShutdown": "Caught %s, shutting down"
+		"serverShutdown": "Caught %s, shutting down",
+		"settingInsertError": "Settings initialization failed. Error : %s",
+		"subscriptionDisabled": "Subscription are currently disabled"
 	},
 	"account": {
 		"validationLink": "Please confirm your registration by clicking on the validation link %s",
@@ -26,6 +28,9 @@
 		"notFound": "Namespace not found"
 	},
 	"notFound": "Not found",
+	"setting": {
+		"notFound": "Setting not found"
+	},
 	"token": {
 		"notFound": "Token not found"
 	}

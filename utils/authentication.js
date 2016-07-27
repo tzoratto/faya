@@ -5,6 +5,7 @@
  */
 
 const JsonResponse = require('../models/response/jsonResponse');
+const Setting = require('../models/setting');
 
 var passport;
 
@@ -56,6 +57,22 @@ var loggedInForApi = function (req, res, next) {
     }
 };
 
+/**
+ * Middleware that checks if the logged user is an admin.
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @return {*}
+ */
+var loggedInAsAnAdmin = function (req, res, next) {
+    if (req.user && req.user.admin) {
+        return next();
+    } else {
+        res.status(403).json((new JsonResponse()).makeFailure());
+    }
+};
+
 module.exports = function(passportInstance) {
     var exp = {};
 
@@ -64,6 +81,7 @@ module.exports = function(passportInstance) {
     exp.isLoggedIn = loggedIn;
     exp.isLoggedOff = loggedOff;
     exp.isLoggedInForApi = loggedInForApi;
-    
+    exp.isLoggedInAsAnAdmin = loggedInAsAnAdmin;
+
     return exp;
 };

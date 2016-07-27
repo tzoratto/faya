@@ -11,6 +11,7 @@ const dbConfig = require("./config/database.js");
 const appConfig = require('./config/app');
 const i18n = require("i18n");
 const passport = require('passport');
+const insertSetting = require('./config/setting');
 
 const app = express();
 
@@ -31,7 +32,13 @@ mongoDb
     .on('disconnected', connectToDB)
     .once('open', function () {
         logger.info(i18n.__('app.databaseConnected'));
-        startServer();
+        insertSetting(function (err) {
+            if (err) {
+                logger.error(i18n.__('app.settingInsertError', err));
+                process.exit(1);
+            }
+            startServer();
+        });
     });
 
 /**
