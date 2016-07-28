@@ -40,6 +40,19 @@ exports.updateSubscriptionEnabled = function (req, res, next) {
 };
 
 /**
+ * Get the details of the authMethods property.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.detailsAuthMethods = function (req, res, next) {
+    loadSetting(req, res, next, function (setting) {
+        res.status(200).json((new JsonResponse()).makeSuccess({authMethods: setting.authMethods}));
+    });
+};
+
+/**
  * Loads the setting and passes it to the given callback.
  *
  * @param req
