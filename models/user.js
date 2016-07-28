@@ -94,9 +94,7 @@ userSchema.methods.deleteApiKeyPair = function (id, callback) {
         keyPair.remove();
         this.save(callback);
     } else {
-        var err = new Error();
-        err.status = 404;
-        callback(err);
+        callback(null, null);
     }
 };
 

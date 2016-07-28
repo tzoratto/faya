@@ -5,6 +5,7 @@
  */
 
 const JsonResponse = require('../models/response/jsonResponse');
+const mongoose = require('mongoose');
 
 
 /**
@@ -44,15 +45,13 @@ exports.create = function (req, res, next) {
  */
 exports.delete = function (req, res, next) {
     var user = req.user;
-    user.deleteApiKeyPair(req.params.id, function (err) {
+    user.deleteApiKeyPair(req.params.id, function (err, user) {
         if (err) {
-            if (err.status !== 404) {
-                return next(err);
-            } else {
-                res.status(404).json((new JsonResponse()).makeFailure(null, res.__('account.apiKeyNotFound')));
-            }
-        } else {
+            return next(err);
+        } else if (user) {
             res.status(200).json((new JsonResponse()).makeSuccess());
+        } else {
+            res.status(404).json((new JsonResponse()).makeFailure(null, res.__('account.apiKeyNotFound')));
         }
     });
 };
