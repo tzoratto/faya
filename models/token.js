@@ -11,7 +11,10 @@ const uuid = require('uuid');
  * Token Mongoose schema.
  */
 var tokenSchema = mongoose.Schema({
-    namespace: {type: mongoose.Schema.Types.ObjectId, ref: 'Namespace'},
+    namespace: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Namespace',
+        required: true
+    },
     value: {
         type: String,
         required: true
