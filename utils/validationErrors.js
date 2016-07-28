@@ -17,6 +17,9 @@ module.exports = function (err) {
                 validationErrors[prop] = err.errors[prop].message;
             }
         }
+    } else if (err && err.name === 'MongoError' && err.code === 11000) {
+        validationErrors = {};
+        validationErrors['index'] = 'Index uniqueness violation';
     }
 
     return validationErrors;

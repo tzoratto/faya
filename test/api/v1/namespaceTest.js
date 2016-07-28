@@ -13,6 +13,9 @@ describe('Test namespace-related operations', function () {
     var authorization = {
         "Authorization": "Basic: " + new Buffer(dataSet.User[0].apiKeyPairs[0].keyId + ':' + dataSet.User[0].apiKeyPairs[0].keySecret).toString('base64')
     };
+    var authorization2 = {
+        "Authorization": "Basic: " + new Buffer(dataSet.User[1].apiKeyPairs[0].keyId + ':' + dataSet.User[1].apiKeyPairs[0].keySecret).toString('base64')
+    };
 
     before(function (done) {
         insertDataSet(dataSet, done);
@@ -63,6 +66,23 @@ describe('Test namespace-related operations', function () {
                     throw err;
                 }
                 assert(res.body.status === 'fail', 'the status must be fail');
+                done();
+            });
+    });
+
+    it('should return the created namespace', function (done) {
+        server
+            .post('/api/v1/namespace')
+            .set(authorization2)
+            .send({name: 'mynamespace', description: 'a description'})
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.name === 'mynamespace', 'the name of the created namespace must be returned');
+                assert(res.body.data.description === 'a description', 'the description of the created namespace must be returned');
+                assert(res.body.data._id, 'the id of the created namespace must be returned');
                 done();
             });
     });
