@@ -132,6 +132,8 @@ userSchema.pre('validate', function(next) {
 
 /**
  * If this is the first created user, make it admin.
+ *
+ * This is not atomic so if the 2 first users are created exactly at the same time both of them could be admin.
  */
 userSchema.pre('save', function (next) {
     if (this.isNew) {
