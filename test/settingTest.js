@@ -2,11 +2,11 @@ const describe = require('mocha').describe;
 const before = require('mocha').before;
 const it = require('mocha').it;
 const supertest = require('supertest');
-const app = require('../../../server');
+const app = require('../server');
 const server = supertest.agent(app);
 const assert = require('assert');
 const dataSet = require('./settingTestDataSet.json');
-const insertDataSet = require('../../insertDataSet');
+const insertDataSet = require('./insertDataSet');
 
 describe('Tests operations related to the application settings', function () {
 
