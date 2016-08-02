@@ -33,5 +33,9 @@
 	},
 	"token": {
 		"notFound": "Ce token n'existe pas"
+	},
+	"user": {
+		"cannotDeleteAdmin": "Un administrateur ne peut pas être supprimé",
+		"notFound": "Utilisateur introuvable"
 	}
 }

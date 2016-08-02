@@ -33,5 +33,9 @@
 	},
 	"token": {
 		"notFound": "Token not found"
+	},
+	"user": {
+		"cannotDeleteAdmin": "An admin cannot be deleted",
+		"notFound": "User not found"
 	}
 }

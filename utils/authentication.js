@@ -65,11 +65,28 @@ var loggedInForApi = function (req, res, next) {
  * @param next
  * @return {*}
  */
-var loggedInAsAnAdmin = function (req, res, next) {
+var isAdmin = function (req, res, next) {
     if (req.user && req.user.admin) {
         return next();
     } else {
         res.status(403).json((new JsonResponse()).makeFailure());
+    }
+};
+
+/**
+ * Middleware that checks if the logged in user is either an admin or has the right to manipulate the user with given id.
+ * This middleware is to be used only on user-specific routes.
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @return {*}
+ */
+var isAdminOrIsSubject = function (req, res, next) {
+    if (req.user._id.id === req.params.id) {
+        return next();
+    } else {
+        isAdmin(req, res, next);
     }
 };
 
@@ -81,7 +98,8 @@ module.exports = function(passportInstance) {
     exp.isLoggedIn = loggedIn;
     exp.isLoggedOff = loggedOff;
     exp.isLoggedInForApi = loggedInForApi;
-    exp.isLoggedInAsAnAdmin = loggedInAsAnAdmin;
+    exp.isAdmin = isAdmin;
+    exp.isAdminOrIsSubject = isAdminOrIsSubject;
 
     return exp;
 };

@@ -8,11 +8,11 @@ const controllers = require('../controllers/setting');
 const express = require('express');
 const router = express.Router();
 const authUtils = require('../utils/authentication')();
-const isLoggedInAsAnAdmin = authUtils.isLoggedInAsAnAdmin;
+const isAdmin = authUtils.isAdmin;
 const isLoggedInForApi = authUtils.isLoggedInForApi;
 
 router.get('/subscription', controllers.detailsSubscriptionEnabled);
-router.put('/subscription', isLoggedInForApi, isLoggedInAsAnAdmin, controllers.updateSubscriptionEnabled);
+router.put('/subscription', isLoggedInForApi, isAdmin, controllers.updateSubscriptionEnabled);
 router.get('/authentication', controllers.detailsAuthMethods);
 
 module.exports = router;
