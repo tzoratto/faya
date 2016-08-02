@@ -10,6 +10,7 @@ const router = express.Router();
 const authUtils = require('../../../utils/authentication')();
 const isAdmin = authUtils.isAdmin;
 
+router.post('/', controllers.create);
 router.get('/', controllers.list);
 router.delete('/:id', controllers.delete);
 router.get('/count', isAdmin, controllers.count);

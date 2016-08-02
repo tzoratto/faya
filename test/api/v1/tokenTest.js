@@ -27,14 +27,18 @@ describe('Test token-related operations', function () {
 
     it('should return the created token', function (done) {
         server
-            .post('/api/v1/namespace/' + namespaceId + '/token')
+            .post('/api/v1/token')
             .set(authorization)
-            .send({description: 'a description'})
+            .send({
+                namespace: namespaceId,
+                description: 'a description'
+            })
             .expect(200)
             .end(function (err, res) {
                 if (err) {
                     throw err;
                 }
+                assert(res.body.data.namespace, 'the token\'s namespace must be returned');
                 assert(res.body.data.value, 'the token\'s value must be returned');
                 assert(res.body.data.description === 'a description', 'the description of the created token must be returned');
                 assert(res.body.data._id, 'the id of the created namespace must be returned');
@@ -45,9 +49,12 @@ describe('Test token-related operations', function () {
 
     it('should return a 404 code when trying to create a token in a nonexistent namespace', function (done) {
         server
-            .post('/api/v1/namespace/yay/token')
+            .post('/api/v1/token')
             .set(authorization)
-            .send({description: 'a description'})
+            .send({
+                namespace: 'yay',
+                description: 'a description'
+            })
             .expect(404)
             .end(function (err) {
                 done(err);
@@ -56,7 +63,7 @@ describe('Test token-related operations', function () {
 
     it('should return a 404 code when trying to search a token in a nonexistent namespace', function (done) {
         server
-            .get('/api/v1/namespace/yay/token?q=desc')
+            .get('/api/v1/token?q=desc&namespace=yay')
             .set(authorization)
             .expect(404)
             .end(function (err) {
@@ -66,7 +73,7 @@ describe('Test token-related operations', function () {
 
     it('should return matching tokens when searching', function (done) {
         server
-            .get('/api/v1/namespace/' + namespaceId + '/token?q=desc')
+            .get('/api/v1/token?q=desc&namespace=' + namespaceId)
             .set(authorization)
             .expect(200)
             .end(function (err, res) {
@@ -80,7 +87,7 @@ describe('Test token-related operations', function () {
 
     it('should return matching tokens when searching', function (done) {
         server
-            .get('/api/v1/namespace/' + namespaceId + '/token?q=yay')
+            .get('/api/v1/token?q=yay&namespace' + namespaceId)
             .set(authorization)
             .expect(200)
             .end(function (err, res) {
@@ -122,7 +129,7 @@ describe('Test token-related operations', function () {
 
     it('should return the tokens', function (done) {
         server
-            .get('/api/v1/namespace/' + namespaceId + '/token')
+            .get('/api/v1/token?namespace=' + namespaceId)
             .set(authorization)
             .expect(200)
             .end(function (err, res) {
@@ -136,7 +143,7 @@ describe('Test token-related operations', function () {
 
     it('should return a 404 code when trying to list the tokens of a nonexistent namespace', function (done) {
         server
-            .get('/api/v1/namespace/yay/token')
+            .get('/api/v1/token?namespace=yay')
             .set(authorization)
             .expect(404)
             .end(function (err) {
@@ -203,8 +210,15 @@ describe('Test token-related operations', function () {
             endsAt = new Date(Date.UTC(2010, 1, 1));
 
         server
-            .post('/api/v1/namespace/' + namespaceId + '/token')
-            .send({description: 'a description', startsAt: startsAt, endsAt: endsAt, active: false, pool: 10})
+            .post('/api/v1/token')
+            .send({
+                namespace: namespaceId,
+                description: 'a description',
+                startsAt: startsAt,
+                endsAt: endsAt,
+                active: false,
+                pool: 10
+            })
             .set(authorization)
             .expect(200)
             .end(function (err, res) {

@@ -28,30 +28,6 @@ var namespaceSchema = mongoose.Schema({
 namespaceSchema.index({user: 1, name: 1}, {unique: true});
 
 /**
- * Creates a new token.
- *
- * @param description
- * @param active
- * @param startsAt
- * @param endsAt
- * @param pool
- * @param callback
- */
-namespaceSchema.methods.createToken = function (description, active, startsAt, endsAt, pool, callback) {
-    var token = new Token({
-        namespace: this._id,
-        active: active,
-        description: description,
-        startsAt: startsAt,
-        endsAt: endsAt,
-        pool: pool
-    });
-    token.save(function (err, token) {
-        callback(err, token);
-    });
-};
-
-/**
  * Checks that namespaces's name is unique among the user's other namespaces.
  *
  * This validation is not atomic thus it's not reliable in a concurrent context. However, it provides a validation

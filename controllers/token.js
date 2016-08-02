@@ -18,7 +18,7 @@ const doesTokenBelongTo = require('../utils/doesTokenBelongTo');
  * @param next
  */
 exports.list = function (req, res, next) {
-    if (!req.params.namespaceId || mongoose.Types.ObjectId.isValid(req.params.namespaceId)) {
+    if (!req.query.namespace || mongoose.Types.ObjectId.isValid(req.query.namespace)) {
         var query = req.query.q ? req.query.q : '.*';
         var regex = new RegExp(query);
         var namespaceId = req.params.namespaceId;
@@ -36,9 +36,6 @@ exports.list = function (req, res, next) {
                 res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
                 return;
             }
-            namespaces = namespaces.map(function (elem) {
-                return elem._id;
-            });
             Token.find({
                 'namespace': {$in: namespaces},
                 $or: [{'value': {$regex: regex}}, {'description': {$regex: regex}}]
@@ -62,26 +59,33 @@ exports.list = function (req, res, next) {
  * @param next
  */
 exports.create = function (req, res, next) {
-    if (mongoose.Types.ObjectId.isValid(req.params.namespaceId)) {
-        Namespace.findOne({'user': req.user._id, '_id': req.params.namespaceId}, function (err, namespace) {
-            if (err) {
-                return next(err);
-            }
-            namespace.createToken(req.body.description,
-                req.body.active,
-                req.body.startsAt,
-                req.body.endsAt,
-                req.body.pool,
-                function (err, token) {
-                    if (err) {
-                        return next(err);
-                    }
-                    res.status(200).json((new JsonResponse()).makeSuccess(token));
-                });
-        });
-    } else {
+    if (!mongoose.Types.ObjectId.isValid(req.body.namespace)) {
         res.status(404).json((new JsonResponse()).makeSuccess(res.__('namespace.notFound')));
+        return;
     }
+    Namespace.findOne({'user': req.user._id, '_id': req.body.namespace}, function (err, namespace) {
+        if (err) {
+            return next(err);
+        }
+        if (namespace) {
+            var token = new Token({
+                namespace: req.body.namespace,
+                description: req.body.description,
+                active: req.body.active,
+                startsAt: req.body.startsAt,
+                endsAt: req.body.endsAt,
+                pool: req.body.pool
+            });
+            token.save(function (err, token) {
+                if (err) {
+                    return next(err);
+                }
+                res.status(200).json((new JsonResponse()).makeSuccess(token));
+            })
+        } else {
+            res.status(404).json((new JsonResponse()).makeSuccess(res.__('namespace.notFound')));
+        }
+    });
 };
 
 /**
