@@ -16,6 +16,10 @@ describe('Test namespace-related operations', function () {
     var authorization2 = {
         "Authorization": "Basic: " + new Buffer(dataSet.User[1].apiKeyPairs[0].keyId + ':' + dataSet.User[1].apiKeyPairs[0].keySecret).toString('base64')
     };
+    var authorizationAdmin = {
+        "Authorization": "Basic: " + new Buffer(dataSet.User[2].apiKeyPairs[0].keyId + ':' + dataSet.User[2].apiKeyPairs[0].keySecret).toString('base64')
+    };
+    var userId = dataSet.User[1]._id;
 
     before(function (done) {
         insertDataSet(dataSet, done);
@@ -221,11 +225,59 @@ describe('Test namespace-related operations', function () {
             });
     });
 
+    it('should return the number of namespaces', function (done) {
+        server
+            .get('/api/v1/namespace/count')
+            .set(authorizationAdmin)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.count === 2, 'there is two namespaces');
+                done();
+            });
+    });
+
+    it('should return a 403 code when trying to get the number of namespaces as a non-admin', function (done) {
+        server
+            .get('/api/v1/namespace/count')
+            .set(authorization)
+            .expect(403)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
     it('should return a 200 code when deleting a namespace', function (done) {
         server
             .delete('/api/v1/namespace/' + namespaceId)
             .set(authorization)
             .expect(200)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return the number of user\'s namespaces', function (done) {
+        server
+            .get('/api/v1/namespace/count?user=' + userId)
+            .set(authorizationAdmin)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.count === 1, 'the user has 1 namespace');
+                done();
+            });
+    });
+
+    it('should return a 403 code when trying to get user\'s namespaces count as a non-admin', function (done) {
+        server
+            .get('/api/v1/namespace/count?user=' + userId)
+            .set(authorization)
+            .expect(403)
             .end(function (err) {
                 done(err);
             });

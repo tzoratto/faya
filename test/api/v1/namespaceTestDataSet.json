@@ -17,6 +17,16 @@
                     "keySecret": "aOtherSecret"
                 }
             ]
+        },
+        {
+            "_id": "000000000003",
+            "apiKeyPairs": [
+                {
+                    "keyId": "anAdminId",
+                    "keySecret": "aAdminSecret"
+                }
+            ],
+            "admin": true
         }
     ],
     "Namespace": [

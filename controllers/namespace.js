@@ -96,6 +96,27 @@ exports.update = function (req, res, next) {
 };
 
 /**
+ * Calculates the number of namespaces optionally filtered by user.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.count = function (req, res, next) {
+    var user = req.query.user;
+    var filter = {};
+    if (user) {
+        filter['user'] = user;
+    }
+    Namespace.count(filter, function (err, count) {
+        if (err) {
+            return next(err);
+        }
+        res.status(200).json((new JsonResponse()).makeSuccess({count: count}));
+    });
+};
+
+/**
  * Calls the callback if the user owns the namespace and thus can modify it.
  *
  * @param req
