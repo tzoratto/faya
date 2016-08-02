@@ -8,6 +8,16 @@
                     "keySecret": "aSecret"
                 }
             ]
+        },
+        {
+            "_id": "000000000002",
+            "apiKeyPairs": [
+                {
+                    "keyId": "anAdminId",
+                    "keySecret": "aAdminSecret"
+                }
+            ],
+            "admin": true
         }
     ],
     "Namespace": [

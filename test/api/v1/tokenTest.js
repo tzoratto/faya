@@ -13,7 +13,11 @@ describe('Test token-related operations', function () {
     var authorization = {
         "Authorization": "Basic: " + new Buffer(dataSet.User[0].apiKeyPairs[0].keyId + ':' + dataSet.User[0].apiKeyPairs[0].keySecret).toString('base64')
     };
+    var authorizationAdmin = {
+        "Authorization": "Basic: " + new Buffer(dataSet.User[1].apiKeyPairs[0].keyId + ':' + dataSet.User[1].apiKeyPairs[0].keySecret).toString('base64')
+    };
     var namespaceId = dataSet.Namespace[0]._id;
+    var userId = dataSet.User[0]._id;
 
     before(function (done) {
         insertDataSet(dataSet, done);
@@ -374,4 +378,51 @@ describe('Test token-related operations', function () {
             });
     });
 
+    it('should return the number of tokens', function (done) {
+        server
+            .get('/api/v1/token/count')
+            .set(authorizationAdmin)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.count === 1, 'there is one token');
+                done();
+            });
+    });
+
+    it('should return a 403 code when trying to get the number of tokens as a non-admin', function (done) {
+        server
+            .get('/api/v1/token/count')
+            .set(authorization)
+            .expect(403)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return the number of user\'s tokens', function (done) {
+        server
+            .get('/api/v1/token/count?user=' + userId)
+            .set(authorizationAdmin)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.count === 1, 'the user has 1 token');
+                done();
+            });
+    });
+
+    it('should return a 403 code when trying to get user\'s tokens count as a non-admin', function (done) {
+        server
+            .get('/api/v1/token/count?user=' + userId)
+            .set(authorization)
+            .expect(403)
+            .end(function (err) {
+                done(err);
+            });
+    });
 });

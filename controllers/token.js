@@ -205,6 +205,37 @@ exports.updatePool = function (req, res, next) {
 };
 
 /**
+ * Calculates the number of tokens optionally filtered by user.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.count = function (req, res, next) {
+    var user = req.query.user;
+    if (user) {
+        Namespace.find({'user': user}, '_id', function (err, namespaces) {
+            if (err) {
+                return next(err);
+            }
+            Token.count({'namespace': {$in: namespaces}}, function (err, count) {
+                if (err) {
+                    return next(err);
+                }
+                res.status(200).json((new JsonResponse()).makeSuccess({count: count}));
+            });
+        });
+    } else {
+        Token.count({}, function (err, count) {
+            if (err) {
+                return next(err);
+            }
+            res.status(200).json((new JsonResponse()).makeSuccess({count: count}));
+        });
+    }
+};
+
+/**
  * Calls the callback if the user owns the token and thus can modify it.
  *
  * @param req
