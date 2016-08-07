@@ -29,9 +29,5 @@ module.exports = function (passport) {
     router.get('/unlink/twitter', isLoggedIn, controllers.unlinkTwitter);
     router.get('/unlink/google', isLoggedIn, controllers.unlinkGoogle);
 
-    router.get('/profile', isLoggedIn, function (req, res) {
-        res.status(200).json((new JsonResponse()).makeSuccess());
-    });
-
     return router;
 };
