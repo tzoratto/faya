@@ -34,15 +34,6 @@ describe('Simple authentication tests', function () {
             });
     });
 
-    it('should return a 403 code when not logged in', function (done) {
-        server
-            .get('/auth/profile')
-            .expect(403)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
     it('should return a 200 code when logging in with good credentials', function (done) {
         server
             .post('/auth/login')
@@ -58,15 +49,6 @@ describe('Simple authentication tests', function () {
             .post('/auth/login')
             .send({email: 'notarealemail', password: 'notthegoodone'})
             .expect(403)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when logged in', function (done) {
-        server
-            .get('/auth/profile')
-            .expect(200)
             .end(function (err) {
                 done(err);
             });
