@@ -82,7 +82,7 @@ var isAdmin = function (req, res, next) {
  * @return {*}
  */
 var isAdminOrIsSubject = function (req, res, next) {
-    if (req.user._id.id.toString() === req.params.id) {
+    if (req.user.id === req.params.id) {
         return next();
     } else {
         isAdmin(req, res, next);

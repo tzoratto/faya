@@ -10,6 +10,8 @@ const insertDataSet = require('./insertDataSet');
 
 describe('Simple authentication tests', function () {
 
+    var userId = dataSet.User[0]._id;
+
     before(function (done) {
         insertDataSet(dataSet, done);
     });
