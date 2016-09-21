@@ -11,10 +11,9 @@ const router = express.Router();
 module.exports = function (passport) {
     const authUtils = require('../utils/authentication')(passport);
     const isLoggedIn = authUtils.isLoggedIn;
-    const isLoggedOff = authUtils.isLoggedOff;
     const controllers = require('../controllers/auth')(passport);
 
-    router.post('/login', isLoggedOff, controllers.login);
+    router.post('/login', controllers.login);
     router.get('/logout', controllers.logout);
     router.post('/signup', controllers.signup);
     router.get('/signup-validation', controllers.signupValidation);

@@ -46,16 +46,6 @@ describe('Simple authentication tests', function () {
             });
     });
 
-    it('should return a 403 code when trying to log in being already logged in', function (done) {
-        server
-            .post('/auth/login')
-            .send({email: 'notarealemail', password: 'notthegoodone'})
-            .expect(403)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
     it('should return an empty list when there is no api key pair', function (done) {
         server
             .get('/api-key')
