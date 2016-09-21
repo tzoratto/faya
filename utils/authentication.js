@@ -5,7 +5,6 @@
  */
 
 const JsonResponse = require('../models/response/jsonResponse');
-const Setting = require('../models/setting');
 
 var passport;
 
@@ -83,7 +82,7 @@ var isAdmin = function (req, res, next) {
  * @return {*}
  */
 var isAdminOrIsSubject = function (req, res, next) {
-    if (req.user._id.id === req.params.id) {
+    if (req.user._id.id.toString() === req.params.id) {
         return next();
     } else {
         isAdmin(req, res, next);
