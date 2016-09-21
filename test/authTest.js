@@ -41,8 +41,12 @@ describe('Simple authentication tests', function () {
             .post('/auth/login')
             .send({email: 'test@test.com', password: 'mypassword'})
             .expect(200)
-            .end(function (err) {
-                done(err);
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data === userId, 'the user\'s id must be returned');
+                done();
             });
     });
 

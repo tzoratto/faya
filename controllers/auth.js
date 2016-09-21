@@ -31,7 +31,7 @@ var login = function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                res.status(200).json((new JsonResponse()).makeSuccess());
+                res.status(200).json((new JsonResponse()).makeSuccess(user.id));
             });
         }
     })(req, res, next);
