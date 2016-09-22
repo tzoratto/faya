@@ -19,7 +19,7 @@ var passport;
  * @param next
  */
 var login = function (req, res, next) {
-    passport.authenticate('local-login', function (err, user, info) {
+    passport.authenticate('local-login', {badRequestMessage: res.__('account.missingCredentials')}, function (err, user, info) {
         if (err) {
             return next(err);
         }

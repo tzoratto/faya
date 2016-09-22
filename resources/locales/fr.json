@@ -22,7 +22,8 @@
 		"noValidUserFound": "Aucun utilisateur valide trouvé",
 		"badPassword": "Mauvais mot de passe",
 		"alreadyExisting": "Ce compte existe déjà",
-		"apiKeyNotFound": "Cette clé API n'existe pas"
+		"apiKeyNotFound": "Cette clé API n'existe pas",
+		"missingCredentials": "Email ou mot de passe manquant"
 	},
 	"namespace": {
 		"notFound": "Ce namespace n'existe pas"

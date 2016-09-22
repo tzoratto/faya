@@ -22,7 +22,8 @@
 		"noValidUserFound": "No valid user found",
 		"badPassword": "Bad password",
 		"alreadyExisting": "This account already exists",
-		"apiKeyNotFound": "API key not found"
+		"apiKeyNotFound": "API key not found",
+		"missingCredentials": "Missing email or password"
 	},
 	"namespace": {
 		"notFound": "Namespace not found"
