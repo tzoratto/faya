@@ -64,7 +64,7 @@ var signup = function (req, res, next) {
             res.status(400).json((new JsonResponse()).makeFailure(null, info.message));
         }
         else {
-            var mailContent = res.__('account.validationLink', appConfig.url + '/auth/signup-validation?email=' + user.local.email + '&token=' + user.local.token);
+            var mailContent = res.__('account.validationLink', req.header('referer') + '?email=' + user.local.email + '&token=' + user.local.token);
             sendMail(user.local.email, res.__('account.validationMailSubject'), mailContent, function (err) {
                 if (err) {
                     return next(err);
