@@ -19,24 +19,6 @@ var userSchema = mongoose.Schema({
         token: String,
         date: Date
     },
-    facebook: {
-        id: String,
-        token: String,
-        email: String,
-        name: String
-    },
-    twitter: {
-        id: String,
-        token: String,
-        displayName: String,
-        username: String
-    },
-    google: {
-        id: String,
-        token: String,
-        email: String,
-        name: String
-    },
     lastAccess: Date,
     createdAt: Date,
     apiKeyPairs: [{

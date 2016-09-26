@@ -72,10 +72,7 @@ describe('Tests user-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.facebook.email === 'test@test.com', 'the user\'s facebook email must be returned');
-                assert(res.body.data.facebook.name === 'Test Test', 'the user\'s facebook name must be returned');
-                assert(!res.body.data.facebook.id, 'the user\'s facebook id musn\'t be returned');
-                assert(!res.body.data.facebook.token, 'the user\'s facebook token musn\'t be returned');
+                assert(res.body.data.local.email === 'local2@local.com', 'the user\'s email must be returned');
                 assert(!res.body.data.apiKeyPairs, 'the user\'s api key pairs musn\'t be returned');
                 done();
             });
@@ -90,10 +87,7 @@ describe('Tests user-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.facebook.email === 'test@test.com', 'the user\'s facebook email must be returned');
-                assert(res.body.data.facebook.name === 'Test Test', 'the user\'s facebook name must be returned');
-                assert(!res.body.data.facebook.id, 'the user\'s facebook id musn\'t be returned');
-                assert(!res.body.data.facebook.token, 'the user\'s facebook token musn\'t be returned');
+                assert(res.body.data.local.email === 'local2@local.com', 'the user\'s email must be returned');
                 assert(res.body.data.apiKeyPairs, 'the user\'s api key pairs must be returned');
                 done();
             });

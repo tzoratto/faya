@@ -58,22 +58,7 @@ var loadSetting = function (done, callback) {
  * @param done
  */
 var populateAndSaveUser = function (method, user, info1, info2, done) {
-    if (method === 'facebook') {
-        user.facebook.id = info2.id;
-        user.facebook.token = info1;
-        user.facebook.name = info2.name.givenName + ' ' + info2.name.familyName;
-        user.facebook.email = info2.emails[0].value;
-    } else if (method === 'google') {
-        user.google.id = info2.id;
-        user.google.token = info1;
-        user.google.name = info2.displayName;
-        user.google.email = info2.emails[0].value;
-    } else if (method === 'twitter') {
-        user.twitter.id = info2.id;
-        user.twitter.token = info1;
-        user.twitter.username = info2.username;
-        user.twitter.displayName = info2.displayName;
-    } else if (method === 'local') {
+    if (method === 'local') {
         user.local.email = info1;
         user.local.password = user.generateHash(info2);
         user.local.token = uuid.v4();
@@ -89,46 +74,7 @@ var populateAndSaveUser = function (method, user, info1, info2, done) {
     });
 };
 
-/**
- * Handles the parameters returned by authentication providers.
- *
- * @param method
- * @param req
- * @param token
- * @param refreshToken
- * @param profile
- * @param done
- */
-var handleAuthCallback = function (method, req, token, refreshToken, profile, done) {
-    process.nextTick(function () {
-        loadUser(method, profile, done, function (user) {
-            loadSetting(done, function (setting) {
-                if (req.user) {
-                    //If the user is already logged in, that means we try to link its account with a social media account.
-                    if (user) {
-                        return done(null, null, {message: req.__('account.' + method + 'AlreadyLinked')})
-                    }
-                    user = req.user;
-                } else {
-                    //Otherwise, we have to create a new account.
-                    if (user) {
-                        return done(null, user);
-                    }
-                    if (setting.subscriptionEnabled) {
-                        user = new User();
-                    } else {
-                        return done(null, null, {message: req.__('app.subscriptionDisabled')});
-                    }
-                }
-
-                populateAndSaveUser(method, user, token, profile, done);
-            });
-        });
-    });
-};
-
 exports.loadUser = loadUser;
 exports.loadSetting = loadSetting;
 exports.populateAndSaveUser = populateAndSaveUser;
-exports.handleAuthCallback = handleAuthCallback;
 

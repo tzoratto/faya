@@ -65,17 +65,4 @@ describe('Tests operations related to the application settings', function () {
                 done(err);
             });
     });
-
-    it('should return the setting value when trying to get application\'s setting as a unauthenticated user', function (done) {
-        server
-            .get('/setting/authentication')
-            .expect(200)
-            .end(function (err, res) {
-                if (err) {
-                    throw err;
-                }
-                assert(res.body.data.authMethods, 'the available authentication methods must be returned');
-                done();
-            });
-    });
 });

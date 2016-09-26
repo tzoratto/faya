@@ -12,10 +12,6 @@ Some environment variables are available to configure Faya :
 |===
 |Name |Default |Description
 
-|HOSTNAME
-|null
-|Full URL of your Faya instance (eg. http://my-domain.com:8080)
-
 |MONGO_URL
 |null
 |Full URL of the MongoDB instance used for production
@@ -59,30 +55,6 @@ Some environment variables are available to configure Faya :
 |MAIL_FROM
 |null
 |Email address used to send mail
-
-|FACEBOOK_CLIENT_ID
-|null
-|Fill this along with FACEBOOK_CLIENT_SECRET to enable Facebook authentication
-
-|FACEBOOK_CLIENT_SECRET
-|null
-|Fill this along with FACEBOOK_CLIENT_ID to enable Facebook authentication
-
-|TWITTER_CONSUMER_KEY
-|null
-|Fill this along with TWITTER_CONSUMER_SECRET to enable Twitter authentication
-
-|TWITTER_CONSUMER_SECRET
-|null
-|Fill this along with TWITTER_CONSUMER_ID to enable Twitter authentication
-
-|GOOGLE_CLIENT_ID
-|null
-|Fill this along with GOOGLE_CLIENT_SECRET to enable GOOGLE authentication
-
-|GOOGLE_CLIENT_SECRET
-|null
-|Fill this along with GOOGLE_CLIENT_ID to enable GOOGLE authentication
 |===
 
 
@@ -90,4 +62,3 @@ Some environment variables are available to configure Faya :
 
 * JSend https://labs.omniti.com/labs/jsend
 * https://github.com/madhums/node-express-mongoose-demo
-* https://scotch.io/tutorials/easy-node-authentication-setup-and-local

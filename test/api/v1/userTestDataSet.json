@@ -15,11 +15,8 @@
         },
         {
             "_id": "303030303030303030303032",
-            "facebook": {
-                "id": "00",
-                "token": "00",
-                "email": "test@test.com",
-                "name": "Test Test"
+            "local": {
+                "email": "local2@local.com"
             },
             "apiKeyPairs": [
                 {
@@ -30,11 +27,8 @@
         },
         {
             "_id": "303030303030303030303033",
-            "google": {
-                "id": "00",
-                "token": "00",
-                "email": "google@google.com",
-                "name": "my name"
+            "local": {
+                "email": "test@local.com"
             },
             "apiKeyPairs": [
                 {

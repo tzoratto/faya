@@ -5,7 +5,6 @@
  */
 
 const JsonResponse = require('../models/response/jsonResponse');
-const appConfig = require('../config/app');
 const User = require('../models/user');
 const sendMail = require('../utils/sendMail');
 
@@ -114,153 +113,6 @@ var signupValidation = function (req, res, next) {
     });
 };
 
-/**
- * Unlink the Faya account from the user's account.
- *
- * @param req
- * @param res
- * @param next
- */
-var unlinkLocal = function (req, res, next) {
-    var user = req.user;
-    if (!user.facebook.id && !user.twitter.id && !user.google.id) {
-        res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkLocalImpossible')));
-    } else {
-        user.local = undefined;
-        user.save(function (err) {
-            if (err) {
-                return next(err);
-            }
-            res.status(200).json((new JsonResponse()).makeSuccess());
-        });
-    }
-};
-
-/**
- * Generic authentication callback.
- *
- * @param req
- * @param res
- * @param next
- * @return {Function} The actual callback.
- */
-var authenticationCallback = function(req, res, next) {
-    return function (err, user, info) {
-        if (err) {
-            return next(err);
-        }
-        if (user) {
-            req.logIn(user, function (err) {
-                if (err) {
-                    return next(err);
-                }
-                res.status(200).json((new JsonResponse()).makeSuccess());
-            });
-        } else {
-            res.status(400).json((new JsonResponse()).makeFailure(null, info.message));
-        }
-    };
-};
-
-/**
- * Facebook authentication callback.
- *
- * @param req
- * @param res
- * @param next
- */
-var facebookCallback = function (req, res, next) {
-    passport.authenticate('facebook', authenticationCallback(req, res, next))(req, res, next);
-};
-
-/**
- * Unlink the Facebook account from the user's account.
- *
- * @param req
- * @param res
- * @param next
- */
-var unlinkFacebook = function (req, res, next) {
-    var user = req.user;
-    if (!user.local.email && !user.twitter.id && !user.google.id) {
-        res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkFacebookImpossible')));
-    } else {
-        user.facebook = undefined;
-        user.save(function (err) {
-            if (err) {
-                return next(err);
-            }
-            res.status(200).json((new JsonResponse()).makeSuccess());
-        });
-    }
-};
-
-/**
- * Twitter authentication callback.
- *
- * @param req
- * @param res
- * @param next
- */
-var twitterCallback = function (req, res, next) {
-    passport.authenticate('twitter', authenticationCallback(req, res, next))(req, res, next);
-};
-
-/**
- * Unlink the Twitter account from the user's account.
- *
- * @param req
- * @param res
- * @param next
- */
-var unlinkTwitter = function (req, res, next) {
-    var user = req.user;
-    if (!user.local.email && !user.facebook.id && !user.google.id) {
-        res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkTwitterImpossible')));
-    } else {
-        user.twitter = undefined;
-        user.save(function (err) {
-            if (err) {
-                return next(err);
-            }
-            res.status(200).json((new JsonResponse()).makeSuccess());
-        });
-    }
-};
-
-/**
- * Google authentication callback.
- *
- * @param req
- * @param res
- * @param next
- */
-var googleCallback = function (req, res, next) {
-    passport.authenticate('google', authenticationCallback(req, res, next))(req, res, next);
-};
-
-/**
- * Unlink the Google account from the user's account.
- *
- * @param req
- * @param res
- * @param next
- */
-var unlinkGoogle = function (req, res, next) {
-    var user = req.user;
-    if (!user.local.email && !user.twitter.id && !user.facebook.id) {
-        res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.unlinkGoogleImpossible')));
-    } else {
-        user.google = undefined;
-        user.save(function (err) {
-            if (err) {
-                return next(err);
-            }
-            res.status(200).json((new JsonResponse()).makeSuccess());
-        });
-    }
-};
-
 module.exports = function (passportInstance) {
     var controllers = {};
 
@@ -270,13 +122,6 @@ module.exports = function (passportInstance) {
     controllers.logout = logout;
     controllers.signup = signup;
     controllers.signupValidation = signupValidation;
-    controllers.unlinkLocal = unlinkLocal;
-    controllers.facebookCallback = facebookCallback;
-    controllers.unlinkFacebook = unlinkFacebook;
-    controllers.twitterCallback = twitterCallback;
-    controllers.unlinkTwitter = unlinkTwitter;
-    controllers.googleCallback = googleCallback;
-    controllers.unlinkGoogle = unlinkGoogle;
 
     return controllers;
 };
