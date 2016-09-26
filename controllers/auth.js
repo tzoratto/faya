@@ -56,7 +56,7 @@ var logout = function (req, res) {
  * @param next
  */
 var signup = function (req, res, next) {
-    passport.authenticate('local-signup', function (err, user, info) {
+    passport.authenticate('local-signup', {badRequestMessage: res.__('account.missingCredentials')}, function (err, user, info) {
         if (err) {
             return next(err);
         }
