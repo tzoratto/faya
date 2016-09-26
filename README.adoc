@@ -7,7 +7,7 @@ Faya provides a simple way to create and manage tokens through its web interface
 Some environment variables are available to configure Faya :
 
 
-.Environement variables
+.Environment variables
 [options="header"]
 |===
 |Name |Default |Description
