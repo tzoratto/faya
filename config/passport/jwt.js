@@ -19,7 +19,10 @@ module.exports = new JwtStrategy({
     },
     function (req, jwtPayload, done) {
 
-        User.findOne({'local.email': jwtPayload.local.email, 'local.valid': true}, function (err, user) {
+        User.findOneAndUpdate({
+            'local.email': jwtPayload.local.email,
+            'local.valid': true
+        }, {$set: {lastAccess: new Date()}}, function (err, user) {
             if (err) {
                 return done(err);
             }

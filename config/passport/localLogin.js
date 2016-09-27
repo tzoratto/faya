@@ -17,7 +17,10 @@ module.exports = new LocalStrategy({
     },
     function (req, email, password, done) {
 
-        User.findOne({'local.email': email, 'local.valid': true}, function (err, user) {
+        User.findOneAndUpdate({
+            'local.email': email,
+            'local.valid': true
+        }, {$set: {lastAccess: new Date()}}, function (err, user) {
             if (err) {
                 return done(err);
             }
