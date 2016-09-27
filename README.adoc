@@ -20,9 +20,9 @@ Some environment variables are available to configure Faya :
 |mongodb://localhost/faya_test
 |Full URL of the MongoDB instance used for tests
 
-|SESSION_SALT
-|changethissalt
-|Salt used to encrypt session data
+|JWT_SECRET
+|changethis
+|Secret used to sign JWT
 
 |HTTPS_ENABLED
 |null

@@ -99,6 +99,25 @@ userSchema.methods.createNamespace = function (name, description, callback) {
 };
 
 /**
+ * Returns a DTO user
+ *
+ * @return DTO user
+ */
+userSchema.methods.toDTO = function () {
+    return {
+        local: {
+            email: this.local.email,
+            valid: this.local.valid,
+            date: this.local.date
+        },
+        lastAccess: this.lastAccess,
+        createdAt: this.createdAt,
+        apiKeyPairs: this.apiKeyPairs,
+        admin: this.admin
+    };
+};
+
+/**
  * Before validation of a User instance, populate some fields.
  */
 userSchema.pre('validate', function(next) {

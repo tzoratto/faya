@@ -7,10 +7,13 @@ const server = supertest.agent(app);
 const assert = require('assert');
 const dataSet = require('./authTestDataSet.json');
 const insertDataSet = require('./insertDataSet');
+const jwt = require('jsonwebtoken');
+const appConfig = require('../config/app');
 
 describe('Simple authentication tests', function () {
 
     var userId = dataSet.User[0]._id;
+    var authorization;
 
     before(function (done) {
         insertDataSet(dataSet, done);
@@ -45,7 +48,10 @@ describe('Simple authentication tests', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data === userId, 'the user\'s id must be returned');
+                assert(jwt.verify(res.body.data, appConfig.jwtSecret), 'a JWT must be returned');
+                authorization = {
+                    "Authorization": "JWT " + new Buffer(res.body.data).toString()
+                };
                 done();
             });
     });
@@ -53,6 +59,7 @@ describe('Simple authentication tests', function () {
     it('should return an empty list when there is no api key pair', function (done) {
         server
             .get('/api-key')
+            .set(authorization)
             .expect(200)
             .end(function (err, res) {
                 if (err) {
@@ -68,6 +75,7 @@ describe('Simple authentication tests', function () {
     it('should create a new api key pair', function (done) {
         server
             .post('/api-key')
+            .set(authorization)
             .expect(200)
             .end(function (err, res) {
                 if (err) {
@@ -84,6 +92,7 @@ describe('Simple authentication tests', function () {
     it('should return the list of the api key pairs', function (done) {
         server
             .get('/api-key')
+            .set(authorization)
             .expect(200)
             .end(function (err, res) {
                 if (err) {
@@ -97,6 +106,7 @@ describe('Simple authentication tests', function () {
     it('should return the details of the api key pair', function (done) {
         server
             .get('/api-key/' + keyPairId)
+            .set(authorization)
             .expect(200)
             .end(function (err, res) {
                 if (err) {
@@ -112,6 +122,7 @@ describe('Simple authentication tests', function () {
     it('should return a 404 code when accessing nonexistent api key pair', function (done) {
         server
             .get('/api-key/' + 132)
+            .set(authorization)
             .expect(404)
             .end(function (err) {
                 done(err);
@@ -121,6 +132,7 @@ describe('Simple authentication tests', function () {
     it('should return a 200 code when deleting an api key pair', function (done) {
         server
             .delete('/api-key/' + keyPairId)
+            .set(authorization)
             .expect(200)
             .end(function (err) {
                 done(err);
@@ -130,16 +142,8 @@ describe('Simple authentication tests', function () {
     it('should return a 404 code when deleting nonexistent api key pair', function (done) {
         server
             .delete('/api-key/' + 132)
+            .set(authorization)
             .expect(404)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when logging out', function (done) {
-        server
-            .get('/auth/logout')
-            .expect(200)
             .end(function (err) {
                 done(err);
             });

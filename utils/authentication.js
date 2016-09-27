@@ -5,11 +5,13 @@
  */
 
 const JsonResponse = require('../models/response/jsonResponse');
+const appConfig = require('../config/app');
+var jwt = require('jsonwebtoken');
 
 var passport;
 
 /**
- * Middleware that checks if the user is logged in with a valid session.
+ * Middleware that checks if the user is logged in with a valid token.
  *
  * @param req
  * @param res
@@ -17,30 +19,11 @@ var passport;
  * @return {*}
  */
 var loggedIn = function(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.status(403).json((new JsonResponse()).makeFailure());
+    return passport.authenticate('jwt', { session: false})(req, res, next);
 };
 
 /**
- * Middleware that checks if the user has no session.
- *
- * @param req
- * @param res
- * @param next
- * @return {*}
- */
-var loggedOff = function(req, res, next) {
-    if (req.isAuthenticated()) {
-        res.status(403).json((new JsonResponse()).makeFailure());
-    } else {
-        return next();
-    }
-};
-
-/**
- * Middleware that checks if the user is logged in either with a session or with an API key.
+ * Middleware that checks if the user is logged in either with a token or with an API key.
  *
  * @param req
  * @param res
@@ -48,12 +31,13 @@ var loggedOff = function(req, res, next) {
  * @return {*}
  */
 var loggedInForApi = function (req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    else {
-        return passport.authenticate('basic', {session: false})(req, res, next);
-    }
+    passport.authenticate('jwt', { session: false}, function (err, user, info) {
+            if (err || !user) {
+                return passport.authenticate('basic', {session: false})(req, res, next);
+            } else {
+                return next();
+            }
+        })(req, res, next);
 };
 
 /**
@@ -89,16 +73,30 @@ var isAdminOrIsSubject = function (req, res, next) {
     }
 };
 
+/**
+ * Makes a JWT.
+ *
+ * @param user
+ * @param callback
+ */
+var makeToken = function (user, callback) {
+    jwt.sign(user.toDTO(), appConfig.jwtSecret,
+        {
+            expiresIn: '7 days'
+        },
+        callback);
+};
+
 module.exports = function(passportInstance) {
     var exp = {};
 
     passport = passportInstance;
 
     exp.isLoggedIn = loggedIn;
-    exp.isLoggedOff = loggedOff;
     exp.isLoggedInForApi = loggedInForApi;
     exp.isAdmin = isAdmin;
     exp.isAdminOrIsSubject = isAdminOrIsSubject;
+    exp.makeToken = makeToken;
 
     return exp;
 };

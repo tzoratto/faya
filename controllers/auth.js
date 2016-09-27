@@ -7,6 +7,7 @@
 const JsonResponse = require('../models/response/jsonResponse');
 const User = require('../models/user');
 const sendMail = require('../utils/sendMail');
+var authUtils;
 
 var passport;
 
@@ -26,25 +27,14 @@ var login = function (req, res, next) {
             res.status(401).json((new JsonResponse()).makeFailure(null, info.message));
         }
         else {
-            req.logIn(user, function (err) {
+            authUtils.makeToken(user, function (err, token) {
                 if (err) {
                     return next(err);
                 }
-                res.status(200).json((new JsonResponse()).makeSuccess(user.id));
+                res.status(200).json((new JsonResponse()).makeSuccess(token));
             });
         }
     })(req, res, next);
-};
-
-/**
- * Logout.
- *
- * @param req
- * @param res
- */
-var logout = function (req, res) {
-    req.logout();
-    res.status(200).json((new JsonResponse()).makeSuccess());
 };
 
 /**
@@ -100,11 +90,11 @@ var signupValidation = function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                req.logIn(user, function (err) {
+                authUtils.makeToken(user, function (err, token) {
                     if (err) {
                         return next(err);
                     }
-                    res.status(200).json((new JsonResponse()).makeSuccess());
+                    res.status(200).json((new JsonResponse()).makeSuccess(token));
                 });
             });
         } else {
@@ -117,9 +107,9 @@ module.exports = function (passportInstance) {
     var controllers = {};
 
     passport = passportInstance;
+    authUtils = require('../utils/authentication')(passportInstance);
 
     controllers.login = login;
-    controllers.logout = logout;
     controllers.signup = signup;
     controllers.signupValidation = signupValidation;
 

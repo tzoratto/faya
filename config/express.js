@@ -8,8 +8,6 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
 const i18n = require("i18n");
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
 
 module.exports = function(app, passport, mongoDb) {
     i18n.configure({
@@ -22,22 +20,8 @@ module.exports = function(app, passport, mongoDb) {
     app.use(bodyParser.urlencoded({extended: false}));
     app.use(i18n.init);
 
-    var sessionConfig = {
-        secret: process.env.SESSION_SALT || 'changethissalt',
-        cookie: {
-            maxAge: 604800000
-        },
-        resave: false,
-        saveUninitialized: true,
-        //Persists sessions in MongoDB.
-        store: new MongoStore({
-            mongooseConnection: mongoDb
-        })
-    };
-
     if (app.get('env') === 'production' && process.env.HTTPS_ENABLED === 'true') {
         app.set('trust proxy', 1);
-        sessionConfig.cookie.secure = true;
     }
 
     app.use(function(req, res, next) {
@@ -46,7 +30,5 @@ module.exports = function(app, passport, mongoDb) {
         next();
     });
 
-    app.use(session(sessionConfig));
     app.use(passport.initialize());
-    app.use(passport.session());
 };

@@ -13,7 +13,6 @@ module.exports = function (passport) {
     const controllers = require('../controllers/auth')(passport);
 
     router.post('/login', controllers.login);
-    router.get('/logout', controllers.logout);
     router.post('/signup', controllers.signup);
     router.get('/signup-validation', controllers.signupValidation);
 
