@@ -13,6 +13,5 @@ const isLoggedInForApi = authUtils.isLoggedInForApi;
 
 router.get('/subscription', controllers.detailsSubscriptionEnabled);
 router.put('/subscription', isLoggedInForApi, isAdmin, controllers.updateSubscriptionEnabled);
-router.get('/authentication', controllers.detailsAuthMethods);
 
 module.exports = router;
