@@ -35,6 +35,7 @@ var loggedInForApi = function (req, res, next) {
             if (err || !user) {
                 return passport.authenticate('basic', {session: false})(req, res, next);
             } else {
+                req.user = user;
                 return next();
             }
         })(req, res, next);
