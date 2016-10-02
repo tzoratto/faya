@@ -59,7 +59,6 @@ var isAdmin = function (req, res, next) {
 
 /**
  * Middleware that checks if the logged in user is either an admin or has the right to manipulate the user with given id.
- * This middleware is to be used only on user-specific routes.
  *
  * @param req
  * @param res
@@ -67,11 +66,16 @@ var isAdmin = function (req, res, next) {
  * @return {*}
  */
 var isAdminOrIsSubject = function (req, res, next) {
-    if (req.user.id === req.params.id) {
+    var userInRoute = req.params.id;
+    var userInQuery = req.query.user;
+    var userLoggedIn = req.user.id;
+    if (userInRoute && !userInQuery && userInRoute === userLoggedIn) {
         return next();
-    } else {
-        isAdmin(req, res, next);
     }
+    if (!userInRoute && userInQuery && userInQuery === userLoggedIn) {
+        return next();
+    }
+    isAdmin(req, res, next);
 };
 
 /**

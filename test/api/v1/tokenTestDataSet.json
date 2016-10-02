@@ -18,6 +18,15 @@
                 }
             ],
             "admin": true
+        },
+        {
+            "_id": "303030303030303030303033",
+            "apiKeyPairs": [
+                {
+                    "keyId": "anOtherId",
+                    "keySecret": "anOtherSecret"
+                }
+            ]
         }
     ],
     "Namespace": [

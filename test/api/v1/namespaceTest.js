@@ -282,4 +282,18 @@ describe('Test namespace-related operations', function () {
                 done(err);
             });
     });
+
+    it('should return the number of user\'s namespaces when a user tries to get the number of namespaces it owns', function (done) {
+        server
+            .get('/api/v1/namespace/count?user=' + userId)
+            .set(authorization2)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.count === 1, 'the user has 1 namespace');
+                done();
+            });
+    });
 });

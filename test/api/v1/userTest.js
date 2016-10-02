@@ -113,6 +113,16 @@ describe('Tests user-related operations', function () {
             });
     });
 
+    it('should return a 403 code when trying to delete another user\'s account', function (done) {
+        server
+            .delete('/api/v1/user/' + userId2 + '?user=' + userId)
+            .set(authorizationNonAdmin)
+            .expect(403)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
     it('should return a 200 code when trying to delete user\'s own account', function (done) {
         server
             .delete('/api/v1/user/' + userId)

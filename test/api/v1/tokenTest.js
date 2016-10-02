@@ -13,6 +13,9 @@ describe('Test token-related operations', function () {
     var authorization = {
         "Authorization": "Basic: " + new Buffer(dataSet.User[0].apiKeyPairs[0].keyId + ':' + dataSet.User[0].apiKeyPairs[0].keySecret).toString('base64')
     };
+    var authorization2 = {
+        "Authorization": "Basic: " + new Buffer(dataSet.User[2].apiKeyPairs[0].keyId + ':' + dataSet.User[2].apiKeyPairs[0].keySecret).toString('base64')
+    };
     var authorizationAdmin = {
         "Authorization": "Basic: " + new Buffer(dataSet.User[1].apiKeyPairs[0].keyId + ':' + dataSet.User[1].apiKeyPairs[0].keySecret).toString('base64')
     };
@@ -433,10 +436,24 @@ describe('Test token-related operations', function () {
     it('should return a 403 code when trying to get user\'s tokens count as a non-admin', function (done) {
         server
             .get('/api/v1/token/count?user=' + userId)
-            .set(authorization)
+            .set(authorization2)
             .expect(403)
             .end(function (err) {
                 done(err);
+            });
+    });
+
+    it('should return the number of tokens when a user tries to get the number of tokens it owns', function (done) {
+        server
+            .get('/api/v1/token/count?user=' + userId)
+            .set(authorization)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data.count === 1, 'the user has 1 token');
+                done();
             });
     });
 });
