@@ -105,6 +105,7 @@ userSchema.methods.createNamespace = function (name, description, callback) {
  */
 userSchema.methods.toDTO = function () {
     return {
+        _id: this.id,
         local: {
             email: this.local.email,
             valid: this.local.valid,
