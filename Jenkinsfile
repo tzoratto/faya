@@ -32,8 +32,10 @@ try {
 
             stage 'Quality analysis'
 
-                archive excludes: 'node_modules/**', includes: '**'
-                build job: 'faya-sonar'
+                def scannerHome = tool 'sonar runner';
+                withSonarQubeEnv('sonar') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
 
             stage 'Build & Push Docker hub'
 
