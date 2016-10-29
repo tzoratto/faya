@@ -18,8 +18,8 @@ try {
         stage 'Tests & Reports'
 
             docker.image('mongo:3.3.6').withRun {c ->
+                def nodeHome = tool 'node6'
                 withEnv(["MONGO_TEST_URL=mongodb://${containerIp(c)}/faya_test", "PATH+NODE=${nodeHome}/bin"]) {
-                    def nodeHome = tool 'node6'
                     sh "${nodeHome}/bin/node -v"
                     sh "${nodeHome}/bin/npm prune"
                     sh "${nodeHome}/bin/npm install"
