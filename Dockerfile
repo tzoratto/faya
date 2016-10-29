@@ -1,4 +1,4 @@
-FROM node:4.4.7
+FROM node:6.9.1
 MAINTAINER Thomas Zoratto <thomas.zoratto@gmail.com>
 
 RUN mkdir -p /usr/src/app
