@@ -139,7 +139,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 1, 'there is only one token');
+                assert(res.body.data.length === 1, 'there is only one token in this namespace');
                 done();
             });
     });
@@ -404,7 +404,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.count === 1, 'there is one token');
+                assert(res.body.data.count === 2, 'there is two tokens');
                 done();
             });
     });
@@ -428,7 +428,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.count === 1, 'the user has 1 token');
+                assert(res.body.data.count === 2, 'the user has 2 tokens');
                 done();
             });
     });
@@ -452,7 +452,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.count === 1, 'the user has 1 token');
+                assert(res.body.data.count === 2, 'the user has 2 tokens');
                 done();
             });
     });

@@ -21,7 +21,7 @@ exports.list = function (req, res, next) {
     if (!req.query.namespace || mongoose.Types.ObjectId.isValid(req.query.namespace)) {
         var query = req.query.q ? req.query.q : '.*';
         var regex = new RegExp(query);
-        var namespaceId = req.params.namespaceId;
+        var namespaceId = req.query.namespace;
         var namespaceQuery = {
             'user': req.user._id
         };
