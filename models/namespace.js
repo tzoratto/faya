@@ -13,11 +13,11 @@ const Token = require('./token');
 var namespaceSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
-        required: true
+        required: [true, 'namespace.userRequired']
     },
     name: {
         type: String,
-        required: true
+        required: [true, 'namespace.nameRequired']
     },
     description: String
 });
@@ -45,7 +45,7 @@ namespaceSchema.path('name').validate(function (value, done) {
         }
         done(!count);
     });
-}, 'The name must be unique');
+}, 'namespace.nameUnique');
 
 /**
  * Deletes all namespace's tokens when deleting namespace.

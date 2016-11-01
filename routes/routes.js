@@ -37,7 +37,7 @@ module.exports = function (app, passport) {
      */
     app.use(function (err, req, res, next) {
         //Checks if this is a validation error.
-        var valErrors = validationErrors(err);
+        var valErrors = validationErrors(err, res);
         if (valErrors) {
             res.status(400).json((new JsonResponse()).makeFailure(valErrors));
             return;

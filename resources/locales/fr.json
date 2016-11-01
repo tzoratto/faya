@@ -18,15 +18,26 @@
 		"apiKeyNotFound": "Cette clé API n'existe pas",
 		"missingCredentials": "Email ou mot de passe manquant"
 	},
+	"misc": {
+		"indexViolation": "Violation d'index"
+	},
 	"namespace": {
-		"notFound": "Ce namespace n'existe pas"
+		"notFound": "Ce namespace n'existe pas",
+		"nameUnique": "Le nom du namespace doit être unique",
+		"nameRequired": "Le nom du namespace est requis",
+		"userRequired": "Le propriétaire du namespace est requis"
 	},
 	"notFound": "Page introuvable",
 	"setting": {
-		"notFound": "Paramètre introuvable"
+		"notFound": "Paramètre introuvable",
+		"subscriptionEnabledRequired": "Le paramètre \"inscriptions activées\" est requis"
 	},
 	"token": {
-		"notFound": "Ce token n'existe pas"
+		"notFound": "Ce token n'existe pas",
+		"namespaceRequired": "Le namespace du token est requis",
+		"valueRequired": "La valeur du token est requis",
+		"startsAtBeforeEndsAt": "La propriété \"startsAt\" doit être antérieur à \"endsAt\"",
+		"poolZeroOrMore": "La propriété \"pool\" doit être supérieure ou égale à 0"
 	},
 	"user": {
 		"cannotDeleteAdmin": "Un administrateur ne peut pas être supprimé",

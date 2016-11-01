@@ -13,11 +13,11 @@ const uuid = require('uuid');
 var tokenSchema = mongoose.Schema({
     namespace: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Namespace',
-        required: true
+        required: [true, 'token.namespaceRequired']
     },
     value: {
         type: String,
-        required: true
+        required: [true, 'token.valueRequired']
     },
     description: String,
     count: {type: Number, default: 0},
@@ -51,7 +51,7 @@ tokenSchema.path('startsAt').validate(function (value, done) {
     } else {
         done(true);
     }
-}, 'The startsAt property must be before the endsAt one');
+}, 'token.startsAtBeforeEndsAt');
 
 /**
  * Ensures that the token's pool property is superior or equal to 0 if set.
@@ -63,7 +63,7 @@ tokenSchema.path('pool').validate(function (value, done) {
         //here, pool is either undefined, null or 0 thus it's ok
         done(true);
     }
-}, 'The pool property must be superior or equal to 0');
+}, 'token.poolZeroOrMore');
 
 /**
  * Before validation of a Token instance, populate some fields.

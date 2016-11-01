@@ -18,15 +18,26 @@
 		"apiKeyNotFound": "API key not found",
 		"missingCredentials": "Missing email or password"
 	},
+	"misc": {
+		"indexViolation": "Index uniqueness violation"
+	},
 	"namespace": {
-		"notFound": "Namespace not found"
+		"notFound": "Namespace not found",
+		"nameUnique": "The namespace name must be unique",
+		"nameRequired": "The namespace name is required",
+		"userRequired": "The namespace owner is required"
 	},
 	"notFound": "Not found",
 	"setting": {
-		"notFound": "Setting not found"
+		"notFound": "Setting not found",
+		"subscriptionEnabledRequired": "The \"subscription enabled\" parameter is required"
 	},
 	"token": {
-		"notFound": "Token not found"
+		"notFound": "Token not found",
+		"namespaceRequired": "The token namespace is required",
+		"valueRequired": "The token value is required",
+		"startsAtBeforeEndsAt": "The \"startsAt\" property must be before the \"endsAt\" one",
+		"poolZeroOrMore": "The \"pool\" property must be superior or equal to 0"
 	},
 	"user": {
 		"cannotDeleteAdmin": "An admin cannot be deleted",

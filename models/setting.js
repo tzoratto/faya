@@ -15,7 +15,7 @@ const mongoose = require('mongoose');
 var settingSchema = mongoose.Schema({
     subscriptionEnabled: {
         type: Boolean,
-        required: true,
+        required: [true, 'setting.subscriptionEnabledRequired'],
         default: true
     }
 });
