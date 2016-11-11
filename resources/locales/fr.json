@@ -6,7 +6,8 @@
 		"serverError": "Impossible de démarrer le serveur",
 		"serverShutdown": "%s reçu, arrêt du serveur",
 		"settingInsertError": "L'initialisation des paramètres a échoué. Erreur : %s",
-		"subscriptionDisabled": "Les inscriptions sont actuellement désactivées"
+		"subscriptionDisabled": "Les inscriptions sont actuellement désactivées",
+		"databaseDisconnected": "Base de données déconnectée"
 	},
 	"account": {
 		"validationLink": "Veuillez confirmer votre inscription en cliquant sur le lien %s",

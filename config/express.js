@@ -10,7 +10,7 @@ const path = require('path');
 const i18n = require("i18n");
 const cors = require('cors');
 
-module.exports = function(app, passport, mongoDb) {
+module.exports = function(app, passport) {
     i18n.configure({
         locales: ['en', 'fr'],
         directory: path.join(__dirname, '..', '/resources/locales'),

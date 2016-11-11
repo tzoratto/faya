@@ -13,28 +13,28 @@ const i18n = require("i18n");
 const passport = require('passport');
 const insertSetting = require('./config/setting');
 
+mongoose.Promise = Promise;
+
 const app = express();
 
 module.exports = app;
 
-mongoose.Promise = global.Promise;
-var mongoDb = connectToDB();
-
 require('./config/logs')(app);
 require('./config/passport')(passport);
-require('./config/express')(app, passport, mongoDb);
+require('./config/express')(app, passport);
 require('./routes/routes')(app, passport);
 
-mongoDb
-    .on('error', function(err) {
-        logger.error(i18n.__('app.databaseError'), err);
+connectToDB()
+    .on('disconnected', function () {
+        logger.error(i18n.__('app.databaseDisconnected'));
     })
-    .on('disconnected', connectToDB)
-    .once('open', function () {
+    .on('connected', function () {
         logger.info(i18n.__('app.databaseConnected'));
+    })
+    .once('open', function () {
         insertSetting(function (err) {
             if (err) {
-                logger.error(i18n.__('app.settingInsertError', err));
+                logger.error(i18n.__('app.settingInsertError', err.message));
                 process.exit(1);
             }
             startServer();
@@ -44,10 +44,21 @@ mongoDb
 /**
  * Opens a connection to MongoDB.
  *
- * @return MongoDB connection.
  */
 function connectToDB() {
-    return mongoose.connect(dbConfig.db).connection;
+    var mongoDb = mongoose.connect(dbConfig.db, {
+        server: {
+            reconnectTries: Number.MAX_VALUE,
+            reconnectInterval: 1000
+        }
+    });
+    mongoDb.catch(function (err) {
+        logger.error(i18n.__('app.databaseError'), err);
+        mongoose.connection.close(function () {
+            setTimeout(connectToDB, 1000);
+        });
+    });
+    return mongoDb.connection;
 }
 
 

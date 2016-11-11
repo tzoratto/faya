@@ -6,7 +6,8 @@
 		"serverError": "Cannot start the server",
 		"serverShutdown": "Caught %s, shutting down",
 		"settingInsertError": "Settings initialization failed. Error : %s",
-		"subscriptionDisabled": "Subscription are currently disabled"
+		"subscriptionDisabled": "Subscription are currently disabled",
+		"databaseDisconnected": "Database disconnected"
 	},
 	"account": {
 		"validationLink": "Please confirm your registration by clicking on the validation link %s",
