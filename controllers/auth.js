@@ -7,6 +7,7 @@
 const JsonResponse = require('../models/response/jsonResponse');
 const User = require('../models/user');
 const sendMail = require('../utils/sendMail');
+const uuid = require('uuid');
 var authUtils;
 
 var passport;
@@ -103,6 +104,84 @@ var signupValidation = function (req, res, next) {
     });
 };
 
+/**
+ * Sends a link to reset user's password.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+var passwordReset = function (req, res, next) {
+    var email = req.body.email;
+
+    User.findOne({
+        'local.email': email,
+        'local.valid': true
+    }, function (err, user) {
+        if (err) {
+            return next(err);
+        }
+        if (user) {
+            user.local.token = uuid.v4();
+            user.save(function (err) {
+                if (err) {
+                    return done(err);
+                }
+                var mailContent = res.__('account.passwordResetLink', req.header('referer') + '?email=' + user.local.email + '&token=' + user.local.token);
+                sendMail(user.local.email, res.__('account.passwordResetMailSubject'), mailContent, function (err) {
+                    if (err) {
+                        return next(err);
+                    } else {
+                        res.status(200).json((new JsonResponse()).makeSuccess());
+                    }
+                });
+            });
+        } else {
+            res.status(400).json((new JsonResponse().makeFailure(null, res.__('account.noValidUserFound'))))
+        }
+    });
+};
+
+/**
+ * Actually reset user's password.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+var passwordResetValidation = function (req, res, next) {
+    var email = req.body.email;
+    var token = req.body.token;
+    var password = req.body.password;
+
+    User.findOne({
+        'local.email': email,
+        'local.token': token,
+        'local.valid': true
+    }, function (err, user) {
+        if (err) {
+            return next(err);
+        }
+        if (user) {
+            user.local.password = user.generateHash(password);
+            user.local.token = undefined;
+            user.save(function (err) {
+                if (err) {
+                    return next(err);
+                }
+                authUtils.makeToken(user, function (err, token) {
+                    if (err) {
+                        return next(err);
+                    }
+                    res.status(200).json((new JsonResponse()).makeSuccess(token));
+                });
+            });
+        } else {
+            res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.validationInvalid')));
+        }
+    });
+};
+
 module.exports = function (passportInstance) {
     var controllers = {};
 
@@ -112,6 +191,8 @@ module.exports = function (passportInstance) {
     controllers.login = login;
     controllers.signup = signup;
     controllers.signupValidation = signupValidation;
+    controllers.passwordReset = passwordReset;
+    controllers.passwordResetValidation = passwordResetValidation;
 
     return controllers;
 };

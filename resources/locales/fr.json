@@ -17,7 +17,9 @@
 		"badPassword": "Mauvais mot de passe",
 		"alreadyExisting": "Ce compte existe déjà",
 		"apiKeyNotFound": "Cette clé API n'existe pas",
-		"missingCredentials": "Email ou mot de passe manquant"
+		"missingCredentials": "Email ou mot de passe manquant",
+		"passwordResetLink": "Une demande de réinitialisation de mot de passe a été effectuée. Si vous en êtes à l'origine, cliquez sur le lien pour changer votre mot de passe %s",
+		"passwordResetMailSubject": "Faya - Réinitialisation mot de passe"
 	},
 	"misc": {
 		"castError": "La propriété \"%s\" n'est pas du type attendu",

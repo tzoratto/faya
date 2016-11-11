@@ -17,7 +17,9 @@
 		"badPassword": "Bad password",
 		"alreadyExisting": "This account already exists",
 		"apiKeyNotFound": "API key not found",
-		"missingCredentials": "Missing email or password"
+		"missingCredentials": "Missing email or password",
+		"passwordResetLink": "Somebody requested to reset your password. If you have requested it, you can reset your password by clicking this link %s",
+		"passwordResetMailSubject": "Faya - Reset your password"
 	},
 	"misc": {
 		"castError": "Bad property type for \"%s\"",
