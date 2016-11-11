@@ -25,7 +25,7 @@ var login = function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            res.status(401).json((new JsonResponse()).makeFailure(null, info.message));
+            res.status(401).json((new JsonResponse()).makeFailure(info.message));
         }
         else {
             authUtils.makeToken(user, function (err, token) {
@@ -51,7 +51,7 @@ var signup = function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            res.status(400).json((new JsonResponse()).makeFailure(null, info.message));
+            res.status(400).json((new JsonResponse()).makeFailure(info.message));
         }
         else {
             var mailContent = res.__('account.validationLink', req.header('referer') + '?email=' + user.local.email + '&token=' + user.local.token);
@@ -99,7 +99,7 @@ var signupValidation = function (req, res, next) {
                 });
             });
         } else {
-            res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.validationInvalid')));
+            res.status(400).json((new JsonResponse()).makeFailure(res.__('account.validationInvalid')));
         }
     });
 };
@@ -137,7 +137,7 @@ var passwordReset = function (req, res, next) {
                 });
             });
         } else {
-            res.status(400).json((new JsonResponse().makeFailure(null, res.__('account.noValidUserFound'))))
+            res.status(400).json((new JsonResponse().makeFailure(res.__('account.noValidUserFound'))))
         }
     });
 };
@@ -177,7 +177,7 @@ var passwordResetValidation = function (req, res, next) {
                 });
             });
         } else {
-            res.status(400).json((new JsonResponse()).makeFailure(null, res.__('account.validationInvalid')));
+            res.status(400).json((new JsonResponse()).makeFailure(res.__('account.validationInvalid')));
         }
     });
 };

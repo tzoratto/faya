@@ -72,7 +72,7 @@ exports.details = function (req, res, next) {
         if (user) {
             res.status(200).json((new JsonResponse()).makeSuccess(user));
         } else {
-            res.status(404).json((new JsonResponse()).makeFailure('', res.__('user.notFound')));
+            res.status(404).json((new JsonResponse()).makeFailure(res.__('user.notFound')));
         }
     });
 };
@@ -91,7 +91,7 @@ exports.delete = function (req, res, next) {
         }
         if (user) {
             if (user.admin) {
-                res.status(400).json((new JsonResponse()).makeFailure('', res.__('user.cannotDeleteAdmin')));
+                res.status(400).json((new JsonResponse()).makeFailure(res.__('user.cannotDeleteAdmin')));
                 return;
             }
             user.remove(function (err) {
@@ -101,7 +101,7 @@ exports.delete = function (req, res, next) {
                 res.status(200).json((new JsonResponse()).makeSuccess());
             });
         } else {
-            res.status(404).json((new JsonResponse()).makeFailure('', res.__('user.notFound')));
+            res.status(404).json((new JsonResponse()).makeFailure(res.__('user.notFound')));
         }
     });
 };

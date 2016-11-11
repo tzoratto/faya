@@ -55,7 +55,7 @@ function loadSetting(req, res, next, callback) {
         if (setting) {
             callback(setting);
         } else {
-            res.status(500).json((new JsonResponse()).makeError(null, res.__('setting.notFound')));
+            res.status(500).json((new JsonResponse()).makeError(res.__('setting.notFound')));
         }
     });
 }

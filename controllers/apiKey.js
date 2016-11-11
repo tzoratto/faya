@@ -51,7 +51,7 @@ exports.delete = function (req, res, next) {
         } else if (user) {
             res.status(200).json((new JsonResponse()).makeSuccess());
         } else {
-            res.status(404).json((new JsonResponse()).makeFailure(null, res.__('account.apiKeyNotFound')));
+            res.status(404).json((new JsonResponse()).makeFailure(res.__('account.apiKeyNotFound')));
         }
     });
 };
@@ -69,6 +69,6 @@ exports.details = function (req, res, next) {
     if (keyPair) {
         res.status(200).json((new JsonResponse()).makeSuccess(keyPair));
     } else {
-        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('account.apiKeyNotFound')));
+        res.status(404).json((new JsonResponse()).makeFailure(res.__('account.apiKeyNotFound')));
     }
 };

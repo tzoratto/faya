@@ -33,12 +33,10 @@ jsonResponse.prototype.makeSuccess = function(data) {
  * @param message
  * @return {jsonResponse}
  */
-jsonResponse.prototype.makeFailure = function(data, message) {
+jsonResponse.prototype.makeFailure = function(message, data) {
     this.status = 'fail';
-    this.data = data || null;
-    if (message && !this.data) {
-        this.data = {'message': message};
-    }
+    this.message = message || '';
+    this.data = data || undefined;
     return this;
 };
 

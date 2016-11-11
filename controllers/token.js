@@ -255,7 +255,7 @@ function ifUserOwnsTheToken(req, res, next, userId, tokenId, callback) {
             return next(err);
         }
         if (notFound) {
-            res.status(404).json((new JsonResponse()).makeFailure(null, res.__('token.notFound')));
+            res.status(404).json((new JsonResponse()).makeFailure(res.__('token.notFound')));
             return;
         }
         if (belongs) {

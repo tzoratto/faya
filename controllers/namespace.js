@@ -135,10 +135,10 @@ function ifUserOwnsTheNamespace(req, res, next, userId, namespaceId, callback) {
             if (namespace) {
                 callback(namespace);
             } else {
-                res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
+                res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
             }
         });
     } else {
-        res.status(404).json((new JsonResponse()).makeFailure(null, res.__('namespace.notFound')));
+        res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
     }
 }
