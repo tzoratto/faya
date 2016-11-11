@@ -60,7 +60,7 @@ exports.list = function (req, res, next) {
  */
 exports.create = function (req, res, next) {
     if (!mongoose.Types.ObjectId.isValid(req.body.namespace)) {
-        res.status(404).json((new JsonResponse()).makeSuccess(res.__('namespace.notFound')));
+        res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
         return;
     }
     Namespace.findOne({'user': req.user._id, '_id': req.body.namespace}, function (err, namespace) {
@@ -83,7 +83,7 @@ exports.create = function (req, res, next) {
                 res.status(200).json((new JsonResponse()).makeSuccess(token));
             })
         } else {
-            res.status(404).json((new JsonResponse()).makeSuccess(res.__('namespace.notFound')));
+            res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
         }
     });
 };
