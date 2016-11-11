@@ -32,7 +32,10 @@ var loggedIn = function(req, res, next) {
  */
 var loggedInForApi = function (req, res, next) {
     passport.authenticate('jwt', { session: false}, function (err, user, info) {
-            if (err || !user) {
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
                 return passport.authenticate('basic', {session: false})(req, res, next);
             } else {
                 req.user = user;
