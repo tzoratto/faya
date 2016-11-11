@@ -72,7 +72,7 @@ function checkTokensWithoutPool(namespaceId, tokenValue, callback) {
                 ]
             }
         ],
-        'pool': {'$exists': false}
+        'pool': null
     }, {$inc: {'count': 1}}, function (err, token) {
         if (err) {
             return callback(err);
