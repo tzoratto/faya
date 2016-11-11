@@ -7,6 +7,24 @@
                 "password": "$2a$08$bzqD7/EZ3uS8qgSdWY.ZGOZJ9dvx13HDUhP4TQ/hXR2pnxCqUCx5K",
                 "valid": true
             }
+        },
+        {
+            "_id": "303030303030303030303032",
+            "local": {
+                "email": "test2@test.com",
+                "token": "atoken",
+                "password": "$2a$08$bzqD7/EZ3uS8qgSdWY.ZGOZJ9dvx13HDUhP4TQ/hXR2pnxCqUCx5K",
+                "valid": true
+            }
+        },
+        {
+            "_id": "303030303030303030303033",
+            "local": {
+                "email": "test3@test.com",
+                "token": "atoken",
+                "password": "$2a$08$bzqD7/EZ3uS8qgSdWY.ZGOZJ9dvx13HDUhP4TQ/hXR2pnxCqUCx5K",
+                "valid": true
+            }
         }
     ],
     "Namespace": [

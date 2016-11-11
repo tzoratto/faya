@@ -12,7 +12,8 @@ const appConfig = require('../config/app');
 
 describe('Simple authentication tests', function () {
 
-    var userId = dataSet.User[0]._id;
+    var user2 = dataSet.User[1];
+    var user3 = dataSet.User[2];
     var authorization;
 
     before(function (done) {
@@ -146,6 +147,52 @@ describe('Simple authentication tests', function () {
             .expect(404)
             .end(function (err) {
                 done(err);
+            });
+    });
+
+    it('should return a 400 code when validating an account with bad token', function (done) {
+        server
+            .get('/auth/signup-validation?email=' + user2.local.email + '&token=yay')
+            .expect(400)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when validating an account with good token', function (done) {
+        server
+            .get('/auth/signup-validation?email=' + user2.local.email + '&token=' + user2.local.token)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data, 'a JWT must be returned');
+                done();
+            });
+    });
+
+    it('should return a 400 code when resetting password with bad token', function (done) {
+        server
+            .post('/auth/password-reset-validation')
+            .send({email: user3.local.email, token: 'yay', password: 'newpassword'})
+            .expect(400)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
+    it('should return a 200 code when resetting password with good token', function (done) {
+        server
+            .post('/auth/password-reset-validation')
+            .send({email: user3.local.email, token: user3.local.token, password: 'newpassword'})
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert(res.body.data, 'a JWT must be returned');
+                done();
             });
     });
 });
