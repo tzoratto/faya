@@ -4,7 +4,7 @@
  * @file Controllers related to tokens.
  */
 
-const JsonResponse = require('../models/response/jsonResponse');
+const sendResponse = require('../utils/sendResponse');
 const Namespace = require('../models/namespace');
 const Token = require('../models/token');
 const mongoose = require('mongoose');
@@ -33,7 +33,7 @@ exports.list = function (req, res, next) {
                 return next(err);
             }
             if (namespaceId && namespaces.length === 0) {
-                res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
+                sendResponse.failureJSON(res, 404, res.__('namespace.notFound'));
                 return;
             }
             Token.find({
@@ -43,11 +43,11 @@ exports.list = function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                res.status(200).json((new JsonResponse()).makeSuccess(tokens));
+                sendResponse.successJSON(res, 200, tokens);
             });
         });
     } else {
-        res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
+        sendResponse.failureJSON(res, 404, res.__('namespace.notFound'));
     }
 };
 
@@ -60,7 +60,7 @@ exports.list = function (req, res, next) {
  */
 exports.create = function (req, res, next) {
     if (!mongoose.Types.ObjectId.isValid(req.body.namespace)) {
-        res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
+        sendResponse.failureJSON(res, 404, res.__('namespace.notFound'));
         return;
     }
     Namespace.findOne({'user': req.user._id, '_id': req.body.namespace}, function (err, namespace) {
@@ -80,10 +80,10 @@ exports.create = function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                res.status(200).json((new JsonResponse()).makeSuccess(token));
+                sendResponse.successJSON(res, 200, token);
             })
         } else {
-            res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
+            sendResponse.failureJSON(res, 404, res.__('namespace.notFound'));
         }
     });
 };
@@ -101,7 +101,7 @@ exports.delete = function (req, res, next) {
             if (err) {
                 return next(err);
             }
-            res.status(200).json((new JsonResponse()).makeSuccess());
+            sendResponse.successJSON(res, 200);
         });
     });
 };
@@ -115,7 +115,7 @@ exports.delete = function (req, res, next) {
  */
 exports.details = function (req, res, next) {
     ifUserOwnsTheToken(req, res, next, req.user._id, req.params.id, function (token) {
-        res.status(200).json((new JsonResponse()).makeSuccess(token));
+        sendResponse.successJSON(res, 200, token);
     });
 };
 
@@ -137,7 +137,7 @@ exports.update = function (req, res, next) {
             if (err) {
                 return next(err);
             } else {
-                res.status(200).json((new JsonResponse()).makeSuccess(token));
+                sendResponse.successJSON(res, 200, token);
             }
         });
     });
@@ -226,7 +226,7 @@ exports.count = function (req, res, next) {
                 if (err) {
                     return next(err);
                 }
-                res.status(200).json((new JsonResponse()).makeSuccess({count: count}));
+                sendResponse.successJSON(res, 200, {count: count});
             });
         });
     } else {
@@ -234,7 +234,7 @@ exports.count = function (req, res, next) {
             if (err) {
                 return next(err);
             }
-            res.status(200).json((new JsonResponse()).makeSuccess({count: count}));
+            sendResponse.successJSON(res, 200, {count: count});
         });
     }
 };
@@ -255,13 +255,13 @@ function ifUserOwnsTheToken(req, res, next, userId, tokenId, callback) {
             return next(err);
         }
         if (notFound) {
-            res.status(404).json((new JsonResponse()).makeFailure(res.__('token.notFound')));
+            sendResponse.failureJSON(res, 404, res.__('token.notFound'));
             return;
         }
         if (belongs) {
             callback(token);
         } else {
-            res.status(403).json((new JsonResponse()).makeFailure(res.__('token.unauthorized')));
+            sendResponse.failureJSON(res, 403, res.__('token.unauthorized'));
         }
     });
 }
@@ -282,7 +282,7 @@ function updateProperty(req, res, next, token, propertyName, value) {
         if (err) {
             return next(err);
         } else {
-            res.status(200).json((new JsonResponse()).makeSuccess());
+            sendResponse.successJSON(res, 200);
         }
     });
 }

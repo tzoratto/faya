@@ -4,7 +4,7 @@
  * @file Controller related to authentication.
  */
 
-const JsonResponse = require('../models/response/jsonResponse');
+const sendResponse = require('../utils/sendResponse');
 const User = require('../models/user');
 const sendMail = require('../utils/sendMail');
 const uuid = require('uuid');
@@ -25,14 +25,14 @@ var login = function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            res.status(401).json((new JsonResponse()).makeFailure(info.message));
+            sendResponse.failureJSON(res, 401, info.message);
         }
         else {
             authUtils.makeToken(user, function (err, token) {
                 if (err) {
                     return next(err);
                 }
-                res.status(200).json((new JsonResponse()).makeSuccess(token));
+                sendResponse.successJSON(res, 200, token);
             });
         }
     })(req, res, next);
@@ -51,7 +51,7 @@ var signup = function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            res.status(400).json((new JsonResponse()).makeFailure(info.message));
+            sendResponse.failureJSON(res, 400, info.message);
         }
         else {
             var mailContent = res.__('account.validationLink', req.header('referer') + '?email=' + user.local.email + '&token=' + user.local.token);
@@ -59,7 +59,7 @@ var signup = function (req, res, next) {
                 if (err) {
                     return next(err);
                 } else {
-                    res.status(200).json((new JsonResponse()).makeSuccess());
+                    sendResponse.successJSON(res, 200);
                 }
             });
         }
@@ -95,11 +95,11 @@ var signupValidation = function (req, res, next) {
                     if (err) {
                         return next(err);
                     }
-                    res.status(200).json((new JsonResponse()).makeSuccess(token));
+                    sendResponse.successJSON(res, 200, token);
                 });
             });
         } else {
-            res.status(400).json((new JsonResponse()).makeFailure(res.__('account.validationInvalid')));
+            sendResponse.failureJSON(res, 400, res.__('account.validationInvalid'));
         }
     });
 };
@@ -132,12 +132,12 @@ var passwordReset = function (req, res, next) {
                     if (err) {
                         return next(err);
                     } else {
-                        res.status(200).json((new JsonResponse()).makeSuccess());
+                        sendResponse.successJSON(res, 200);
                     }
                 });
             });
         } else {
-            res.status(400).json((new JsonResponse().makeFailure(res.__('account.noValidUserFound'))))
+            sendResponse.failureJSON(res, 400, res.__('account.noValidUserFound'));
         }
     });
 };
@@ -173,11 +173,11 @@ var passwordResetValidation = function (req, res, next) {
                     if (err) {
                         return next(err);
                     }
-                    res.status(200).json((new JsonResponse()).makeSuccess(token));
+                    sendResponse.successJSON(res, 200, token);
                 });
             });
         } else {
-            res.status(400).json((new JsonResponse()).makeFailure(res.__('account.validationInvalid')));
+            sendResponse.failureJSON(res, 400, res.__('account.validationInvalid'));
         }
     });
 };

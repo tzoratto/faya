@@ -4,7 +4,7 @@
  * @file Routes entrypoint.
  */
 
-const JsonResponse = require('../models/response/jsonResponse');
+const sendResponse = require('../utils/sendResponse');
 const logger = require('winston');
 const apiRoutes = require('./api/api');
 const apiKeyRoutes = require('./apiKey');
@@ -37,7 +37,7 @@ module.exports = function (app, passport) {
      * Checks if there are validation errors.
      */
     app.use(validationErrors(function (err, req, res, next) {
-        return res.status(400).json((new JsonResponse()).makeFailure(null, err));
+        return sendResponse.failureJSON(res, 400, null, err);
     }));
 
     /**
@@ -45,12 +45,11 @@ module.exports = function (app, passport) {
      */
     app.use(function (err, req, res, next) {
         var errorCode = err.status || 500;
-        res.status(errorCode);
         logger.error(null, err);
         if (app.get('env') === 'development') {
-            res.json((new JsonResponse()).makeError(err.message, err));
+            sendResponse.errorJSON(res, errorCode, err.message, err);
         } else {
-            res.json((new JsonResponse()).makeError(err.message));
+            sendResponse.errorJSON(res, errorCode, err.message);
         }
     });
 };

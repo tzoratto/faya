@@ -4,7 +4,7 @@
  * @file Controllers related to token checking.
  */
 
-const JsonResponse = require('../models/response/jsonResponse');
+const sendResponse = require('../utils/sendResponse');
 const checkToken = require('../utils/checkToken');
 
 /**
@@ -23,9 +23,9 @@ exports.check = function (req, res, next) {
             return next(err);
         }
         if (valid) {
-            res.status(200).json((new JsonResponse()).makeSuccess());
+            sendResponse.successJSON(res, 200);
         } else {
-            res.status(200).json((new JsonResponse()).makeFailure());
+            sendResponse.failureJSON(res, 200);
         }
     });
 };

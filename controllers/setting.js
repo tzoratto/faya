@@ -4,7 +4,7 @@
  * @file Controller related to the application settings.
  */
 
-const JsonResponse = require('../models/response/jsonResponse');
+const sendResponse = require('../utils/sendResponse');
 const Setting = require('../models/setting');
 
 /**
@@ -16,7 +16,7 @@ const Setting = require('../models/setting');
  */
 exports.detailsSubscriptionEnabled = function (req, res, next) {
     loadSetting(req, res, next, function (setting) {
-        res.status(200).json((new JsonResponse()).makeSuccess({subscriptionEnabled: setting.subscriptionEnabled}));
+        sendResponse.successJSON(res, 200, {subscriptionEnabled: setting.subscriptionEnabled});
     });
 };
 
@@ -34,7 +34,7 @@ exports.updateSubscriptionEnabled = function (req, res, next) {
             if (err) {
                 return next(err);
             }
-            res.status(200).json((new JsonResponse()).makeSuccess());
+            sendResponse.successJSON(res, 200);
         });
     });
 };
@@ -55,7 +55,7 @@ function loadSetting(req, res, next, callback) {
         if (setting) {
             callback(setting);
         } else {
-            res.status(500).json((new JsonResponse()).makeError(res.__('setting.notFound')));
+            sendResponse.errorJSON(res, 500, res.__('setting.notFound'));
         }
     });
 }

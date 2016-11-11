@@ -4,7 +4,7 @@
  * @file Controllers related to users.
  */
 
-const JsonResponse = require('../models/response/jsonResponse');
+const sendResponse = require('../utils/sendResponse');
 const User = require('../models/user');
 var mongoose = require('mongoose');
 const Namespace = require('../models/namespace');
@@ -42,7 +42,7 @@ exports.list = function (req, res, next) {
         if (err) {
             return next(err);
         }
-        res.status(200).json((new JsonResponse()).makeSuccess(users));
+        sendResponse.successJSON(res, 200, users);
     });
 };
 
@@ -70,9 +70,9 @@ exports.details = function (req, res, next) {
             return next(err);
         }
         if (user) {
-            res.status(200).json((new JsonResponse()).makeSuccess(user));
+            sendResponse.successJSON(res, 200, user);
         } else {
-            res.status(404).json((new JsonResponse()).makeFailure(res.__('user.notFound')));
+            sendResponse.failureJSON(res, 404, res.__('user.notFound'));
         }
     });
 };
@@ -91,17 +91,17 @@ exports.delete = function (req, res, next) {
         }
         if (user) {
             if (user.admin) {
-                res.status(400).json((new JsonResponse()).makeFailure(res.__('user.cannotDeleteAdmin')));
+                sendResponse.failureJSON(res, 400, res.__('user.cannotDeleteAdmin'));
                 return;
             }
             user.remove(function (err) {
                 if (err) {
                     return next(err);
                 }
-                res.status(200).json((new JsonResponse()).makeSuccess());
+                sendResponse.successJSON(res, 200);
             });
         } else {
-            res.status(404).json((new JsonResponse()).makeFailure(res.__('user.notFound')));
+            sendResponse.failureJSON(res, 404, res.__('user.notFound'));
         }
     });
 };

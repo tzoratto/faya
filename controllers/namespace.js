@@ -4,7 +4,7 @@
  * @file Controllers related to namespaces.
  */
 
-const JsonResponse = require('../models/response/jsonResponse');
+const sendResponse = require('../utils/sendResponse');
 const Namespace = require('../models/namespace');
 const mongoose = require('mongoose');
 
@@ -25,7 +25,7 @@ exports.list = function (req, res, next) {
         if (err) {
             return next(err);
         }
-        res.status(200).json((new JsonResponse()).makeSuccess(namespaces));
+        sendResponse.successJSON(res, 200, namespaces);
     });
 };
 
@@ -42,7 +42,7 @@ exports.create = function (req, res, next) {
         if (err) {
             return next(err);
         } else {
-            res.status(200).json((new JsonResponse()).makeSuccess(namespace));
+            sendResponse.successJSON(res, 200, namespace);
         }
     });
 };
@@ -57,7 +57,7 @@ exports.create = function (req, res, next) {
 exports.delete = function (req, res, next) {
     ifUserOwnsTheNamespace(req, res, next, req.user._id, req.params.id, function (namespace) {
         namespace.remove();
-        res.status(200).json((new JsonResponse()).makeSuccess());
+        sendResponse.successJSON(res, 200);
     });
 };
 
@@ -70,7 +70,7 @@ exports.delete = function (req, res, next) {
  */
 exports.details = function (req, res, next) {
     ifUserOwnsTheNamespace(req, res, next, req.user._id, req.params.id, function (namespace) {
-        res.status(200).json((new JsonResponse()).makeSuccess(namespace));
+        sendResponse.successJSON(res, 200, namespace);
     });
 };
 
@@ -89,7 +89,7 @@ exports.update = function (req, res, next) {
             if (err) {
                 return next(err);
             } else {
-                res.status(200).json((new JsonResponse()).makeSuccess(namespace));
+                sendResponse.successJSON(res, 200, namespace);
             }
         });
     });
@@ -112,7 +112,7 @@ exports.count = function (req, res, next) {
         if (err) {
             return next(err);
         }
-        res.status(200).json((new JsonResponse()).makeSuccess({count: count}));
+        sendResponse.successJSON(res, 200, {count: count});
     });
 };
 
@@ -135,10 +135,10 @@ function ifUserOwnsTheNamespace(req, res, next, userId, namespaceId, callback) {
             if (namespace) {
                 callback(namespace);
             } else {
-                res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
+                sendResponse.failureJSON(res, 404, res.__('namespace.notFound'));
             }
         });
     } else {
-        res.status(404).json((new JsonResponse()).makeFailure(res.__('namespace.notFound')));
+        sendResponse.failureJSON(res, 404, res.__('namespace.notFound'));
     }
 }

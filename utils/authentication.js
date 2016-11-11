@@ -4,7 +4,7 @@
  * @file Contains utilities related to authentication.
  */
 
-const JsonResponse = require('../models/response/jsonResponse');
+const sendResponse = require('../utils/sendResponse');
 const appConfig = require('../config/app');
 var jwt = require('jsonwebtoken');
 
@@ -56,7 +56,7 @@ var isAdmin = function (req, res, next) {
     if (req.user && req.user.admin) {
         return next();
     } else {
-        res.status(403).json((new JsonResponse()).makeFailure());
+        sendResponse.failureJSON(res, 403);
     }
 };
 

@@ -4,7 +4,7 @@
  * @file Controller related to the API key pairs.
  */
 
-const JsonResponse = require('../models/response/jsonResponse');
+const sendResponse = require('../utils/sendResponse');
 const mongoose = require('mongoose');
 
 
@@ -16,7 +16,7 @@ const mongoose = require('mongoose');
  * @param next
  */
 exports.list = function (req, res, next) {
-    res.status(200).json((new JsonResponse()).makeSuccess(req.user.apiKeyPairs));
+    sendResponse.successJSON(res, 200, req.user.apiKeyPairs);
 };
 
 /**
@@ -32,7 +32,7 @@ exports.create = function (req, res, next) {
         if (err) {
             return next(err);
         }
-        res.status(200).json((new JsonResponse()).makeSuccess(keyPair));
+        sendResponse.successJSON(res, 200, keyPair);
     });
 };
 
@@ -49,9 +49,9 @@ exports.delete = function (req, res, next) {
         if (err) {
             return next(err);
         } else if (user) {
-            res.status(200).json((new JsonResponse()).makeSuccess());
+            sendResponse.successJSON(res, 200);
         } else {
-            res.status(404).json((new JsonResponse()).makeFailure(res.__('account.apiKeyNotFound')));
+            sendResponse.failureJSON(res, 404, res.__('account.apiKeyNotFound'));
         }
     });
 };
@@ -67,8 +67,8 @@ exports.details = function (req, res, next) {
     var user = req.user;
     var keyPair = user.apiKeyPairs.id(req.params.id);
     if (keyPair) {
-        res.status(200).json((new JsonResponse()).makeSuccess(keyPair));
+        sendResponse.successJSON(res, 200, keyPair);
     } else {
-        res.status(404).json((new JsonResponse()).makeFailure(res.__('account.apiKeyNotFound')));
+        sendResponse.failureJSON(res, 404, res.__('account.apiKeyNotFound'));
     }
 };
