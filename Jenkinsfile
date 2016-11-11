@@ -11,12 +11,11 @@ try {
     currentBuild.result = "SUCCESS"
     node('linux') {
 
-        stage 'Checkout'
-
+        stage('Checkout') {
             checkout scm
+        }
 
-        stage 'Tests & Reports'
-
+        stage('Tests & Reports') {
             docker.image('mongo:3.3.6').withRun {c ->
                 def nodeHome = tool 'node6'
                 withEnv(["MONGO_TEST_URL=mongodb://${containerIp(c)}/faya_test", "PATH+NODE=${nodeHome}/bin"]) {
@@ -27,22 +26,23 @@ try {
                     sh "${nodeHome}/bin/npm run coverage"
                 }
             }
+        }
 
         if (env.BRANCH_NAME == 'master') {
 
-            stage 'Quality analysis'
-
+            stage ('Quality analysis') {
                 def scannerHome = tool 'sonar runner';
                 withSonarQubeEnv('sonar') {
                     sh "${scannerHome}/bin/sonar-scanner"
                 }
+            }
 
-            stage 'Build & Push Docker hub'
-
+            stage('Build & Push Docker hub') {
                 docker.withRegistry('https://index.docker.io/v1/', 'docker_hub_tzoratto') {
                     def img = docker.build 'tzoratto/faya:dev'
                     img.push()
                 }
+            }
         }
     }
 }
@@ -50,13 +50,13 @@ catch (err) {
 
     currentBuild.result = "FAILURE"
 
-        mail bcc: '',
-        body: "Build number : ${env.BUILD_NUMBER}, error : ${err}. Go to ${env.BUILD_URL}",
-        cc: '',
-        from: '',
-        replyTo: '',
-        subject: "${env.JOB_NAME} : pipeline failed",
-        to: 'thomas.zoratto@gmail.com'
+    mail bcc: '',
+    body: "Build number : ${env.BUILD_NUMBER}, error : ${err}. Go to ${env.BUILD_URL}",
+    cc: '',
+    from: '',
+    replyTo: '',
+    subject: "${env.JOB_NAME} : pipeline failed",
+    to: 'thomas.zoratto@gmail.com'
 
     throw err
 }
