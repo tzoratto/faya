@@ -33,16 +33,17 @@ module.exports = function (app, passport) {
     });
 
     /**
-     * Error handling. Called when an error is raised by a middleware.
+     * First error handler. Called when an error is raised by a middleware.
+     * Checks if there are validation errors.
+     */
+    app.use(validationErrors(function (err, req, res, next) {
+        return res.status(400).json((new JsonResponse()).makeFailure(err));
+    }));
+
+    /**
+     * Last error handler.
      */
     app.use(function (err, req, res, next) {
-        //Checks if this is a validation error.
-        var valErrors = validationErrors(err, res);
-        if (valErrors) {
-            res.status(400).json((new JsonResponse()).makeFailure(valErrors));
-            return;
-        }
-
         var errorCode = err.status || 500;
         res.status(errorCode);
         logger.error(null, err);

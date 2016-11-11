@@ -20,6 +20,7 @@
 		"missingCredentials": "Missing email or password"
 	},
 	"misc": {
+		"castError": "Bad property type for \"%s\"",
 		"indexViolation": "Index uniqueness violation"
 	},
 	"namespace": {
