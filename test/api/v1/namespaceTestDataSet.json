@@ -27,9 +27,33 @@
                 }
             ],
             "admin": true
+        },
+        {
+            "_id": "303030303030303030303034",
+            "apiKeyPairs": [
+                {
+                    "keyId": "againAnOtherId",
+                    "keySecret": "againAnOtherSecret"
+                }
+            ]
         }
     ],
     "Namespace": [
+        {
+            "_id": "303030303030303030303031",
+            "user": "303030303030303030303034",
+            "name": "my first namespace"
+        },
+        {
+            "_id": "303030303030303030303032",
+            "user": "303030303030303030303034",
+            "name": "my second namespace"
+        },
+        {
+            "_id": "303030303030303030303033",
+            "user": "303030303030303030303034",
+            "name": "my third namespace"
+        }
     ],
     "Token": [
     ]

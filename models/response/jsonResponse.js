@@ -54,4 +54,21 @@ jsonResponse.prototype.makeError = function(message, data) {
     return this;
 };
 
-module.exports = jsonResponse;
+/**
+ * Builds data for paginated results.
+ *
+ * @param data
+ * @param totalCount
+ * @param page
+ * @returns {{resultCount: *, totalCount: *, offset: *, result: *}}
+ */
+exports.buildPaginatedData = function(data, totalCount, page) {
+    return {
+        resultCount: data.length,
+        totalCount: totalCount,
+        page: page,
+        result : data
+    };
+};
+
+exports.jsonResponse = jsonResponse;

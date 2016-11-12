@@ -18,15 +18,36 @@ const mongoose = require('mongoose');
 exports.list = function (req, res, next) {
     var query = req.query.q ? req.query.q : '.*';
     var regex = new RegExp(query);
-    Namespace.find({
-        'user': req.user._id,
-        $or: [{'name': {$regex: regex}}, {'description': {$regex: regex}}]
-    }, function (err, namespaces) {
-        if (err) {
-            return next(err);
+    var limit = req.query.limit ? parseInt(req.query.limit, 10) : 20;
+    var page = req.query.page ? parseInt(req.query.page, 10) : 1;
+    var offset = limit * (page - 1);
+    var sort = req.query.sort;
+
+    Namespace.find(
+        {
+            'user': req.user._id,
+            $or: [{'name': {$regex: regex}}, {'description': {$regex: regex}}]
         }
-        sendResponse.successJSON(res, 200, namespaces);
-    });
+    )
+        .skip(offset)
+        .limit(limit)
+        .sort(sort)
+        .exec(function (err, namespaces) {
+            if (err) {
+                return next(err);
+            }
+            Namespace.count(
+                {
+                    'user': req.user._id,
+                    $or: [{'name': {$regex: regex}}, {'description': {$regex: regex}}]
+                }
+                , function (err, count) {
+                if (err) {
+                    return next(err);
+                }
+                sendResponse.successPaginatedJSON(res, 200, namespaces, count, page);
+            });
+        });
 };
 
 /**

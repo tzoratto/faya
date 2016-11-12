@@ -19,6 +19,9 @@ describe('Test namespace-related operations', function () {
     var authorizationAdmin = {
         "Authorization": "Basic: " + new Buffer(dataSet.User[2].apiKeyPairs[0].keyId + ':' + dataSet.User[2].apiKeyPairs[0].keySecret).toString('base64')
     };
+    var authorization4 = {
+        "Authorization": "Basic: " + new Buffer(dataSet.User[3].apiKeyPairs[0].keyId + ':' + dataSet.User[3].apiKeyPairs[0].keySecret).toString('base64')
+    };
     var userId = dataSet.User[1]._id;
 
     before(function (done) {
@@ -54,7 +57,7 @@ describe('Test namespace-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 1, 'there is one namespace matching the search');
+                assert.strictEqual(res.body.data.resultCount, 1, 'there is one namespace matching the search');
                 done();
             });
     });
@@ -114,7 +117,7 @@ describe('Test namespace-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 1, 'there is only one namespace');
+                assert.strictEqual(res.body.data.resultCount, 1, 'there is only one namespace');
                 done();
             });
     });
@@ -182,7 +185,7 @@ describe('Test namespace-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 1, 'there is one namespace matching the search');
+                assert.strictEqual(res.body.data.resultCount, 1, 'there is one namespace matching the search');
                 done();
             });
     });
@@ -196,7 +199,7 @@ describe('Test namespace-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 0, 'there is no namespace matching the search');
+                assert.strictEqual(res.body.data.resultCount, 0, 'there is no namespace matching the search');
                 done();
             });
     });
@@ -234,7 +237,7 @@ describe('Test namespace-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.count === 2, 'there is two namespaces');
+                assert.strictEqual(res.body.data.count, 5, 'there are two namespaces');
                 done();
             });
     });
@@ -293,6 +296,151 @@ describe('Test namespace-related operations', function () {
                     throw err;
                 }
                 assert(res.body.data.count === 1, 'the user has 1 namespace');
+                done();
+            });
+    });
+
+    it('should return the number of namespaces requested', function (done) {
+        server
+            .get('/api/v1/namespace?limit=1&page=1')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 1, 'only one namespace was requested');
+                assert.strictEqual(res.body.data.totalCount, 3, 'there are 3 namespaces');
+                assert.strictEqual(res.body.data.page, 1, 'page 1 is requested');
+                assert.strictEqual(res.body.data.result.length, 1, 'only one namespace should be returned');
+                done();
+            });
+    });
+
+    it('should return the number of namespaces requested on page 2', function (done) {
+        server
+            .get('/api/v1/namespace?limit=1&page=2')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 1, 'only one namespace was requested');
+                assert.strictEqual(res.body.data.totalCount, 3, 'there are 3 namespaces');
+                assert.strictEqual(res.body.data.page, 2, 'page 2 is requested');
+                assert.strictEqual(res.body.data.result.length, 1, 'only one namespace should be returned');
+                done();
+            });
+    });
+
+    it('should return the number of namespaces requested matching filter', function (done) {
+        server
+            .get('/api/v1/namespace?q=first&limit=10&page=1')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 1, 'only one namespace was requested');
+                assert.strictEqual(res.body.data.totalCount, 1, 'there is 1 namespace that matchs filter');
+                assert.strictEqual(res.body.data.page, 1, 'page 1 is requested');
+                assert.strictEqual(res.body.data.result.length, 1, 'only one namespace should be returned');
+                done();
+            });
+    });
+
+    it('should return the number of namespaces requested matching filter', function (done) {
+        server
+            .get('/api/v1/namespace?q=ir&limit=10&page=1')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 2, 'ten namespaces were requested');
+                assert.strictEqual(res.body.data.totalCount, 2, 'there are 2 namespaces that matchs filter');
+                assert.strictEqual(res.body.data.page, 1, 'page 1 is requested');
+                assert.strictEqual(res.body.data.result.length, 2, 'two namespaces should be returned');
+                done();
+            });
+    });
+
+    it('should return empty result when pagination is off limit', function (done) {
+        server
+            .get('/api/v1/namespace?limit=10&page=4')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 0, 'ten namespaces were requested');
+                assert.strictEqual(res.body.data.totalCount, 3, 'there are 3 namespaces');
+                assert.strictEqual(res.body.data.page, 4, 'page 4 is requested');
+                assert.strictEqual(res.body.data.result.length, 0, 'no namespace should be returned');
+                done();
+            });
+    });
+
+    it('should return the number of namespaces requested ordered by asc name', function (done) {
+        server
+            .get('/api/v1/namespace?limit=10&sort=name')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.result[0].name, 'my first namespace', 'namespaces should be ordered by name');
+                assert.strictEqual(res.body.data.result[1].name, 'my second namespace', 'namespaces should be ordered by name');
+                assert.strictEqual(res.body.data.result[2].name, 'my third namespace', 'namespaces should be ordered by name');
+                done();
+            });
+    });
+
+    it('should return the number of namespaces requested ordered by desc name', function (done) {
+        server
+            .get('/api/v1/namespace?limit=10&sort=-name')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.result[0].name, 'my third namespace', 'namespaces should be ordered by name');
+                assert.strictEqual(res.body.data.result[1].name, 'my second namespace', 'namespaces should be ordered by name');
+                assert.strictEqual(res.body.data.result[2].name, 'my first namespace', 'namespaces should be ordered by name');
+                done();
+            });
+    });
+
+    it('should return the number of namespaces requested ordered by desc name', function (done) {
+        server
+            .get('/api/v1/namespace?limit=1&page=3&sort=-name')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.result[0].name, 'my first namespace', 'namespaces should be ordered by name');
+                done();
+            });
+    });
+
+    it('should return the number of namespaces requested non ordered', function (done) {
+        server
+            .get('/api/v1/namespace?limit=10&sort=yay')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 3, '3 namespaces should be returned');
                 done();
             });
     });
