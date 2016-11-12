@@ -9,7 +9,6 @@ const express = require('express');
 const router = express.Router();
 
 module.exports = function (passport) {
-    const authUtils = require('../utils/authentication')(passport);
     const controllers = require('../controllers/auth')(passport);
 
     router.post('/login', controllers.login);
