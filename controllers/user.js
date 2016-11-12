@@ -7,8 +7,6 @@
 const sendResponse = require('../utils/sendResponse');
 const User = require('../models/user');
 var mongoose = require('mongoose');
-const Namespace = require('../models/namespace');
-const Token = require('../models/token');
 
 /**
  * Lists all the users matching an optional filter.
