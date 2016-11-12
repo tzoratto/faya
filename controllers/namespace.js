@@ -16,19 +16,22 @@ const mongoose = require('mongoose');
  * @param next
  */
 exports.list = function (req, res, next) {
-    var query = req.query.q ? req.query.q : '.*';
-    var regex = new RegExp(query);
+    var query = req.query.q;
     var limit = req.query.limit ? parseInt(req.query.limit, 10) : 20;
     var page = req.query.page ? parseInt(req.query.page, 10) : 1;
     var offset = limit * (page - 1);
     var sort = req.query.sort;
+    var regex;
+    var criteria = {
+        'user': req.user._id
+    };
 
-    Namespace.find(
-        {
-            'user': req.user._id,
-            $or: [{'name': {$regex: regex}}, {'description': {$regex: regex}}]
-        }
-    )
+    if (query) {
+        regex = new RegExp(query);
+        criteria['$or'] = [{'name': {$regex: regex}}, {'description': {$regex: regex}}];
+    }
+
+    Namespace.find(criteria)
         .skip(offset)
         .limit(limit)
         .sort(sort)
@@ -36,12 +39,7 @@ exports.list = function (req, res, next) {
             if (err) {
                 return next(err);
             }
-            Namespace.count(
-                {
-                    'user': req.user._id,
-                    $or: [{'name': {$regex: regex}}, {'description': {$regex: regex}}]
-                }
-                , function (err, count) {
+            Namespace.count(criteria, function (err, count) {
                 if (err) {
                     return next(err);
                 }

@@ -16,10 +16,13 @@ var mongoose = require('mongoose');
  * @param next
  */
 exports.list = function (req, res, next) {
-    var query = req.query.q ? req.query.q : '.*';
-    var regex = new RegExp(query);
-    User.find({
-        $or: [
+    var query = req.query.q;
+    var regex;
+    var criteria = {};
+
+    if (query) {
+        regex = new RegExp(query);
+        criteria['$or'] = [
             {'local.email': {$regex: regex}},
             {'facebook.email': {$regex: regex}},
             {'facebook.name': {$regex: regex}},
@@ -27,8 +30,9 @@ exports.list = function (req, res, next) {
             {'google.name': {$regex: regex}},
             {'twitter.displayName': {$regex: regex}},
             {'twitter.username': {$regex: regex}}
-        ]
-    }, '-local.password' +
+        ];
+    }
+    User.find(criteria, '-local.password' +
         ' -local.token' +
         ' -facebook.id' +
         ' -facebook.token' +

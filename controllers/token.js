@@ -19,8 +19,9 @@ const doesTokenBelongTo = require('../utils/doesTokenBelongTo');
  */
 exports.list = function (req, res, next) {
     if (!req.query.namespace || mongoose.Types.ObjectId.isValid(req.query.namespace)) {
-        var query = req.query.q ? req.query.q : '.*';
-        var regex = new RegExp(query);
+        var query = req.query.q;
+        var regex;
+        var criteria = {};
         var namespaceId = req.query.namespace;
         var namespaceQuery = {
             'user': req.user._id
@@ -28,6 +29,12 @@ exports.list = function (req, res, next) {
         if (namespaceId) {
             namespaceQuery['_id'] = namespaceId;
         }
+
+        if (query) {
+            regex = new RegExp(query);
+            criteria['$or'] = [{'value': {$regex: regex}}, {'description': {$regex: regex}}];
+        }
+
         Namespace.find(namespaceQuery, '_id', function (err, namespaces) {
             if (err) {
                 return next(err);
@@ -36,10 +43,8 @@ exports.list = function (req, res, next) {
                 sendResponse.failureJSON(res, 404, res.__('namespace.notFound'));
                 return;
             }
-            Token.find({
-                'namespace': {$in: namespaces},
-                $or: [{'value': {$regex: regex}}, {'description': {$regex: regex}}]
-            }, function (err, tokens) {
+            criteria['namespace'] = {$in: namespaces};
+            Token.find(criteria, function (err, tokens) {
                 if (err) {
                     return next(err);
                 }
