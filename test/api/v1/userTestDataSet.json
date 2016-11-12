@@ -36,6 +36,18 @@
                     "keySecret": "aOtherSecret2"
                 }
             ]
+        },
+        {
+            "_id": "303030303030303030303034",
+            "local": {
+                "email": "yetanother@email.com"
+            },
+            "apiKeyPairs": [
+                {
+                    "keyId": "anOtherId3",
+                    "keySecret": "aOtherSecret3"
+                }
+            ]
         }
     ],
     "Namespace": [

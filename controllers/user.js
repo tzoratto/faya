@@ -17,6 +17,10 @@ var mongoose = require('mongoose');
  */
 exports.list = function (req, res, next) {
     var query = req.query.q;
+    var limit = req.query.limit ? parseInt(req.query.limit, 10) : 20;
+    var page = req.query.page ? parseInt(req.query.page, 10) : 1;
+    var offset = limit * (page - 1);
+    var sort = req.query.sort;
     var regex;
     var criteria = {};
 
@@ -26,14 +30,24 @@ exports.list = function (req, res, next) {
             {'local.email': {$regex: regex}}
         ];
     }
+
     User.find(criteria, '-local.password' +
         ' -local.token' +
-        ' -apiKeyPairs', function (err, users) {
-        if (err) {
-            return next(err);
-        }
-        sendResponse.successJSON(res, 200, users);
-    });
+        ' -apiKeyPairs')
+        .skip(offset)
+        .limit(limit)
+        .sort(sort)
+        .exec(function (err, users) {
+            if (err) {
+                return next(err);
+            }
+            User.count(criteria, function (err, count) {
+                if (err) {
+                    return next(err);
+                }
+                sendResponse.successPaginatedJSON(res, 200, users, count, page);
+            });
+        });
 };
 
 /**
