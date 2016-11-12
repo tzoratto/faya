@@ -27,6 +27,15 @@
                     "keySecret": "anOtherSecret"
                 }
             ]
+        },
+        {
+            "_id": "303030303030303030303034",
+            "apiKeyPairs": [
+                {
+                    "keyId": "againAnOtherId",
+                    "keySecret": "againAnOtherSecret"
+                }
+            ]
         }
     ],
     "Namespace": [
@@ -39,6 +48,11 @@
             "_id": "303030303030303030303032",
             "user": "303030303030303030303031",
             "name": "myothernamespace"
+        },
+        {
+            "_id": "303030303030303030303033",
+            "user": "303030303030303030303034",
+            "name": "my first namespace"
         }
     ],
     "Token": [
@@ -46,6 +60,24 @@
             "_id": "303030303030303030303031",
             "namespace": "303030303030303030303032",
             "description": "my token",
+            "value": "4bfe81c9-342f-4642-a2a7-11770e249ce2"
+        },
+        {
+            "_id": "303030303030303030303032",
+            "namespace": "303030303030303030303033",
+            "description": "my first token",
+            "value": "4bfe81c9-342f-4642-a2a7-11770e249ce2"
+        },
+        {
+            "_id": "303030303030303030303033",
+            "namespace": "303030303030303030303033",
+            "description": "my second token",
+            "value": "4bfe81c9-342f-4642-a2a7-11770e249ce2"
+        },
+        {
+            "_id": "303030303030303030303034",
+            "namespace": "303030303030303030303033",
+            "description": "my third token",
             "value": "4bfe81c9-342f-4642-a2a7-11770e249ce2"
         }
     ]

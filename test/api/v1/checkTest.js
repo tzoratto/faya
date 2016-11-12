@@ -43,7 +43,7 @@ describe('Tests token check', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data[0].count === 0, 'the counter must be at 0');
+                assert.strictEqual(res.body.data.result[0].count, 0, 'the counter must be at 0');
                 done();
             });
     });
@@ -85,7 +85,7 @@ describe('Tests token check', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data[0].count === 2, 'the counter must be at 2');
+                assert.strictEqual(res.body.data.result[0].count, 2, 'the counter must be at 2');
                 done();
             });
     });
@@ -127,7 +127,7 @@ describe('Tests token check', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data[0].count === 0, 'the counter must be at 0');
+                assert.strictEqual(res.body.data.result[0].count, 0, 'the counter must be at 0');
                 done();
             });
     });

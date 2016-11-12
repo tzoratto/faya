@@ -19,7 +19,12 @@ describe('Test token-related operations', function () {
     var authorizationAdmin = {
         "Authorization": "Basic: " + new Buffer(dataSet.User[1].apiKeyPairs[0].keyId + ':' + dataSet.User[1].apiKeyPairs[0].keySecret).toString('base64')
     };
+    var authorization4 = {
+        "Authorization": "Basic: " + new Buffer(dataSet.User[3].apiKeyPairs[0].keyId + ':' + dataSet.User[3].apiKeyPairs[0].keySecret).toString('base64')
+    };
+
     var namespaceId = dataSet.Namespace[0]._id;
+    var namespaceUser4Id = dataSet.Namespace[2]._id;
     var userId = dataSet.User[0]._id;
 
     before(function (done) {
@@ -83,7 +88,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 1, 'there is one token matching the search');
+                assert(res.body.data.resultCount === 1, 'there is one token matching the search');
                 done();
             });
     });
@@ -97,7 +102,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 0, 'there is no token matching the search');
+                assert(res.body.data.resultCount === 0, 'there is no token matching the search');
                 done();
             });
     });
@@ -111,7 +116,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 1, 'there is one token matching the search');
+                assert(res.body.data.resultCount === 1, 'there is one token matching the search');
                 done();
             });
     });
@@ -125,7 +130,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 0, 'there is no token matching the search');
+                assert(res.body.data.resultCount === 0, 'there is no token matching the search');
                 done();
             });
     });
@@ -139,7 +144,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.length === 1, 'there is only one token in this namespace');
+                assert(res.body.data.resultCount === 1, 'there is only one token in this namespace');
                 done();
             });
     });
@@ -404,7 +409,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.count === 2, 'there is two tokens');
+                assert.strictEqual(res.body.data.count, 5, 'there are 5 tokens');
                 done();
             });
     });
@@ -453,6 +458,151 @@ describe('Test token-related operations', function () {
                     throw err;
                 }
                 assert(res.body.data.count === 2, 'the user has 2 tokens');
+                done();
+            });
+    });
+
+    it('should return the number of tokens requested', function (done) {
+        server
+            .get('/api/v1/token?limit=1&page=1&namespace=' + namespaceUser4Id)
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 1, 'only one token was requested');
+                assert.strictEqual(res.body.data.totalCount, 3, 'there are 3 tokens');
+                assert.strictEqual(res.body.data.page, 1, 'page 1 is requested');
+                assert.strictEqual(res.body.data.result.length, 1, 'only one token should be returned');
+                done();
+            });
+    });
+
+    it('should return the number of tokens requested on page 2', function (done) {
+        server
+            .get('/api/v1/token?limit=1&page=2&namespace=' + namespaceUser4Id)
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 1, 'only one token was requested');
+                assert.strictEqual(res.body.data.totalCount, 3, 'there are 3 tokens');
+                assert.strictEqual(res.body.data.page, 2, 'page 2 is requested');
+                assert.strictEqual(res.body.data.result.length, 1, 'only one token should be returned');
+                done();
+            });
+    });
+
+    it('should return the number of tokens requested matching filter', function (done) {
+        server
+            .get('/api/v1/token?q=first&limit=10&page=1&namespace=' + namespaceUser4Id)
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 1, 'only one token was requested');
+                assert.strictEqual(res.body.data.totalCount, 1, 'there is 1 token that matchs filter');
+                assert.strictEqual(res.body.data.page, 1, 'page 1 is requested');
+                assert.strictEqual(res.body.data.result.length, 1, 'only one token should be returned');
+                done();
+            });
+    });
+
+    it('should return the number of tokens requested matching filter', function (done) {
+        server
+            .get('/api/v1/token?q=ir&limit=10&page=1&namespace=' + namespaceUser4Id)
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 2, 'ten tokens were requested');
+                assert.strictEqual(res.body.data.totalCount, 2, 'there are 2 tokens that matchs filter');
+                assert.strictEqual(res.body.data.page, 1, 'page 1 is requested');
+                assert.strictEqual(res.body.data.result.length, 2, 'two tokens should be returned');
+                done();
+            });
+    });
+
+    it('should return empty result when pagination is off limit', function (done) {
+        server
+            .get('/api/v1/token?limit=10&page=4')
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 0, 'ten tokens were requested');
+                assert.strictEqual(res.body.data.totalCount, 3, 'there are 3 tokens');
+                assert.strictEqual(res.body.data.page, 4, 'page 4 is requested');
+                assert.strictEqual(res.body.data.result.length, 0, 'no token should be returned');
+                done();
+            });
+    });
+
+    it('should return the number of tokens requested ordered by asc description', function (done) {
+        server
+            .get('/api/v1/token?limit=10&sort=description&namespace=' + namespaceUser4Id)
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.result[0].description, 'my first token', 'tokens should be ordered by description');
+                assert.strictEqual(res.body.data.result[1].description, 'my second token', 'tokens should be ordered by description');
+                assert.strictEqual(res.body.data.result[2].description, 'my third token', 'tokens should be ordered by description');
+                done();
+            });
+    });
+
+    it('should return the number of tokens requested ordered by desc description', function (done) {
+        server
+            .get('/api/v1/token?limit=10&sort=-description&namespace=' + namespaceUser4Id)
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.result[0].description, 'my third token', 'tokens should be ordered by description');
+                assert.strictEqual(res.body.data.result[1].description, 'my second token', 'tokens should be ordered by description');
+                assert.strictEqual(res.body.data.result[2].description, 'my first token', 'tokens should be ordered by description');
+                done();
+            });
+    });
+
+    it('should return the number of tokens requested ordered by desc description', function (done) {
+        server
+            .get('/api/v1/token?limit=1&page=3&sort=-description&namespace=' + namespaceUser4Id)
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.result[0].description, 'my first token', 'tokens should be ordered by description');
+                done();
+            });
+    });
+
+    it('should return the number of tokens requested non ordered', function (done) {
+        server
+            .get('/api/v1/token?limit=10&sort=yay&namespace=' + namespaceUser4Id)
+            .set(authorization4)
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 3, '3 tokens should be returned');
                 done();
             });
     });

@@ -21,6 +21,10 @@ exports.list = function (req, res, next) {
     if (!req.query.namespace || mongoose.Types.ObjectId.isValid(req.query.namespace)) {
         var query = req.query.q;
         var regex;
+        var limit = req.query.limit ? parseInt(req.query.limit, 10) : 20;
+        var page = req.query.page ? parseInt(req.query.page, 10) : 1;
+        var offset = limit * (page - 1);
+        var sort = req.query.sort;
         var criteria = {};
         var namespaceId = req.query.namespace;
         var namespaceQuery = {
@@ -44,12 +48,21 @@ exports.list = function (req, res, next) {
                 return;
             }
             criteria['namespace'] = {$in: namespaces};
-            Token.find(criteria, function (err, tokens) {
-                if (err) {
-                    return next(err);
-                }
-                sendResponse.successJSON(res, 200, tokens);
-            });
+            Token.find(criteria)
+                .skip(offset)
+                .limit(limit)
+                .sort(sort)
+                .exec(function (err, tokens) {
+                    if (err) {
+                        return next(err);
+                    }
+                    Token.count(criteria, function (err, count) {
+                        if (err) {
+                            return next(err);
+                        }
+                        sendResponse.successPaginatedJSON(res, 200, tokens, count, page);
+                    });
+                });
         });
     } else {
         sendResponse.failureJSON(res, 404, res.__('namespace.notFound'));
