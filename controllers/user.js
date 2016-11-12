@@ -23,23 +23,11 @@ exports.list = function (req, res, next) {
     if (query) {
         regex = new RegExp(query);
         criteria['$or'] = [
-            {'local.email': {$regex: regex}},
-            {'facebook.email': {$regex: regex}},
-            {'facebook.name': {$regex: regex}},
-            {'google.email': {$regex: regex}},
-            {'google.name': {$regex: regex}},
-            {'twitter.displayName': {$regex: regex}},
-            {'twitter.username': {$regex: regex}}
+            {'local.email': {$regex: regex}}
         ];
     }
     User.find(criteria, '-local.password' +
         ' -local.token' +
-        ' -facebook.id' +
-        ' -facebook.token' +
-        ' -google.id' +
-        ' -google.token' +
-        ' -twitter.id' +
-        ' -twitter.token' +
         ' -apiKeyPairs', function (err, users) {
         if (err) {
             return next(err);
@@ -57,13 +45,7 @@ exports.list = function (req, res, next) {
  */
 exports.details = function (req, res, next) {
     var projection = '-local.password' +
-        ' -local.token' +
-        ' -facebook.id' +
-        ' -facebook.token' +
-        ' -google.id' +
-        ' -google.token' +
-        ' -twitter.id' +
-        ' -twitter.token';
+        ' -local.token';
     if (req.user.admin) {
         projection += ' -apiKeyPairs';
     }
