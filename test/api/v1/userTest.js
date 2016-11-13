@@ -35,6 +35,8 @@ describe('Tests user-related operations', function () {
                     throw err;
                 }
                 assert.strictEqual(res.body.data.resultCount, 4, 'there are 4 users');
+                assert.strictEqual(res.body.data.result[0].apiKeyPairs, undefined, 'user\'s api key pairs shouldn\'t be returned');
+                assert.strictEqual(res.body.data.result[0].local.password, undefined, 'user\'s password shouldn\'t be returned');
                 done();
             });
     });
