@@ -4,8 +4,6 @@
  * @file Configures PassportJS.
  */
 
-var User = require('../models/user');
-
 const localLogin = require('./passport/localLogin');
 const localSignup = require('./passport/localSignup');
 const basic = require('./passport/basic');

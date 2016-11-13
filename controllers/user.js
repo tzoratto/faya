@@ -6,7 +6,6 @@
 
 const sendResponse = require('../utils/sendResponse');
 const User = require('../models/user');
-var mongoose = require('mongoose');
 
 /**
  * Lists all the users matching an optional filter.
