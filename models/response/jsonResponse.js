@@ -1,74 +1,51 @@
+'use strict';
+
 /**
  * @file Defines the JsonResponse class.
  */
 
-/**
- * Constructor of the JsonResponse class.
- *
- * @class
- * @classdesc This application always returns an instance of this class.
- */
-var jsonResponse = function () {
-    this.status = 'success';
-    this.message = undefined;
-    this.data = undefined;
-};
 
 /**
- * Marks the response as successful.
+ * JsonResponse class
  *
- * @param data
- * @return {jsonResponse}
- */
-jsonResponse.prototype.makeSuccess = function(data) {
-    this.status = 'success';
-    this.data = data || null;
-    return this;
-};
-
-/**
- * Marks the response as a failure.
+ * The API should respond with an instance of this class.
  *
- * @param data
- * @param message
- * @return {jsonResponse}
  */
-jsonResponse.prototype.makeFailure = function(message, data) {
-    this.status = 'fail';
-    this.message = message || '';
-    this.data = data || undefined;
-    return this;
-};
+class JsonResponse {
+    constructor () {
+        this.status = 'success';
+        this.message = undefined;
+        this.data = undefined;
+    }
 
-/**
- * Marks the response as an error.
- *
- * @param message
- * @param data
- * @return {jsonResponse}
- */
-jsonResponse.prototype.makeError = function(message, data) {
-    this.status = 'error';
-    this.message = message || '';
-    this.data = data || undefined;
-    return this;
-};
+    makeSuccess (data) {
+        this.status = 'success';
+        this.data = data || null;
+        return this;
+    }
 
-/**
- * Builds data for paginated results.
- *
- * @param data
- * @param totalCount
- * @param page
- * @returns {{resultCount: *, totalCount: *, offset: *, result: *}}
- */
-exports.buildPaginatedData = function(data, totalCount, page) {
-    return {
-        resultCount: data.length,
-        totalCount: totalCount,
-        page: page,
-        result : data
-    };
-};
+    makeFailure (message, data) {
+        this.status = 'fail';
+        this.message = message || '';
+        this.data = data || undefined;
+        return this;
+    }
 
-exports.jsonResponse = jsonResponse;
+    makeError (message, data) {
+        this.status = 'error';
+        this.message = message || '';
+        this.data = data || undefined;
+        return this;
+    }
+
+    static buildPaginatedData(data, totalCount, page) {
+        return {
+            resultCount: data.length,
+            totalCount: totalCount,
+            page: page,
+            result : data
+        };
+    }
+}
+
+module.exports = JsonResponse;

@@ -1,15 +1,18 @@
 'use strict';
 
-const jsonResponse = require('../models/response/jsonResponse');
-const JsonResponse = jsonResponse.jsonResponse;
-const buildPaginatedData = jsonResponse.buildPaginatedData;
+/**
+ * @file Defines helpers to send responses.
+ */
+
+
+const JsonResponse = require('../models/response/jsonResponse');
 
 exports.successJSON = function(res, status, data) {
     return res.status(status).json((new JsonResponse()).makeSuccess(data));
 };
 
 exports.successPaginatedJSON = function(res, status, data, totalCount, page) {
-    var dataPaginated = buildPaginatedData(data, totalCount, page);
+    var dataPaginated = JsonResponse.buildPaginatedData(data, totalCount, page);
     return res.status(status).json((new JsonResponse()).makeSuccess(dataPaginated));
 };
 

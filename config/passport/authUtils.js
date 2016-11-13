@@ -19,7 +19,7 @@ const uuid = require('uuid');
 var loadUser = function (method, profile, done, callback) {
     var filter = {};
     if (method !== 'local') {
-        filter[method + '.id'] = profile.id;
+        filter[`${method}.id`] = profile.id;
     } else {
         filter['local.email'] = profile;
     }

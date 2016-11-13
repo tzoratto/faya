@@ -54,7 +54,7 @@ var signup = function (req, res, next) {
             sendResponse.failureJSON(res, 400, info.message);
         }
         else {
-            var mailContent = res.__('account.validationLink', req.header('referer') + '?email=' + user.local.email + '&token=' + user.local.token);
+            var mailContent = res.__('account.validationLink', `${req.header('referer')}?email=${user.local.email}&token=${user.local.token}`);
             sendMail(user.local.email, res.__('account.validationMailSubject'), mailContent, function (err) {
                 if (err) {
                     return next(err);
@@ -127,7 +127,7 @@ var passwordReset = function (req, res, next) {
                 if (err) {
                     return done(err);
                 }
-                var mailContent = res.__('account.passwordResetLink', req.header('referer') + '?email=' + user.local.email + '&token=' + user.local.token);
+                var mailContent = res.__('account.passwordResetLink', `${req.header('referer')}?email=${user.local.email}&token=${user.local.token}`);
                 sendMail(user.local.email, res.__('account.passwordResetMailSubject'), mailContent, function (err) {
                     if (err) {
                         return next(err);
