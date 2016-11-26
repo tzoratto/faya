@@ -41,7 +41,7 @@
 		"notFound": "Ce token n'existe pas",
 		"namespaceRequired": "Le namespace du token est requis",
 		"valueRequired": "La valeur du token est requis",
-		"startsAtBeforeEndsAt": "La propriété \"startsAt\" doit être antérieur à \"endsAt\"",
+		"startsAtBeforeEndsAt": "La propriété \"startsAt\" doit être antérieure à \"endsAt\"",
 		"poolZeroOrMore": "La propriété \"pool\" doit être supérieure ou égale à 0"
 	},
 	"user": {
