@@ -55,6 +55,16 @@ describe('Tests user-related operations', function () {
             });
     });
 
+    it('should return a 400 code when the query string is an invalid regex', function (done) {
+        server
+            .get('/api/v1/user?q=*')
+            .set(authorizationAdmin)
+            .expect(400)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
     it('should return a 403 code when trying to get the user list as a non-admin', function (done) {
         server
             .get('/api/v1/user')

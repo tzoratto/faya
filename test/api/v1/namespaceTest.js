@@ -62,6 +62,16 @@ describe('Test namespace-related operations', function () {
             });
     });
 
+    it('should return a 400 code when the query string is an invalid regex', function (done) {
+        server
+            .get('/api/v1/namespace?q=*')
+            .set(authorization)
+            .expect(400)
+            .end(function (err) {
+                done(err);
+            });
+    });
+
     it('should return a 400 code when trying to create a namespace with a name already in use', function (done) {
         server
             .post('/api/v1/namespace')

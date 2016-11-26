@@ -24,7 +24,11 @@ exports.list = function (req, res, next) {
     var criteria = {};
 
     if (query) {
-        regex = new RegExp(query);
+        try {
+            regex = new RegExp(query);
+        } catch(err) {
+            return sendResponse.failureJSON(res, 400, res.__('misc.regexError'));
+        }
         criteria['$or'] = [
             {'local.email': {$regex: regex}}
         ];

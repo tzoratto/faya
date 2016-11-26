@@ -23,7 +23,8 @@
 	},
 	"misc": {
 		"castError": "Bad property type for \"%s\"",
-		"indexViolation": "Index uniqueness violation"
+		"indexViolation": "Index uniqueness violation",
+		"regexError": "Invalid regular expression"
 	},
 	"namespace": {
 		"notFound": "Namespace not found",
