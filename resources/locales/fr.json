@@ -44,6 +44,9 @@
 		"startsAtBeforeEndsAt": "La propriété \"startsAt\" doit être antérieure à \"endsAt\"",
 		"poolZeroOrMore": "La propriété \"pool\" doit être supérieure ou égale à 0"
 	},
+	"tokenHit": {
+		"tokenRequired": "La propriété \"token\" est requise"
+	},
 	"user": {
 		"cannotDeleteAdmin": "Un administrateur ne peut pas être supprimé",
 		"notFound": "Utilisateur introuvable"

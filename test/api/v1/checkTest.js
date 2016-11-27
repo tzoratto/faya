@@ -8,6 +8,8 @@ const assert = require('assert');
 const dataSet = require('./checkTestDataSet.json');
 const insertDataSet = require('../../insertDataSet');
 
+const TokenHit = require('../../../models/tokenHit');
+
 describe('Tests token check', function () {
 
     var authorization = {
@@ -29,6 +31,8 @@ describe('Tests token check', function () {
         token14Value = dataSet.Token[13].value;
     var namespace1Name = dataSet.Namespace[0].name,
         namespace2Name = dataSet.Namespace[1].name;
+
+    var token1Id = dataSet.Token[0]._id;
 
     before(function (done) {
         insertDataSet(dataSet, done);
@@ -88,6 +92,13 @@ describe('Tests token check', function () {
                 assert.strictEqual(res.body.data.result[0].count, 2, 'the counter must be at 2');
                 done();
             });
+    });
+
+    it('should have registered 2 token hits', function (done) {
+         TokenHit.find({'token': token1Id}, function (err, tokenHits) {
+             assert.strictEqual(tokenHits.length, 2, 'the token has been checked 2 times');
+             done(err);
+         });
     });
 
     it('should confirm that the token is invalid because it doesn\'t exist', function (done) {

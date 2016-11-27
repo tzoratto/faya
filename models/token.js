@@ -7,6 +7,8 @@
 const mongoose = require('mongoose');
 const uuid = require('uuid');
 
+const TokenHit = require('./tokenHit');
+
 /**
  * Token Mongoose schema.
  */
@@ -28,6 +30,24 @@ var tokenSchema = mongoose.Schema({
 }, {
     timestamps: {}
 });
+
+/**
+ * Creates a new tokenHit.
+ *
+ * @param ip
+ * @param userAgent
+ * @param callback
+ */
+tokenSchema.methods.createTokenHit = function (ip, userAgent, callback) {
+    var tokenHit = new TokenHit({
+        token: this._id,
+        ip: ip,
+        userAgent: userAgent
+    });
+    tokenHit.save(function (err, tokenHit) {
+        callback(err, tokenHit);
+    });
+};
 
 /**
  * Checks if this token belongs to a given user.
@@ -73,6 +93,21 @@ tokenSchema.pre('validate', function (next) {
         this.value = uuid.v4();
     }
     next();
+});
+
+/**
+ * Deletes all token's hits when deleting token.
+ */
+tokenSchema.pre('remove', function (next) {
+    TokenHit.find({'token': this._id}, function (err, tokenHits) {
+        if (err) {
+            throw err;
+        }
+        tokenHits.forEach(function (tokenHit) {
+            tokenHit.remove();
+        });
+        next();
+    });
 });
 
 module.exports = mongoose.model('Token', tokenSchema);

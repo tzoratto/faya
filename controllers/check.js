@@ -18,14 +18,23 @@ exports.check = function (req, res, next) {
     var namespaceName = req.query.namespace;
     var tokenValue = req.query.token;
 
-    checkToken(req.user._id, namespaceName, tokenValue, function (err, valid) {
+    checkToken(req.user._id, namespaceName, tokenValue, function (err, valid, token) {
         if (err) {
             return next(err);
         }
-        if (valid) {
-            sendResponse.successJSON(res, 200);
+        if (token) {
+            token.createTokenHit(req.ip, req.get('User-Agent'), function (err) {
+                if (err) {
+                    return next(err);
+                }
+                sendResponse.successJSON(res, 200);
+            });
         } else {
-            sendResponse.failureJSON(res, 200);
+            if (valid) {
+                sendResponse.successJSON(res, 200);
+            } else {
+                sendResponse.failureJSON(res, 200);
+            }
         }
     });
 };

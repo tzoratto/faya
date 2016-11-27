@@ -10,6 +10,7 @@ const insertDataSet = require('./../../insertDataSet');
 
 const Namespace = require('../../../models/namespace');
 const Token = require('../../../models/token');
+const TokenHit = require('../../../models/tokenHit');
 
 describe('Tests user-related operations', function () {
 
@@ -25,6 +26,7 @@ describe('Tests user-related operations', function () {
         adminId = dataSet.User[0]._id;
 
     var namespaceId1 = dataSet.Namespace[0];
+    var tokenId1 = dataSet.Token[0];
 
     before(function (done) {
         insertDataSet(dataSet, done);
@@ -160,6 +162,13 @@ describe('Tests user-related operations', function () {
     it('should return no tokens after user deletion', function (done) {
         Token.find({'namespace': namespaceId1}, function (err, tokens) {
             assert.strictEqual(tokens.length, 0, 'the user\'s tokens should have been deleted');
+            done(err);
+        });
+    });
+
+    it('should return no tokenHits after user deletion', function (done) {
+        TokenHit.find({'token': tokenId1}, function (err, tokenHits) {
+            assert.strictEqual(tokenHits.length, 0, 'the user\'s tokenHits should have been deleted');
             done(err);
         });
     });

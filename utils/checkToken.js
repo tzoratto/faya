@@ -25,21 +25,21 @@ module.exports = function (userId, namespaceName, tokenValue, callback) {
                 //Checks if the token matches a valid token non pool-based.
                 checkTokensWithoutPool(namespace._id, tokenValue, callback);
             },
-            function (found, callback) {
+            function (found, token, callback) {
                 if (found) {
                     //The token matches a valid token non pool-based.
-                    return callback(null, true);
+                    return callback(null, true, token);
                 }
                 //The token doesn't match a valid token non pool-based so let's see
                 //if it matches a valid token pool-based.
                 checkTokensWithPool(namespace._id, tokenValue, callback);
             }
-        ], function (err, found) {
+        ], function (err, found, token) {
             if (err) {
                 return callback(err);
             }
             if (found) {
-                return callback(null, true);
+                return callback(null, true, token);
             }
             return callback(null, false);
         });
@@ -78,9 +78,9 @@ function checkTokensWithoutPool(namespaceId, tokenValue, callback) {
             return callback(err);
         }
         if (token) {
-            return callback(null, true);
+            return callback(null, true, token);
         } else {
-            callback(null, false);
+            callback(null, false, null);
         }
     });
 }
@@ -119,9 +119,9 @@ function checkTokensWithPool(namespaceId, tokenValue, callback) {
             return callback(err);
         }
         if (token) {
-            return callback(null, true);
+            return callback(null, true, token);
         } else {
-            return callback(null, false);
+            return callback(null, false, null);
         }
     });
 }
