@@ -8,6 +8,9 @@ const assert = require('assert');
 const dataSet = require('./userTestDataSet.json');
 const insertDataSet = require('./../../insertDataSet');
 
+const Namespace = require('../../../models/namespace');
+const Token = require('../../../models/token');
+
 describe('Tests user-related operations', function () {
 
     var authorizationNonAdmin = {
@@ -20,6 +23,8 @@ describe('Tests user-related operations', function () {
     var userId = dataSet.User[1]._id,
         userId2 = dataSet.User[2]._id,
         adminId = dataSet.User[0]._id;
+
+    var namespaceId1 = dataSet.Namespace[0];
 
     before(function (done) {
         insertDataSet(dataSet, done);
@@ -143,6 +148,20 @@ describe('Tests user-related operations', function () {
             .end(function (err) {
                 done(err);
             });
+    });
+
+    it('should return no namespaces after user deletion', function (done) {
+        Namespace.find({'user': userId}, function (err, namespaces) {
+            assert.strictEqual(namespaces.length, 0, 'the user\'s namespaces should have been deleted');
+            done(err);
+        });
+    });
+
+    it('should return no tokens after user deletion', function (done) {
+        Token.find({'namespace': namespaceId1}, function (err, tokens) {
+            assert.strictEqual(tokens.length, 0, 'the user\'s tokens should have been deleted');
+            done(err);
+        });
     });
 
     it('should return a 400 code when trying to delete admin\'s account', function (done) {

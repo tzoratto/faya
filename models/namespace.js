@@ -51,8 +51,15 @@ namespaceSchema.path('name').validate(function (value, done) {
  * Deletes all namespace's tokens when deleting namespace.
  */
 namespaceSchema.pre('remove', function (next) {
-    Token.remove({'namespace': this._id}).exec();
-    next();
+    Token.find({'namespace': this._id}, function (err, tokens) {
+        if (err) {
+            throw err;
+        }
+        tokens.forEach(function (token) {
+            token.remove();
+        });
+        next();
+    });
 });
 
 module.exports = mongoose.model('Namespace', namespaceSchema);

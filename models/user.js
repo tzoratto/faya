@@ -156,8 +156,15 @@ userSchema.pre('save', function (next) {
  * Deletes all user's namespaces when deleting user.
  */
 userSchema.pre('remove', function (next) {
-    Namespace.remove({'user': this._id}).exec();
-    next();
+    Namespace.find({'user': this._id}, function (err, namespaces) {
+        if (err) {
+            throw err;
+        }
+        namespaces.forEach(function (namespace) {
+            namespace.remove();
+        });
+        next();
+    });
 });
 
 
