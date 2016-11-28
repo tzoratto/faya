@@ -61,13 +61,13 @@ function checkTokensWithoutPool(namespaceId, tokenValue, callback) {
         '$and': [
             {
                 '$or': [
-                    {'startsAt': {'$exists': false}},
+                    {'startsAt': null},
                     {'startsAt': {'$lt': new Date()}}
                 ]
             },
             {
                 '$or': [
-                    {'endsAt': {'$exists': false}},
+                    {'endsAt': null},
                     {'endsAt': {'$gt': new Date()}}
                 ]
             }
@@ -100,13 +100,13 @@ function checkTokensWithPool(namespaceId, tokenValue, callback) {
         '$and': [
             {
                 '$or': [
-                    {'startsAt': {'$exists': false}},
+                    {'startsAt': null},
                     {'startsAt': {'$lt': new Date()}}
                 ]
             },
             {
                 '$or': [
-                    {'endsAt': {'$exists': false}},
+                    {'endsAt': null},
                     {'endsAt': {'$gt': new Date()}}
                 ]
             },
