@@ -32,7 +32,8 @@ describe('Tests token check', function () {
     var namespace1Name = dataSet.Namespace[0].name,
         namespace2Name = dataSet.Namespace[1].name;
 
-    var token1Id = dataSet.Token[0]._id;
+    var token1Id = dataSet.Token[0]._id,
+        token3Id = dataSet.Token[2]._id;
 
     before(function (done) {
         insertDataSet(dataSet, done);
@@ -97,6 +98,7 @@ describe('Tests token check', function () {
     it('should have registered 2 token hits', function (done) {
          TokenHit.find({'token': token1Id}, function (err, tokenHits) {
              assert.strictEqual(tokenHits.length, 2, 'the token has been checked 2 times');
+             assert.strictEqual(tokenHits[0].response, true, 'the token was valid');
              done(err);
          });
     });
@@ -117,7 +119,7 @@ describe('Tests token check', function () {
 
     it('should confirm that the token is invalid against this namespace', function (done) {
         server
-            .get('/api/v1/check?namespace=' + namespace1Name + '&token=' + token3Value)
+            .get('/api/v1/check?namespace=' + namespace1Name + '&token=' + token2Value)
             .set(authorization)
             .expect(200)
             .end(function (err, res) {
@@ -131,7 +133,7 @@ describe('Tests token check', function () {
 
     it('should indicate that the token hasn\'t been validated', function (done) {
         server
-            .get('/api/v1/token?q=' + token3Value)
+            .get('/api/v1/token?q=' + token2Value)
             .set(authorization)
             .expect(200)
             .end(function (err, res) {
@@ -145,7 +147,7 @@ describe('Tests token check', function () {
 
     it('should confirm that the token is invalid because the active property is false', function (done) {
         server
-            .get('/api/v1/check?namespace=' + namespace1Name + '&token=' + token2Value)
+            .get('/api/v1/check?namespace=' + namespace1Name + '&token=' + token3Value)
             .set(authorization)
             .expect(200)
             .end(function (err, res) {
@@ -155,6 +157,14 @@ describe('Tests token check', function () {
                 assert(res.body.status === 'fail', 'the token must be invalid');
                 done();
             });
+    });
+
+    it('should have registered 1 token hit', function (done) {
+        TokenHit.find({'token': token3Id}, function (err, tokenHits) {
+            assert.strictEqual(tokenHits.length, 1, 'the token has been checked 1 time');
+            assert.strictEqual(tokenHits[0].response, false, 'the token wasn\'t valid');
+            done(err);
+        });
     });
 
     it('should confirm that the token is invalid because the startsAt property is in the future', function (done) {

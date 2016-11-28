@@ -25,8 +25,8 @@ module.exports = function (userId, namespaceName, tokenValue, callback) {
                 //Checks if the token matches a valid token non pool-based.
                 checkTokensWithoutPool(namespace._id, tokenValue, callback);
             },
-            function (found, token, callback) {
-                if (found) {
+            function (valid, token, callback) {
+                if (valid) {
                     //The token matches a valid token non pool-based.
                     return callback(null, true, token);
                 }
@@ -34,14 +34,11 @@ module.exports = function (userId, namespaceName, tokenValue, callback) {
                 //if it matches a valid token pool-based.
                 checkTokensWithPool(namespace._id, tokenValue, callback);
             }
-        ], function (err, found, token) {
+        ], function (err, valid, token) {
             if (err) {
                 return callback(err);
             }
-            if (found) {
-                return callback(null, true, token);
-            }
-            return callback(null, false);
+            return callback(null, valid, token);
         });
     });
 };
@@ -80,7 +77,15 @@ function checkTokensWithoutPool(namespaceId, tokenValue, callback) {
         if (token) {
             return callback(null, true, token);
         } else {
-            callback(null, false, null);
+            Token.findOne({
+                'namespace': namespaceId,
+                'value': tokenValue
+            }, function (err, token) {
+                if (err) {
+                    return callback(err);
+                }
+                callback(null, false, token);
+            });
         }
     });
 }
@@ -121,7 +126,15 @@ function checkTokensWithPool(namespaceId, tokenValue, callback) {
         if (token) {
             return callback(null, true, token);
         } else {
-            return callback(null, false, null);
+            Token.findOne({
+                'namespace': namespaceId,
+                'value': tokenValue
+            }, function (err, token) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, false, token);
+            });
         }
     });
 }

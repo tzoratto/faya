@@ -36,13 +36,15 @@ var tokenSchema = mongoose.Schema({
  *
  * @param ip
  * @param userAgent
+ * @param response
  * @param callback
  */
-tokenSchema.methods.createTokenHit = function (ip, userAgent, callback) {
+tokenSchema.methods.createTokenHit = function (ip, userAgent, response, callback) {
     var tokenHit = new TokenHit({
         token: this._id,
         ip: ip,
-        userAgent: userAgent
+        userAgent: userAgent,
+        response: response
     });
     tokenHit.save(function (err, tokenHit) {
         callback(err, tokenHit);

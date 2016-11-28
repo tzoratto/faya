@@ -23,18 +23,18 @@ exports.check = function (req, res, next) {
             return next(err);
         }
         if (token) {
-            token.createTokenHit(req.ip, req.get('User-Agent'), function (err) {
+            token.createTokenHit(req.ip, req.get('User-Agent'), valid, function (err) {
                 if (err) {
                     return next(err);
                 }
-                sendResponse.successJSON(res, 200);
+                if (valid) {
+                    sendResponse.successJSON(res, 200);
+                } else {
+                    sendResponse.failureJSON(res, 200);
+                }
             });
         } else {
-            if (valid) {
-                sendResponse.successJSON(res, 200);
-            } else {
-                sendResponse.failureJSON(res, 200);
-            }
+            sendResponse.failureJSON(res, 200);
         }
     });
 };

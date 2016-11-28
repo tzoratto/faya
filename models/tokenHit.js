@@ -16,7 +16,8 @@ var tokenHitSchema = mongoose.Schema({
     },
     ip: String,
     date: Date,
-    userAgent: String
+    userAgent: String,
+    response: Boolean
 });
 
 /**
