@@ -79,8 +79,12 @@ exports.create = function (req, res, next) {
  */
 exports.delete = function (req, res, next) {
     ifUserOwnsTheNamespace(req, res, next, req.user._id, req.params.id, function (namespace) {
-        namespace.remove();
-        sendResponse.successJSON(res, 200);
+        namespace.remove(function (err) {
+            if (err) {
+                return next(err);
+            }
+            sendResponse.successJSON(res, 200);
+        });
     });
 };
 
