@@ -6,6 +6,8 @@
 
 const mongoose = require('mongoose');
 const Token = require('./token');
+const TokenHit = require('./tokenHit');
+const async = require('async');
 
 /**
  * Namespace Mongoose schema.
@@ -51,15 +53,19 @@ namespaceSchema.path('name').validate(function (value, done) {
  * Deletes all namespace's tokens when deleting namespace.
  */
 namespaceSchema.pre('remove', function (next) {
-    Token.find({'namespace': this._id}, function (err, tokens) {
-        if (err) {
-            throw err;
-        }
-        tokens.forEach(function (token) {
-            token.remove();
+    var self = this;
+    async.parallel(
+        [
+            function (callback) {
+                Token.remove({'namespace': self._id}, callback);
+            },
+            function (callback) {
+                TokenHit.remove({'namespace': self._id}, callback);
+            }
+        ],
+        function (err) {
+            next(err);
         });
-        next();
-    });
 });
 
 module.exports = mongoose.model('Namespace', namespaceSchema);

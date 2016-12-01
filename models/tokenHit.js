@@ -14,6 +14,14 @@ var tokenHitSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'Token',
         required: [true, 'tokenHit.tokenRequired']
     },
+    namespace: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Namespace',
+        required: [true, 'tokenHit.namespaceRequired']
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User',
+        required: [true, 'tokenHit.userRequired']
+    },
     ip: String,
     date: Date,
     userAgent: String,

@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const uuid = require('uuid');
 
 const TokenHit = require('./tokenHit');
+const async = require('async');
 
 /**
  * Token Mongoose schema.
@@ -16,6 +17,10 @@ var tokenSchema = mongoose.Schema({
     namespace: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Namespace',
         required: [true, 'token.namespaceRequired']
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User',
+        required: [true, 'token.userRequired']
     },
     value: {
         type: String,
@@ -42,25 +47,14 @@ var tokenSchema = mongoose.Schema({
 tokenSchema.methods.createTokenHit = function (ip, userAgent, response, callback) {
     var tokenHit = new TokenHit({
         token: this._id,
+        namespace: this.namespace,
+        user: this.user,
         ip: ip,
         userAgent: userAgent,
         response: response
     });
     tokenHit.save(function (err, tokenHit) {
         callback(err, tokenHit);
-    });
-};
-
-/**
- * Checks if this token belongs to a given user.
- *
- * @param id
- * @param callback
- */
-tokenSchema.methods.belongsToUser = function (id, callback) {
-    var thisToken = this;
-    mongoose.models['Namespace'].findOne({'_id': this.namespace, 'user': id}, function (err, namespace) {
-        callback(err, namespace ? true : false, thisToken);
     });
 };
 
@@ -101,15 +95,16 @@ tokenSchema.pre('validate', function (next) {
  * Deletes all token's hits when deleting token.
  */
 tokenSchema.pre('remove', function (next) {
-    TokenHit.find({'token': this._id}, function (err, tokenHits) {
-        if (err) {
-            throw err;
-        }
-        tokenHits.forEach(function (tokenHit) {
-            tokenHit.remove();
+    var self = this;
+    async.parallel(
+        [
+            function (callback) {
+                TokenHit.remove({'token': self._id}, callback);
+            }
+        ],
+        function (err) {
+            next(err);
         });
-        next();
-    });
 });
 
 module.exports = mongoose.model('Token', tokenSchema);

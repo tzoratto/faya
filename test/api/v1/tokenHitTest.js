@@ -38,17 +38,25 @@ describe('Test token hit related operations', function () {
                 assert.strictEqual(res.body.data.totalCount, 3, 'there are 3 items');
                 assert.strictEqual(res.body.data.page, 1, 'page 1 is requested');
                 assert.strictEqual(res.body.data.result.length, 1, 'only one item should be returned');
+                assert(res.body.data.result[0].token, 'the token property should be returned');
+                assert(res.body.data.result[0].namespace, 'the namespace property should be returned');
+                assert(res.body.data.result[0].user, 'the user property should be returned');
                 done();
             });
     });
 
-    it('should return a 403 when trying to get token history of another user', function (done) {
+    it('should return an empty result when trying to get token history of another user', function (done) {
         server
             .get('/api/v1/token/' + token1Id + '/history?limit=1&page=1')
             .set(authorization2)
-            .expect(403)
-            .end(function (err) {
-                done(err);
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+                assert.strictEqual(res.body.data.resultCount, 0, 'no item should be returned');
+                assert.strictEqual(res.body.data.totalCount, 0, 'total of items should be 0');
+                done();
             });
     });
 

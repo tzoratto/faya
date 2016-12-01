@@ -49,7 +49,8 @@ describe('Test token-related operations', function () {
                 assert(res.body.data.namespace, 'the token\'s namespace must be returned');
                 assert(res.body.data.value, 'the token\'s value must be returned');
                 assert(res.body.data.description === 'a description', 'the description of the created token must be returned');
-                assert(res.body.data._id, 'the id of the created namespace must be returned');
+                assert(res.body.data._id, 'the id of the created token must be returned');
+                assert(res.body.data.user, 'the user of the created token must be returned');
                 tokenId = res.body.data._id;
                 done();
             });
@@ -154,7 +155,7 @@ describe('Test token-related operations', function () {
                 if (err) {
                     throw err;
                 }
-                assert(res.body.data.resultCount === 1, 'there is only one token in this namespace');
+                assert.strictEqual(res.body.data.resultCount, 1, 'there is only one token in this namespace');
                 done();
             });
     });
@@ -292,101 +293,6 @@ describe('Test token-related operations', function () {
                 assert(!res.body.data.endsAt, 'the endsAt property must be absent now');
                 assert(res.body.data._id, 'the id of the token must be returned');
                 done();
-            });
-    });
-
-    it('should return a 200 code when trying to update the description', function (done) {
-        server
-            .put('/api/v1/token/' + tokenId + '/description')
-            .send({description: 'again a description'})
-            .set(authorization)
-            .expect(200)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when trying to empty the description', function (done) {
-        server
-            .put('/api/v1/token/' + tokenId + '/description')
-            .set(authorization)
-            .expect(200)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when trying to update the active property', function (done) {
-        server
-            .put('/api/v1/token/' + tokenId + '/activation')
-            .send({active: false})
-            .set(authorization)
-            .expect(200)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when trying to update the startsAt property', function (done) {
-        server
-            .put('/api/v1/token/' + tokenId + '/starting-date')
-            .send({startsAt: new Date()})
-            .set(authorization)
-            .expect(200)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when trying to remove the startsAt property', function (done) {
-        server
-            .put('/api/v1/token/' + tokenId + '/starting-date')
-            .set(authorization)
-            .expect(200)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when trying to update the endsAt property', function (done) {
-        server
-            .put('/api/v1/token/' + tokenId + '/ending-date')
-            .send({endsAt: new Date()})
-            .set(authorization)
-            .expect(200)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when trying to remove the endsAt property', function (done) {
-        server
-            .put('/api/v1/token/' + tokenId + '/ending-date')
-            .set(authorization)
-            .expect(200)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when trying to update the pool', function (done) {
-        server
-            .put('/api/v1/token/' + tokenId + '/pool')
-            .send({pool: 5})
-            .set(authorization)
-            .expect(200)
-            .end(function (err) {
-                done(err);
-            });
-    });
-
-    it('should return a 200 code when trying to remove the pool', function (done) {
-        server
-            .put('/api/v1/token/' + tokenId + '/pool')
-            .set(authorization)
-            .expect(200)
-            .end(function (err) {
-                done(err);
             });
     });
 

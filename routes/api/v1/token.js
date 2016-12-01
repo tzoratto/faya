@@ -16,10 +16,5 @@ router.delete('/:id', controllers.delete);
 router.get('/count', isAdminOrIsSubject, controllers.count);
 router.get('/:id', controllers.details);
 router.put('/:id', controllers.update);
-router.put('/:id/description', controllers.updateDescription);
-router.put('/:id/activation', controllers.updateActive);
-router.put('/:id/starting-date', controllers.updateStartsAt);
-router.put('/:id/ending-date', controllers.updateEndsAt);
-router.put('/:id/pool', controllers.updatePool);
 
 module.exports = router;

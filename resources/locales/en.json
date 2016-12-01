@@ -43,10 +43,12 @@
 		"valueRequired": "The token value is required",
 		"startsAtBeforeEndsAt": "The \"startsAt\" property must be before the \"endsAt\" one",
 		"poolZeroOrMore": "The \"pool\" property must be superior or equal to 0",
-		"unauthorized": "token.unauthorized"
+		"userRequired": "The \"user\" property is required"
 	},
 	"tokenHit": {
-		"tokenRequired": "The token property is required"
+		"namespaceRequired": "The \"namespace\" property is required",
+		"tokenRequired": "The \"token\" property is required",
+		"userRequired": "The \"user\" property is required"
 	},
 	"user": {
 		"cannotDeleteAdmin": "An admin cannot be deleted",

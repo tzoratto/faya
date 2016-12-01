@@ -42,10 +42,13 @@
 		"namespaceRequired": "Le namespace du token est requis",
 		"valueRequired": "La valeur du token est requis",
 		"startsAtBeforeEndsAt": "La propriété \"startsAt\" doit être antérieure à \"endsAt\"",
-		"poolZeroOrMore": "La propriété \"pool\" doit être supérieure ou égale à 0"
+		"poolZeroOrMore": "La propriété \"pool\" doit être supérieure ou égale à 0",
+		"userRequired": "La propriété \"user\" est requise"
 	},
 	"tokenHit": {
-		"tokenRequired": "La propriété \"token\" est requise"
+		"namespaceRequired": "La propriété \"namespace\" est requise",
+		"tokenRequired": "La propriété \"token\" est requise",
+		"userRequired": "La propriété \"user\" est requise"
 	},
 	"user": {
 		"cannotDeleteAdmin": "Un administrateur ne peut pas être supprimé",

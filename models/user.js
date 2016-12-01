@@ -6,6 +6,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const uuid = require('uuid');
 const Namespace = require('./namespace');
+const Token = require('./token');
+const TokenHit = require('./tokenHit');
+const async = require('async');
 
 /**
  * User Mongoose schema.
@@ -140,7 +143,7 @@ userSchema.pre('save', function (next) {
         var thisUser = this;
         mongoose.models['User'].count({}, function (err, count) {
             if (err) {
-                throw err;
+                return next(err);
             }
             if (count === 0) {
                 thisUser.admin = true;
@@ -156,15 +159,22 @@ userSchema.pre('save', function (next) {
  * Deletes all user's namespaces when deleting user.
  */
 userSchema.pre('remove', function (next) {
-    Namespace.find({'user': this._id}, function (err, namespaces) {
-        if (err) {
-            throw err;
-        }
-        namespaces.forEach(function (namespace) {
-            namespace.remove();
+    var self = this;
+    async.parallel(
+        [
+            function (callback) {
+                Namespace.remove({'user': self._id}, callback);
+            },
+            function (callback) {
+                Token.remove({'user': self._id}, callback);
+            },
+            function (callback) {
+                TokenHit.remove({'user': self._id}, callback);
+            }
+        ],
+        function (err) {
+            next(err);
         });
-        next();
-    });
 });
 
 
