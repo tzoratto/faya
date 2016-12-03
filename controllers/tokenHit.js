@@ -42,3 +42,167 @@ exports.list = function (req, res, next) {
             });
         });
 };
+
+/**
+ * Computes hits per month for last 12 months
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.year = function (req, res, next) {
+    if (!mongoose.Types.ObjectId.isValid(req.params.tokenId)) {
+        return sendResponse.failureJSON(res, 404, res.__('token.notFound'));
+    }
+
+    var twelveMonthsAgo = new Date(),
+        currentDate = new Date();
+    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+    twelveMonthsAgo.setDate(1);
+    twelveMonthsAgo.setHours(0,0,0,0);
+    var tokenId = new mongoose.Types.ObjectId(req.params.tokenId);
+
+    TokenHit.aggregate([
+        {
+            $match: {
+                date: {$gte: twelveMonthsAgo},
+                token: tokenId,
+                user: req.user._id
+            }
+        },
+        {
+            $project: {
+                month: {$month: '$date'}
+            }
+        },
+        {
+            $group: {
+                _id: '$month',
+                count: {$sum: 1}
+            }
+        }
+    ], function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        var completeResults = {};
+        for (var month = twelveMonthsAgo; month <= currentDate; month.setMonth(month.getMonth() + 1)) {
+            completeResults[month.getMonth() + 1] = {month: month.getMonth() + 1, count: 0};
+        }
+        results.forEach(entry => {
+            completeResults[entry._id] = {month: entry._id, count: entry.count};
+        });
+        completeResults = Object.keys(completeResults).map(function (key) {
+            return completeResults[key];
+        });
+        sendResponse.successJSON(res, 200, completeResults);
+    });
+};
+
+/**
+ * Computes hits per day for last month
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.month = function (req, res, next) {
+    if (!mongoose.Types.ObjectId.isValid(req.params.tokenId)) {
+        return sendResponse.failureJSON(res, 404, res.__('token.notFound'));
+    }
+
+    var thirtyDaysAgo = new Date(),
+        currentDate = new Date();
+    thirtyDaysAgo.setMonth(thirtyDaysAgo.getMonth() - 1);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() + 1);
+    thirtyDaysAgo.setHours(0,0,0,0);
+    var tokenId = new mongoose.Types.ObjectId(req.params.tokenId);
+
+    TokenHit.aggregate([
+        {
+            $match: {
+                date: {$gte: thirtyDaysAgo},
+                token: tokenId,
+                user: req.user._id
+            }
+        },
+        {
+            $project: {
+                day: {$dayOfMonth: '$date'}
+            }
+        },
+        {
+            $group: {
+                _id: '$day',
+                count: {$sum: 1}
+            }
+        }
+    ], function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        var completeResults = {};
+        for (var day = thirtyDaysAgo; day <= currentDate; day.setDate(day.getDate() + 1)) {
+            completeResults[day.getDate()] = {day: day.getDate(), count: 0};
+        }
+        results.forEach(entry => {
+            completeResults[entry._id] = {day: entry._id, count: entry.count};
+        });
+        completeResults = Object.keys(completeResults).map(function (key) {
+             return completeResults[key];
+        });
+        sendResponse.successJSON(res, 200, completeResults);
+    });
+};
+
+/**
+ * Computes hits per hour for last 24 hours
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.day = function (req, res, next) {
+    if (!mongoose.Types.ObjectId.isValid(req.params.tokenId)) {
+        return sendResponse.failureJSON(res, 404, res.__('token.notFound'));
+    }
+
+    var twentyFourHoursAgo = new Date();
+    var currentHour = twentyFourHoursAgo.getHours();
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 23);
+    var tokenId = new mongoose.Types.ObjectId(req.params.tokenId);
+
+    TokenHit.aggregate([
+        {
+            $match: {
+                date: {$gte: twentyFourHoursAgo},
+                token: tokenId,
+                user: req.user._id
+            }
+        },
+        {
+            $project: {
+                hour: {$hour: '$date'}
+            }
+        },
+        {
+            $group: {
+                _id: '$hour',
+                count: {$sum: 1}
+            }
+        }
+    ], function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        var completeResults = [];
+        for (var i = 0; i < 24; i++) {
+            var hour = (i + currentHour + 1) % 24;
+            completeResults[hour] = {hour: hour, count: 0};
+        }
+        results.forEach(entry => {
+            completeResults[entry._id] = {hour: entry._id, count: entry.count};
+        });
+        sendResponse.successJSON(res, 200, completeResults);
+    });
+};
