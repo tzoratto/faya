@@ -57,9 +57,9 @@ exports.year = function (req, res, next) {
 
     var twelveMonthsAgo = new Date(),
         currentDate = new Date();
-    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
-    twelveMonthsAgo.setDate(1);
-    twelveMonthsAgo.setHours(0,0,0,0);
+    twelveMonthsAgo.setUTCMonth(twelveMonthsAgo.getUTCMonth() - 11);
+    twelveMonthsAgo.setUTCDate(1);
+    twelveMonthsAgo.setUTCHours(0,0,0,0);
     var tokenId = new mongoose.Types.ObjectId(req.params.tokenId);
 
     TokenHit.aggregate([
@@ -113,9 +113,9 @@ exports.month = function (req, res, next) {
 
     var thirtyDaysAgo = new Date(),
         currentDate = new Date();
-    thirtyDaysAgo.setMonth(thirtyDaysAgo.getMonth() - 1);
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() + 1);
-    thirtyDaysAgo.setHours(0,0,0,0);
+    thirtyDaysAgo.setUTCMonth(thirtyDaysAgo.getUTCMonth() - 1);
+    thirtyDaysAgo.setUTCDate(thirtyDaysAgo.getUTCDate() + 1);
+    thirtyDaysAgo.setUTCHours(0,0,0,0);
     var tokenId = new mongoose.Types.ObjectId(req.params.tokenId);
 
     TokenHit.aggregate([
@@ -168,8 +168,8 @@ exports.day = function (req, res, next) {
     }
 
     var twentyFourHoursAgo = new Date();
-    var currentHour = twentyFourHoursAgo.getHours();
-    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 23);
+    var currentHour = twentyFourHoursAgo.getUTCHours();
+    twentyFourHoursAgo.setUTCHours(twentyFourHoursAgo.getUTCHours() - 23, 0, 0, 0);
     var tokenId = new mongoose.Types.ObjectId(req.params.tokenId);
 
     TokenHit.aggregate([
