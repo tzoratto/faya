@@ -86,8 +86,8 @@ exports.year = function (req, res, next) {
             return next(err);
         }
         var completeResults = {};
-        for (var month = twelveMonthsAgo; month <= currentDate; month.setMonth(month.getMonth() + 1)) {
-            completeResults[month.getMonth() + 1] = {month: month.getMonth() + 1, count: 0};
+        for (var month = twelveMonthsAgo; month <= currentDate; month.setUTCMonth(month.getUTCMonth() + 1)) {
+            completeResults[month.getUTCMonth() + 1] = {month: month.getUTCMonth() + 1, count: 0};
         }
         results.forEach(entry => {
             completeResults[entry._id] = {month: entry._id, count: entry.count};
@@ -142,8 +142,8 @@ exports.month = function (req, res, next) {
             return next(err);
         }
         var completeResults = {};
-        for (var day = thirtyDaysAgo; day <= currentDate; day.setDate(day.getDate() + 1)) {
-            completeResults[day.getDate()] = {day: day.getDate(), count: 0};
+        for (var day = thirtyDaysAgo; day <= currentDate; day.setUTCDate(day.getUTCDate() + 1)) {
+            completeResults[day.getUTCDate()] = {day: day.getUTCDate(), count: 0};
         }
         results.forEach(entry => {
             completeResults[entry._id] = {day: entry._id, count: entry.count};
