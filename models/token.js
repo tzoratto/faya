@@ -36,6 +36,10 @@ var tokenSchema = mongoose.Schema({
     timestamps: {}
 });
 
+tokenSchema.index({user: 1});
+tokenSchema.index({user: 1, namespace: 1});
+tokenSchema.index({user: 1, namespace: 1, createdAt: 1});
+
 /**
  * Creates a new tokenHit.
  *

@@ -20,23 +20,21 @@ module.exports = function (userId, namespaceName, tokenValue, callback) {
         if (!namespace) {
             return callback(null, false);
         }
-        async.waterfall([
+        async.parallel([
             function (callback) {
-                //Checks if the token matches a valid token non pool-based.
-                checkTokensWithoutPool(namespace._id, tokenValue, callback);
+                checkTokensWithoutPool(userId, namespace._id, tokenValue, callback);
             },
-            function (valid, token, callback) {
-                if (valid) {
-                    //The token matches a valid token non pool-based.
-                    return callback(null, true, token);
-                }
-                //The token doesn't match a valid token non pool-based so let's see
-                //if it matches a valid token pool-based.
-                checkTokensWithPool(namespace._id, tokenValue, callback);
+            function (callback) {
+                checkTokensWithPool(userId, namespace._id, tokenValue, callback);
             }
-        ], function (err, valid, token) {
+        ], function (err, results) {
             if (err) {
                 return callback(err);
+            }
+            let token = results[0].token || results[1].token;
+            let valid = false;
+            if (results[0].valid || results[1].valid) {
+                valid = true;
             }
             return callback(null, valid, token);
         });
@@ -46,12 +44,14 @@ module.exports = function (userId, namespaceName, tokenValue, callback) {
 /**
  * Checks tokens that aren't pool-based.
  *
+ * @param userId
  * @param namespaceId
  * @param tokenValue
  * @param callback
  */
-function checkTokensWithoutPool(namespaceId, tokenValue, callback) {
+function checkTokensWithoutPool(userId, namespaceId, tokenValue, callback) {
     Token.findOneAndUpdate({
+        'user': userId,
         'namespace': namespaceId,
         'value': tokenValue,
         'active': true,
@@ -75,7 +75,7 @@ function checkTokensWithoutPool(namespaceId, tokenValue, callback) {
             return callback(err);
         }
         if (token) {
-            return callback(null, true, token);
+            return callback(null, {valid: true, token: token});
         } else {
             Token.findOne({
                 'namespace': namespaceId,
@@ -84,7 +84,7 @@ function checkTokensWithoutPool(namespaceId, tokenValue, callback) {
                 if (err) {
                     return callback(err);
                 }
-                callback(null, false, token);
+                callback(null, {valid: false, token: token});
             });
         }
     });
@@ -93,12 +93,14 @@ function checkTokensWithoutPool(namespaceId, tokenValue, callback) {
 /**
  * Checks tokens that are pool-based.
  *
+ * @param userId
  * @param namespaceId
  * @param tokenValue
  * @param callback
  */
-function checkTokensWithPool(namespaceId, tokenValue, callback) {
+function checkTokensWithPool(userId, namespaceId, tokenValue, callback) {
     Token.findOneAndUpdate({
+        'user': userId,
         'namespace': namespaceId,
         'value': tokenValue,
         'active': true,
@@ -124,7 +126,7 @@ function checkTokensWithPool(namespaceId, tokenValue, callback) {
             return callback(err);
         }
         if (token) {
-            return callback(null, true, token);
+            return callback(null, {valid: true, token: token});
         } else {
             Token.findOne({
                 'namespace': namespaceId,
@@ -133,7 +135,7 @@ function checkTokensWithPool(namespaceId, tokenValue, callback) {
                 if (err) {
                     return callback(err);
                 }
-                return callback(null, false, token);
+                return callback(null, {valid: false, token: token});
             });
         }
     });

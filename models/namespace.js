@@ -24,6 +24,8 @@ var namespaceSchema = mongoose.Schema({
     description: String
 });
 
+namespaceSchema.index({user: 1});
+
 /**
  * Ensures that the pair user/name is unique.
  */

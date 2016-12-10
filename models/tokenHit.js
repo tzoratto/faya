@@ -28,6 +28,9 @@ var tokenHitSchema = mongoose.Schema({
     response: Boolean
 });
 
+tokenHitSchema.index({user: 1, token: 1});
+tokenHitSchema.index({user: 1, token: 1, date: 1});
+
 /**
  * Before validation of a TokenHit instance, populate some fields.
  */
