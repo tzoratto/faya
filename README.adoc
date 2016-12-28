@@ -2,6 +2,25 @@
 
 Faya provides a simple way to create and manage tokens through its web interface or its API.
 
+== Usage
+
+You can create tokens with various properties :
+
+* Active (true/false)
+* From (date)
+* To (date)
+* Pool (number)
+
+The *Active* property prevails over the others. All properties can be set at the same time,
+for instance, if you set *To* property to 2017-01-01 00:00 and *Pool* property to 25 000
+then the token can be used 25 000 times until 2017-01-01 00:00.
+Once the date is reached, the token cannot be used again, even if the *Pool* is not empty yet.
+Correspondingly, if the token is used 25 000 times before the date
+then it cannot be used again even though the date hasn't been reached yet.
+
+Tokens are stored in namespaces in order to use them for totally unrelated subjects.
+Consequently, a token is valid (or not) against a specific namespace.
+
 == Configuration
 
 Some environment variables are available to configure Faya :
