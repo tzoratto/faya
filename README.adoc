@@ -76,6 +76,18 @@ Some environment variables are available to configure Faya :
 |Email address used to send mail
 |===
 
+== Run
+
+You can either install node and NPM to run Faya or simply build the Docker image :
+
+[source]
+----
+docker build -t faya .
+docker run -e MONGO_URL=... faya
+----
+
+IMPORTANT: This repository only contains the Faya server. In order to deploy/run a full instance,
+see *deploy-exemple* directory
 
 == References
 
