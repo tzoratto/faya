@@ -1,0 +1,63 @@
+version: '2'
+
+services:
+#################    BDD ###############################
+    mongo_faya:
+        image: tutum/mongodb:3.2
+        environment:
+            - MONGODB_DATABASE=faya
+            - MONGODB_USER=admin
+            - MONGODB_PASS=admin
+        volumes:
+            - mongo_data:/data/db
+        container_name: mongo_faya
+        restart: always
+
+#################    APP ###############################
+    faya:
+        image: tzoratto/faya
+        depends_on:
+            - mongo_faya
+        environment:
+            - MONGO_URL=mongodb://admin:admin@mongo_faya/faya
+            - JWT_SECRET=imasecret
+            - HTTPS_ENABLED=true
+            - MAIL_HOST=smtp.gmail.com
+            - MAIL_PORT=465
+            - MAIL_TLS=true
+            - MAIL_USERNAME=some_email_address@gmail.com
+            - MAIL_PASSWORD=imapassword
+            - MAIL_FROM=some_email_address@gmail.com
+        container_name: faya
+        restart: always
+    faya_front:
+        image: tzoratto/faya-frontend
+        depends_on:
+            - faya
+        environment:
+            - API_URL=https://some-api.domain.com
+            - HTTPS_ENABLED=true
+        container_name: faya_front
+        restart: always
+    nginx:
+        image: nginx:1.10.1
+        depends_on:
+            - faya
+            - faya_front
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            # Consider building your own nginx image instead of bind mount configuration
+            - /path/to/your/nginx/conf:/etc/nginx
+            - nginx_cert:/etc/letsencrypt
+            - nginx_proof:/var/www
+        container_name: nginx
+        restart: always
+
+#################    VOLUME ###############################
+
+volumes:
+    mongo_data:
+    nginx_cert:
+    nginx_proof:
